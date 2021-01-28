@@ -6,6 +6,9 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.2",
+    "env-cmd": "^10.1.0",
+    "graphile-migrate": "^1.0.2",
+    "postgraphile": "^4.10.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
@@ -16,7 +19,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "graphile": "postgraphile -c \"postgres://beachvolley_graphile:dev_password@localhost:5432/beachvolley\" --watch -C \"postgres://beachvolley_graphile_superuser:dev_password@localhost:5432/beachvolley\" --enhance-graphiql --schema beachvolley_public",
+    "migrate": "env-cmd graphile-migrate"
   },
   "eslintConfig": {
     "extends": [
