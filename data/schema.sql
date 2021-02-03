@@ -117,6 +117,13 @@ ALTER TABLE ONLY beachvolley_public.match
 
 
 --
+-- Name: invitation_match_id_idx; Type: INDEX; Schema: beachvolley_public; Owner: -
+--
+
+CREATE INDEX invitation_match_id_idx ON beachvolley_public.invitation USING btree (match_id);
+
+
+--
 -- Name: invitation invitation_match_id_fkey; Type: FK CONSTRAINT; Schema: beachvolley_public; Owner: -
 --
 

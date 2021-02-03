@@ -128,6 +128,9 @@ type Invitation implements Node {
   token: String!
   createdAt: Datetime
   updatedAt: Datetime
+
+  """Reads a single `Match` that is related to this `Invitation`."""
+  match: Match
 }
 
 """
@@ -136,38 +139,54 @@ A point in time as described by the [ISO
 """
 scalar Datetime
 
-"""A `Invitation` edge in the connection."""
-type InvitationsEdge {
-  """A cursor for use in pagination."""
-  cursor: Cursor
+type Match implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: Int!
+  createdAt: Datetime
 
-  """The `Invitation` at the end of the edge."""
-  node: Invitation!
+  """Reads and enables pagination through a set of `Invitation`."""
+  invitations(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Invitation`."""
+    orderBy: [InvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: InvitationCondition
+  ): InvitationsConnection!
 }
 
 """A location in a connection that can be used for resuming pagination."""
 scalar Cursor
-
-"""Information about pagination in a connection."""
-type PageInfo {
-  """When paginating forwards, are there more items?"""
-  hasNextPage: Boolean!
-
-  """When paginating backwards, are there more items?"""
-  hasPreviousPage: Boolean!
-
-  """When paginating backwards, the cursor to continue."""
-  startCursor: Cursor
-
-  """When paginating forwards, the cursor to continue."""
-  endCursor: Cursor
-}
 
 """Methods to use when ordering `Invitation`."""
 enum InvitationsOrderBy {
   NATURAL
   ID_ASC
   ID_DESC
+  MATCH_ID_ASC
+  MATCH_ID_DESC
   TOKEN_ASC
   TOKEN_DESC
   PRIMARY_KEY_ASC
@@ -182,8 +201,35 @@ input InvitationCondition {
   """Checks for equality with the object’s `id` field."""
   id: Int
 
+  """Checks for equality with the object’s `matchId` field."""
+  matchId: Int
+
   """Checks for equality with the object’s `token` field."""
   token: String
+}
+
+"""A `Invitation` edge in the connection."""
+type InvitationsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Invitation` at the end of the edge."""
+  node: Invitation!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: Cursor
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: Cursor
 }
 
 """A connection to a list of `Match` values."""
@@ -201,15 +247,6 @@ type MatchesConnection {
 
   """The count of *all* `Match` you could get from the connection."""
   totalCount: Int!
-}
-
-type Match implements Node {
-  """
-  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
-  """
-  nodeId: ID!
-  id: Int!
-  createdAt: Datetime
 }
 
 """A `Match` edge in the connection."""
@@ -357,6 +394,9 @@ type CreateInvitationPayload {
   """
   query: Query
 
+  """Reads a single `Match` that is related to this `Invitation`."""
+  match: Match
+
   """An edge for our `Invitation`. May be used by Relay 1."""
   invitationEdge(
     """The method to use when ordering `Invitation`."""
@@ -439,6 +479,9 @@ type UpdateInvitationPayload {
   Our root query field type. Allows us to run any query from our mutation payload.
   """
   query: Query
+
+  """Reads a single `Match` that is related to this `Invitation`."""
+  match: Match
 
   """An edge for our `Invitation`. May be used by Relay 1."""
   invitationEdge(
@@ -586,6 +629,9 @@ type DeleteInvitationPayload {
   Our root query field type. Allows us to run any query from our mutation payload.
   """
   query: Query
+
+  """Reads a single `Match` that is related to this `Invitation`."""
+  match: Match
 
   """An edge for our `Invitation`. May be used by Relay 1."""
   invitationEdge(
