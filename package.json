@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@graphile-contrib/pg-simplify-inflector": "^6.1.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.2",
@@ -20,7 +21,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "graphile": "postgraphile -c \"postgres://beachvolley_graphile:dev_password@localhost:5432/beachvolley\" --watch -C \"postgres://beachvolley_graphile_superuser:dev_password@localhost:5432/beachvolley\" --enhance-graphiql --schema beachvolley_public",
+    "graphile": "postgraphile -c \"postgres://beachvolley_graphile:dev_password@localhost:5432/beachvolley\" --watch -C \"postgres://beachvolley_graphile_superuser:dev_password@localhost:5432/beachvolley\" --enhance-graphiql --schema beachvolley_public --append-plugins @graphile-contrib/pg-simplify-inflector",
     "migrate": "env-cmd graphile-migrate"
   },
   "eslintConfig": {
