@@ -42,10 +42,10 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: invitations; Type: TABLE; Schema: beachvolley_public; Owner: -
+-- Name: invitation; Type: TABLE; Schema: beachvolley_public; Owner: -
 --
 
-CREATE TABLE beachvolley_public.invitations (
+CREATE TABLE beachvolley_public.invitation (
     id integer NOT NULL,
     match_id integer NOT NULL,
     token text DEFAULT public.gen_random_uuid() NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE beachvolley_public.invitations (
 -- Name: invitation_id_seq; Type: SEQUENCE; Schema: beachvolley_public; Owner: -
 --
 
-ALTER TABLE beachvolley_public.invitations ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+ALTER TABLE beachvolley_public.invitation ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
     SEQUENCE NAME beachvolley_public.invitation_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -69,10 +69,10 @@ ALTER TABLE beachvolley_public.invitations ALTER COLUMN id ADD GENERATED ALWAYS 
 
 
 --
--- Name: matches; Type: TABLE; Schema: beachvolley_public; Owner: -
+-- Name: match; Type: TABLE; Schema: beachvolley_public; Owner: -
 --
 
-CREATE TABLE beachvolley_public.matches (
+CREATE TABLE beachvolley_public.match (
     id integer NOT NULL,
     created_at timestamp without time zone DEFAULT now()
 );
@@ -82,7 +82,7 @@ CREATE TABLE beachvolley_public.matches (
 -- Name: match_id_seq; Type: SEQUENCE; Schema: beachvolley_public; Owner: -
 --
 
-ALTER TABLE beachvolley_public.matches ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+ALTER TABLE beachvolley_public.match ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
     SEQUENCE NAME beachvolley_public.match_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -93,35 +93,35 @@ ALTER TABLE beachvolley_public.matches ALTER COLUMN id ADD GENERATED ALWAYS AS I
 
 
 --
--- Name: invitations invitation_pkey; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
+-- Name: invitation invitation_pkey; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
 --
 
-ALTER TABLE ONLY beachvolley_public.invitations
+ALTER TABLE ONLY beachvolley_public.invitation
     ADD CONSTRAINT invitation_pkey PRIMARY KEY (id);
 
 
 --
--- Name: invitations invitation_token_key; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
+-- Name: invitation invitation_token_key; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
 --
 
-ALTER TABLE ONLY beachvolley_public.invitations
+ALTER TABLE ONLY beachvolley_public.invitation
     ADD CONSTRAINT invitation_token_key UNIQUE (token);
 
 
 --
--- Name: matches match_pkey; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
+-- Name: match match_pkey; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
 --
 
-ALTER TABLE ONLY beachvolley_public.matches
+ALTER TABLE ONLY beachvolley_public.match
     ADD CONSTRAINT match_pkey PRIMARY KEY (id);
 
 
 --
--- Name: invitations invitation_match_id_fkey; Type: FK CONSTRAINT; Schema: beachvolley_public; Owner: -
+-- Name: invitation invitation_match_id_fkey; Type: FK CONSTRAINT; Schema: beachvolley_public; Owner: -
 --
 
-ALTER TABLE ONLY beachvolley_public.invitations
-    ADD CONSTRAINT invitation_match_id_fkey FOREIGN KEY (match_id) REFERENCES beachvolley_public.matches(id) ON DELETE CASCADE;
+ALTER TABLE ONLY beachvolley_public.invitation
+    ADD CONSTRAINT invitation_match_id_fkey FOREIGN KEY (match_id) REFERENCES beachvolley_public.match(id) ON DELETE CASCADE;
 
 
 --
