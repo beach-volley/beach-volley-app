@@ -1,53 +1,18 @@
-import styled from "styled-components";
-import GlobalStyle from "./globalstyle";
+import React from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import { GlobalStyle, Theme } from "./globalandtheme";
+
+import PageRoutes from "./PageRoutes";
 
 const App = () => {
   return (
-    <>
+    <Router>
       <GlobalStyle />
-      <MainWrapper>
-        <Header>Header</Header>
-        <Title>Title</Title>
-        <TitleText>TitleText</TitleText>
-        <GamesBox>Games</GamesBox>
-        
-      </MainWrapper>
-    </>
+      <Theme>
+        <PageRoutes />
+      </Theme>
+    </Router>
   );
 };
-
-const MainWrapper = styled.div`
-  display: grid;
-  height: 100vh;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(3, 10vh) auto;
-  grid-auto-rows: 1fr 1fr;
-`;
-
-const Header = styled.div`
-  grid-column: 1 / 3;
-  grid-row: 1;
-  background-color: blue;
-`;
-
-const Title = styled.div`
-  background-color: green;
-  grid-column: 1 / 3;
-  grid-row: 2;
-`;
-
-const TitleText = styled.div`
-  background-color: lightblue;
-  grid-column: 1 / 3;
-  grid-row: 3;
-`;
-
-const GamesBox = styled.div`
-  background-color: lightgreen;
-  grid-column: 1 / 3;
-  grid-row: 4;
-`;
-
-
 
 export default App;
