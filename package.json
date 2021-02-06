@@ -7,6 +7,7 @@
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.2",
     "env-cmd": "^10.1.0",
+    "formik": "^2.2.6",
     "graphile-migrate": "^1.0.2",
     "postgraphile": "^4.10.0",
     "react": "^17.0.1",
@@ -16,7 +17,8 @@
     "react-scripts": "4.0.1",
     "styled-components": "^5.2.1",
     "uuid4": "^2.0.2",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "yup": "^0.32.8"
   },
   "scripts": {
     "start": "react-scripts start",
