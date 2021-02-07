@@ -6,7 +6,7 @@ const GameCreation = () => {
   return (
     <PageWrapper>
       <Header />
-      <GameFormBox>Games</GameFormBox>
+      <GameFormBox />
     </PageWrapper>
   );
 };
@@ -14,7 +14,7 @@ const GameCreation = () => {
 const PageWrapper = styled.div`
   display: grid;
   height: 100vh;
-  grid-template-rows: 8vh 12vh auto;
+  grid-template-rows: 8vh auto;
 `;
 
 export default GameCreation;

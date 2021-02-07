@@ -33,7 +33,7 @@ const Container = styled.div`
 `;
 
 const Logo = styled.div`
-  margin-right: 4rem;
+  margin-right: 1rem;
 `;
 
 const Profile = styled.div`

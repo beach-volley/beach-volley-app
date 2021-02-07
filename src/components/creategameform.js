@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Formik } from "formik";
 import { FormTextInput, FormDropDown } from "./inputcomponents";
+import StyledButton from "./styledbutton";
 import styled from "styled-components";
 import * as Yup from "yup";
 
@@ -15,16 +16,16 @@ const CreateGameForm = () => {
       }}
       validationSchema={Yup.object({
         location: Yup.string()
-          .min(3, "Must be 3 characters long")
-          .max(50, "Must be under 50 characters")
+          .min(3, "Minimum 3")
+          .max(50, "Maximum 50")
           .required("Required"),
         date: Yup.string()
-          .min(3, "Must be 3 characters long")
-          .max(50, "Must be under 50 characters")
+          .min(3, "Minimum 3")
+          .max(50, "Maximum 50")
           .required("Required"),
         time: Yup.string()
-          .min(3, "Must be 3 characters long")
-          .max(50, "Must be under 50 characters")
+          .min(3, "Minimum 3")
+          .max(50, "Maximum 50")
           .required("Required"),
         numPlayers: Yup.string()
           .oneOf(["1-2", "2-4", "4-6"], "Invalid number of players")
@@ -33,12 +34,11 @@ const CreateGameForm = () => {
       onSubmit={(values) => {
         setTimeout(() => {
           alert(JSON.stringify(values, null, 2));
-        }, 1000);
+        }, 400);
       }}
     >
       {(props) => (
         <GameForm>
-          <h1>Your game</h1>
           <FormTextInput
             label="Location"
             name="location"
@@ -57,12 +57,13 @@ const CreateGameForm = () => {
             type="text"
             placeholder="Time"
           />
-          <FormDropDown label="Number of players" name="numplayers">
-            <option value="">Select number of players</option>
+          <FormDropDown label="Players" name="numPlayers">
+            <option value="">Number of players</option>
             <option value="1-2">1-2</option>
             <option value="2-4">2-4</option>
             <option value="4-6">4-6</option>
           </FormDropDown>
+          <StyledButton type={"submit"} text={"Submit"} />
         </GameForm>
       )}
     </Formik>
@@ -71,12 +72,19 @@ const CreateGameForm = () => {
 
 const GameForm = styled(Form)`
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  height: 50rem;
-  width: 100%;
-  background-color: blue;
+  margin: 1.5rem;
+  button {
+    height: 2rem;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 1rem;
+  }
+  @media only screen and (min-width: ${(props) =>
+      props.theme.mediaQuery.tabletWidth}) {
+    width: 50%;
+  }
 `;
 
 export default CreateGameForm;

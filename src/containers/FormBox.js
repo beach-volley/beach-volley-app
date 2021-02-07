@@ -1,23 +1,30 @@
 import React from "react";
 import styled from "styled-components";
-import CreateGameForm from '../components/creategameform'
+import CreateGameForm from "../components/creategameform";
 
-const FormBox    = () => (
+const FormBox = () => (
   <FormContainer>
-     <CreateGameForm />
+    <h1>Create new game</h1>
+    <CreateGameForm />
   </FormContainer>
 );
 
 const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  grid-row: 3;
-  margin-top: 4rem;
-  @media only screen and (min-width: ${(props) =>
-      props.theme.mediaQuery.tabletWidth}) {
-    margin: auto;
-    width: 60%;
+  grid-row: 2;
+  height: 60%;
+  text-align: center;
+  position: relative;
+  background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
+  margin: auto;
+  h1 {
+    color: white;
   }
+
+  @media only screen and (min-width: ${(props) =>
+    props.theme.mediaQuery.tabletWidth}) {
+  width: 80%
+}
+
 `;
 
 export default FormBox;

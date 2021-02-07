@@ -17,7 +17,7 @@ const ItemWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 5rem;
-  background: rgb(1, 20, 88, 0.75);
+  background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
   button {
     margin-right: 1rem;
     margin-left: 1rem;
