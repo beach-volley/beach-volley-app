@@ -7,6 +7,8 @@ Create user and databases.
     $ sudo -u postgres psql
     # create role beachvolley_graphile login encrypted password 'dev_password';
     # create role beachvolley_graphile_superuser superuser login password 'dev_password';
+    # create role beachvolley_graphile_anonymous;
+    # grant beachvolley_graphile_anonymous to beachvolley_graphile;
     # create database beachvolley;
     # grant all privileges on database beachvolley to beachvolley_graphile;
     # create database beachvolley_shadow;
