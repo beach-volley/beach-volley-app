@@ -16,6 +16,81 @@ type Query implements Node {
     """The globally unique `ID`."""
     nodeId: ID!
   ): Node
+
+  """Reads and enables pagination through a set of `Invitation`."""
+  invitations(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Invitation`."""
+    orderBy: [InvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: InvitationCondition
+  ): InvitationsConnection
+
+  """Reads and enables pagination through a set of `Match`."""
+  matches(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Match`."""
+    orderBy: [MatchesOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: MatchCondition
+  ): MatchesConnection
+  invitation(id: Int!): Invitation
+  invitationByToken(token: String!): Invitation
+  match(id: Int!): Match
+
+  """Reads a single `Invitation` using its globally unique `ID`."""
+  invitationByNodeId(
+    """
+    The globally unique `ID` to be used in selecting a single `Invitation`.
+    """
+    nodeId: ID!
+  ): Invitation
+
+  """Reads a single `Match` using its globally unique `ID`."""
+  matchByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Match`."""
+    nodeId: ID!
+  ): Match
 }
 
 """An object with a globally unique `ID`."""
@@ -24,4 +99,743 @@ interface Node {
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
+}
+
+"""A connection to a list of `Invitation` values."""
+type InvitationsConnection {
+  """A list of `Invitation` objects."""
+  nodes: [Invitation!]!
+
+  """
+  A list of edges which contains the `Invitation` and cursor to aid in pagination.
+  """
+  edges: [InvitationsEdge!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Invitation` you could get from the connection."""
+  totalCount: Int!
+}
+
+type Invitation implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: Int!
+  matchId: Int!
+  token: String!
+  createdAt: Datetime
+  updatedAt: Datetime
+
+  """Reads a single `Match` that is related to this `Invitation`."""
+  match: Match
+}
+
+"""
+A point in time as described by the [ISO
+8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
+"""
+scalar Datetime
+
+"""A single beach volley match."""
+type Match implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+
+  """Unique id of the match."""
+  id: Int!
+
+  """Location where the match is held."""
+  location: String
+
+  """Start and end time of the match."""
+  time: DatetimeRange
+
+  """Minimun and maximun number of players in the match."""
+  playerLimit: IntRange
+
+  """Is the match public or private. Default is private."""
+  public: Boolean!
+
+  """Reads and enables pagination through a set of `Invitation`."""
+  invitations(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Invitation`."""
+    orderBy: [InvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: InvitationCondition
+  ): InvitationsConnection!
+}
+
+"""A range of `Datetime`."""
+type DatetimeRange {
+  """The starting bound of our range."""
+  start: DatetimeRangeBound
+
+  """The ending bound of our range."""
+  end: DatetimeRangeBound
+}
+
+"""
+The value at one end of a range. A range can either include this value, or not.
+"""
+type DatetimeRangeBound {
+  """The value at one end of our range."""
+  value: Datetime!
+
+  """Whether or not the value of this bound is included in the range."""
+  inclusive: Boolean!
+}
+
+"""A range of `Int`."""
+type IntRange {
+  """The starting bound of our range."""
+  start: IntRangeBound
+
+  """The ending bound of our range."""
+  end: IntRangeBound
+}
+
+"""
+The value at one end of a range. A range can either include this value, or not.
+"""
+type IntRangeBound {
+  """The value at one end of our range."""
+  value: Int!
+
+  """Whether or not the value of this bound is included in the range."""
+  inclusive: Boolean!
+}
+
+"""A location in a connection that can be used for resuming pagination."""
+scalar Cursor
+
+"""Methods to use when ordering `Invitation`."""
+enum InvitationsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  MATCH_ID_ASC
+  MATCH_ID_DESC
+  TOKEN_ASC
+  TOKEN_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""
+A condition to be used against `Invitation` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input InvitationCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: Int
+
+  """Checks for equality with the object’s `matchId` field."""
+  matchId: Int
+
+  """Checks for equality with the object’s `token` field."""
+  token: String
+}
+
+"""A `Invitation` edge in the connection."""
+type InvitationsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Invitation` at the end of the edge."""
+  node: Invitation!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: Cursor
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: Cursor
+}
+
+"""A connection to a list of `Match` values."""
+type MatchesConnection {
+  """A list of `Match` objects."""
+  nodes: [Match!]!
+
+  """
+  A list of edges which contains the `Match` and cursor to aid in pagination.
+  """
+  edges: [MatchesEdge!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Match` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Match` edge in the connection."""
+type MatchesEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Match` at the end of the edge."""
+  node: Match!
+}
+
+"""Methods to use when ordering `Match`."""
+enum MatchesOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""
+A condition to be used against `Match` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input MatchCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: Int
+}
+
+"""
+The root mutation type which contains root level fields which mutate data.
+"""
+type Mutation {
+  """Creates a single `Invitation`."""
+  createInvitation(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateInvitationInput!
+  ): CreateInvitationPayload
+
+  """Creates a single `Match`."""
+  createMatch(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateMatchInput!
+  ): CreateMatchPayload
+
+  """
+  Updates a single `Invitation` using its globally unique id and a patch.
+  """
+  updateInvitationByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateInvitationByNodeIdInput!
+  ): UpdateInvitationPayload
+
+  """Updates a single `Invitation` using a unique key and a patch."""
+  updateInvitation(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateInvitationInput!
+  ): UpdateInvitationPayload
+
+  """Updates a single `Invitation` using a unique key and a patch."""
+  updateInvitationByToken(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateInvitationByTokenInput!
+  ): UpdateInvitationPayload
+
+  """Updates a single `Match` using its globally unique id and a patch."""
+  updateMatchByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateMatchByNodeIdInput!
+  ): UpdateMatchPayload
+
+  """Updates a single `Match` using a unique key and a patch."""
+  updateMatch(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateMatchInput!
+  ): UpdateMatchPayload
+
+  """Deletes a single `Invitation` using its globally unique id."""
+  deleteInvitationByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteInvitationByNodeIdInput!
+  ): DeleteInvitationPayload
+
+  """Deletes a single `Invitation` using a unique key."""
+  deleteInvitation(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteInvitationInput!
+  ): DeleteInvitationPayload
+
+  """Deletes a single `Invitation` using a unique key."""
+  deleteInvitationByToken(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteInvitationByTokenInput!
+  ): DeleteInvitationPayload
+
+  """Deletes a single `Match` using its globally unique id."""
+  deleteMatchByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteMatchByNodeIdInput!
+  ): DeleteMatchPayload
+
+  """Deletes a single `Match` using a unique key."""
+  deleteMatch(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteMatchInput!
+  ): DeleteMatchPayload
+}
+
+"""The output of our create `Invitation` mutation."""
+type CreateInvitationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Invitation` that was created by this mutation."""
+  invitation: Invitation
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `Match` that is related to this `Invitation`."""
+  match: Match
+
+  """An edge for our `Invitation`. May be used by Relay 1."""
+  invitationEdge(
+    """The method to use when ordering `Invitation`."""
+    orderBy: [InvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): InvitationsEdge
+}
+
+"""All input for the create `Invitation` mutation."""
+input CreateInvitationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Invitation` to be created by this mutation."""
+  invitation: InvitationInput!
+}
+
+"""An input for mutations affecting `Invitation`"""
+input InvitationInput {
+  matchId: Int!
+  token: String
+  createdAt: Datetime
+  updatedAt: Datetime
+}
+
+"""The output of our create `Match` mutation."""
+type CreateMatchPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Match` that was created by this mutation."""
+  match: Match
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Match`. May be used by Relay 1."""
+  matchEdge(
+    """The method to use when ordering `Match`."""
+    orderBy: [MatchesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MatchesEdge
+}
+
+"""All input for the create `Match` mutation."""
+input CreateMatchInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Match` to be created by this mutation."""
+  match: MatchInput!
+}
+
+"""An input for mutations affecting `Match`"""
+input MatchInput {
+  """Location where the match is held."""
+  location: String
+
+  """Start and end time of the match."""
+  time: DatetimeRangeInput
+
+  """Minimun and maximun number of players in the match."""
+  playerLimit: IntRangeInput
+
+  """Is the match public or private. Default is private."""
+  public: Boolean
+}
+
+"""A range of `Datetime`."""
+input DatetimeRangeInput {
+  """The starting bound of our range."""
+  start: DatetimeRangeBoundInput
+
+  """The ending bound of our range."""
+  end: DatetimeRangeBoundInput
+}
+
+"""
+The value at one end of a range. A range can either include this value, or not.
+"""
+input DatetimeRangeBoundInput {
+  """The value at one end of our range."""
+  value: Datetime!
+
+  """Whether or not the value of this bound is included in the range."""
+  inclusive: Boolean!
+}
+
+"""A range of `Int`."""
+input IntRangeInput {
+  """The starting bound of our range."""
+  start: IntRangeBoundInput
+
+  """The ending bound of our range."""
+  end: IntRangeBoundInput
+}
+
+"""
+The value at one end of a range. A range can either include this value, or not.
+"""
+input IntRangeBoundInput {
+  """The value at one end of our range."""
+  value: Int!
+
+  """Whether or not the value of this bound is included in the range."""
+  inclusive: Boolean!
+}
+
+"""The output of our update `Invitation` mutation."""
+type UpdateInvitationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Invitation` that was updated by this mutation."""
+  invitation: Invitation
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `Match` that is related to this `Invitation`."""
+  match: Match
+
+  """An edge for our `Invitation`. May be used by Relay 1."""
+  invitationEdge(
+    """The method to use when ordering `Invitation`."""
+    orderBy: [InvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): InvitationsEdge
+}
+
+"""All input for the `updateInvitationByNodeId` mutation."""
+input UpdateInvitationByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Invitation` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Invitation` being updated.
+  """
+  patch: InvitationPatch!
+}
+
+"""
+Represents an update to a `Invitation`. Fields that are set will be updated.
+"""
+input InvitationPatch {
+  matchId: Int
+  token: String
+  createdAt: Datetime
+  updatedAt: Datetime
+}
+
+"""All input for the `updateInvitation` mutation."""
+input UpdateInvitationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Invitation` being updated.
+  """
+  patch: InvitationPatch!
+  id: Int!
+}
+
+"""All input for the `updateInvitationByToken` mutation."""
+input UpdateInvitationByTokenInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Invitation` being updated.
+  """
+  patch: InvitationPatch!
+  token: String!
+}
+
+"""The output of our update `Match` mutation."""
+type UpdateMatchPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Match` that was updated by this mutation."""
+  match: Match
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Match`. May be used by Relay 1."""
+  matchEdge(
+    """The method to use when ordering `Match`."""
+    orderBy: [MatchesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MatchesEdge
+}
+
+"""All input for the `updateMatchByNodeId` mutation."""
+input UpdateMatchByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Match` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Match` being updated.
+  """
+  patch: MatchPatch!
+}
+
+"""
+Represents an update to a `Match`. Fields that are set will be updated.
+"""
+input MatchPatch {
+  """Location where the match is held."""
+  location: String
+
+  """Start and end time of the match."""
+  time: DatetimeRangeInput
+
+  """Minimun and maximun number of players in the match."""
+  playerLimit: IntRangeInput
+
+  """Is the match public or private. Default is private."""
+  public: Boolean
+}
+
+"""All input for the `updateMatch` mutation."""
+input UpdateMatchInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Match` being updated.
+  """
+  patch: MatchPatch!
+
+  """Unique id of the match."""
+  id: Int!
+}
+
+"""The output of our delete `Invitation` mutation."""
+type DeleteInvitationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Invitation` that was deleted by this mutation."""
+  invitation: Invitation
+  deletedInvitationNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `Match` that is related to this `Invitation`."""
+  match: Match
+
+  """An edge for our `Invitation`. May be used by Relay 1."""
+  invitationEdge(
+    """The method to use when ordering `Invitation`."""
+    orderBy: [InvitationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): InvitationsEdge
+}
+
+"""All input for the `deleteInvitationByNodeId` mutation."""
+input DeleteInvitationByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Invitation` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteInvitation` mutation."""
+input DeleteInvitationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: Int!
+}
+
+"""All input for the `deleteInvitationByToken` mutation."""
+input DeleteInvitationByTokenInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  token: String!
+}
+
+"""The output of our delete `Match` mutation."""
+type DeleteMatchPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Match` that was deleted by this mutation."""
+  match: Match
+  deletedMatchNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Match`. May be used by Relay 1."""
+  matchEdge(
+    """The method to use when ordering `Match`."""
+    orderBy: [MatchesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MatchesEdge
+}
+
+"""All input for the `deleteMatchByNodeId` mutation."""
+input DeleteMatchByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Match` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteMatch` mutation."""
+input DeleteMatchInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique id of the match."""
+  id: Int!
 }
