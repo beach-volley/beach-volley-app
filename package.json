@@ -25,7 +25,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "graphile": "postgraphile --subscriptions --watch --dynamic-json --no-setof-functions-contain-nulls --no-ignore-rbac --no-ignore-indexes --show-error-stack=json --extended-errors hint,detail,errcode --append-plugins @graphile-contrib/pg-simplify-inflector --export-schema-graphql data/schema.graphql --graphiql \"/\" --enhance-graphiql --allow-explain --enable-query-batching --legacy-relations omit --connection \"postgres://beachvolley_graphile:dev_password@localhost:5432/beachvolley\" --owner-connection \"postgres://beachvolley_graphile_superuser:dev_password@localhost:5432/beachvolley\" --default-role beachvolley_graphile_anonymous --schema beachvolley_public",
-    "migrate": "env-cmd graphile-migrate"
+    "migrations": "env-cmd graphile-migrate"
   },
   "eslintConfig": {
     "extends": [
