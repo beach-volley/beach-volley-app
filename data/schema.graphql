@@ -139,13 +139,27 @@ A point in time as described by the [ISO
 """
 scalar Datetime
 
+"""A single beach volley match."""
 type Match implements Node {
   """
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
+
+  """Unique id of the match."""
   id: Int!
-  createdAt: Datetime
+
+  """Location where the match is held."""
+  location: String
+
+  """Start and end time of the match."""
+  time: DatetimeRange
+
+  """Minimun and maximun number of players in the match."""
+  playerLimit: IntRange
+
+  """Is the match public or private. Default is private."""
+  public: Boolean!
 
   """Reads and enables pagination through a set of `Invitation`."""
   invitations(
@@ -175,6 +189,46 @@ type Match implements Node {
     """
     condition: InvitationCondition
   ): InvitationsConnection!
+}
+
+"""A range of `Datetime`."""
+type DatetimeRange {
+  """The starting bound of our range."""
+  start: DatetimeRangeBound
+
+  """The ending bound of our range."""
+  end: DatetimeRangeBound
+}
+
+"""
+The value at one end of a range. A range can either include this value, or not.
+"""
+type DatetimeRangeBound {
+  """The value at one end of our range."""
+  value: Datetime!
+
+  """Whether or not the value of this bound is included in the range."""
+  inclusive: Boolean!
+}
+
+"""A range of `Int`."""
+type IntRange {
+  """The starting bound of our range."""
+  start: IntRangeBound
+
+  """The ending bound of our range."""
+  end: IntRangeBound
+}
+
+"""
+The value at one end of a range. A range can either include this value, or not.
+"""
+type IntRangeBound {
+  """The value at one end of our range."""
+  value: Int!
+
+  """Whether or not the value of this bound is included in the range."""
+  inclusive: Boolean!
 }
 
 """A location in a connection that can be used for resuming pagination."""
@@ -461,7 +515,57 @@ input CreateMatchInput {
 
 """An input for mutations affecting `Match`"""
 input MatchInput {
-  createdAt: Datetime
+  """Location where the match is held."""
+  location: String
+
+  """Start and end time of the match."""
+  time: DatetimeRangeInput
+
+  """Minimun and maximun number of players in the match."""
+  playerLimit: IntRangeInput
+
+  """Is the match public or private. Default is private."""
+  public: Boolean
+}
+
+"""A range of `Datetime`."""
+input DatetimeRangeInput {
+  """The starting bound of our range."""
+  start: DatetimeRangeBoundInput
+
+  """The ending bound of our range."""
+  end: DatetimeRangeBoundInput
+}
+
+"""
+The value at one end of a range. A range can either include this value, or not.
+"""
+input DatetimeRangeBoundInput {
+  """The value at one end of our range."""
+  value: Datetime!
+
+  """Whether or not the value of this bound is included in the range."""
+  inclusive: Boolean!
+}
+
+"""A range of `Int`."""
+input IntRangeInput {
+  """The starting bound of our range."""
+  start: IntRangeBoundInput
+
+  """The ending bound of our range."""
+  end: IntRangeBoundInput
+}
+
+"""
+The value at one end of a range. A range can either include this value, or not.
+"""
+input IntRangeBoundInput {
+  """The value at one end of our range."""
+  value: Int!
+
+  """Whether or not the value of this bound is included in the range."""
+  inclusive: Boolean!
 }
 
 """The output of our update `Invitation` mutation."""
@@ -595,7 +699,17 @@ input UpdateMatchByNodeIdInput {
 Represents an update to a `Match`. Fields that are set will be updated.
 """
 input MatchPatch {
-  createdAt: Datetime
+  """Location where the match is held."""
+  location: String
+
+  """Start and end time of the match."""
+  time: DatetimeRangeInput
+
+  """Minimun and maximun number of players in the match."""
+  playerLimit: IntRangeInput
+
+  """Is the match public or private. Default is private."""
+  public: Boolean
 }
 
 """All input for the `updateMatch` mutation."""
@@ -610,6 +724,8 @@ input UpdateMatchInput {
   An object where the defined keys will be set on the `Match` being updated.
   """
   patch: MatchPatch!
+
+  """Unique id of the match."""
   id: Int!
 }
 
@@ -719,5 +835,7 @@ input DeleteMatchInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
+
+  """Unique id of the match."""
   id: Int!
 }

@@ -17,6 +17,13 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: beachvolley_private; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA beachvolley_private;
+
+
+--
 -- Name: beachvolley_public; Type: SCHEMA; Schema: -; Owner: -
 --
 
@@ -35,6 +42,20 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
+-- Name: set_updated_at(); Type: FUNCTION; Schema: beachvolley_private; Owner: -
+--
+
+CREATE FUNCTION beachvolley_private.set_updated_at() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+begin
+  new.updated_at := current_timestamp;
+  return new;
+end;
+$$;
 
 
 SET default_tablespace = '';
@@ -74,8 +95,69 @@ ALTER TABLE beachvolley_public.invitation ALTER COLUMN id ADD GENERATED ALWAYS A
 
 CREATE TABLE beachvolley_public.match (
     id integer NOT NULL,
-    created_at timestamp without time zone DEFAULT now()
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now(),
+    location text,
+    "time" tstzrange,
+    player_limit int4range,
+    public boolean DEFAULT false NOT NULL
 );
+
+
+--
+-- Name: TABLE match; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON TABLE beachvolley_public.match IS 'A single beach volley match.';
+
+
+--
+-- Name: COLUMN match.id; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.id IS 'Unique id of the match.';
+
+
+--
+-- Name: COLUMN match.created_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.created_at IS '@omit all,create,delete,many,read,update';
+
+
+--
+-- Name: COLUMN match.updated_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.updated_at IS '@omit all,create,delete,many,read,update';
+
+
+--
+-- Name: COLUMN match.location; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.location IS 'Location where the match is held.';
+
+
+--
+-- Name: COLUMN match."time"; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match."time" IS 'Start and end time of the match.';
+
+
+--
+-- Name: COLUMN match.player_limit; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.player_limit IS 'Minimun and maximun number of players in the match.';
+
+
+--
+-- Name: COLUMN match.public; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.public IS 'Is the match public or private. Default is private.';
 
 
 --
@@ -121,6 +203,13 @@ ALTER TABLE ONLY beachvolley_public.match
 --
 
 CREATE INDEX invitation_match_id_idx ON beachvolley_public.invitation USING btree (match_id);
+
+
+--
+-- Name: match match_updated_at; Type: TRIGGER; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TRIGGER match_updated_at BEFORE UPDATE ON beachvolley_public.match FOR EACH ROW EXECUTE FUNCTION beachvolley_private.set_updated_at();
 
 
 --
