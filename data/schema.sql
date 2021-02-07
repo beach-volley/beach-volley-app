@@ -221,6 +221,55 @@ ALTER TABLE ONLY beachvolley_public.invitation
 
 
 --
+-- Name: SCHEMA beachvolley_public; Type: ACL; Schema: -; Owner: -
+--
+
+GRANT USAGE ON SCHEMA beachvolley_public TO beachvolley_graphile_anonymous;
+
+
+--
+-- Name: TABLE match; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT SELECT,DELETE ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+
+
+--
+-- Name: COLUMN match.location; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT INSERT(location),UPDATE(location) ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+
+
+--
+-- Name: COLUMN match."time"; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT INSERT("time"),UPDATE("time") ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+
+
+--
+-- Name: COLUMN match.player_limit; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT INSERT(player_limit),UPDATE(player_limit) ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+
+
+--
+-- Name: COLUMN match.public; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT INSERT(public),UPDATE(public) ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: -; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE beachvolley_graphile REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
