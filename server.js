@@ -21,6 +21,7 @@ app.use(
             appendPlugins: [require("@graphile-contrib/pg-simplify-inflector")],
             exportGqlSchemaPath: "data/schema.graphql",
             graphiql: true,
+            graphiqlRoute: '/',
             enhanceGraphiql: true,
             allowExplain: true,
             enableQueryBatching: true,
