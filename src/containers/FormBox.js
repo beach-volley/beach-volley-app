@@ -12,6 +12,7 @@ const FormBox = () => (
 const FormContainer = styled.div`
   grid-row: 2;
   height: 60%;
+  width: 100%;
   text-align: center;
   position: relative;
   background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});

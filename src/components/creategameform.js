@@ -1,8 +1,9 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import { FormTextInput, FormDropDown } from "./inputcomponents";
+import { FormTextInput, FormDropDown, FormDatePicker } from "./inputcomponents";
 import StyledButton from "./styledbutton";
 import styled from "styled-components";
+
 import * as Yup from "yup";
 
 const CreateGameForm = () => {
@@ -19,10 +20,7 @@ const CreateGameForm = () => {
           .min(3, "Minimum 3")
           .max(50, "Maximum 50")
           .required("Required"),
-        date: Yup.string()
-          .min(3, "Minimum 3")
-          .max(50, "Maximum 50")
-          .required("Required"),
+        date: Yup.string().required("Required"),
         time: Yup.string()
           .min(3, "Minimum 3")
           .max(50, "Maximum 50")
@@ -45,12 +43,7 @@ const CreateGameForm = () => {
             type="text"
             placeholder="Location"
           />
-          <FormTextInput
-            label="Date"
-            name="date"
-            type="text"
-            placeholder="Date"
-          />
+          <FormDatePicker label="Date" name="date" />
           <FormTextInput
             label="Time"
             name="time"
@@ -73,7 +66,8 @@ const CreateGameForm = () => {
 const GameForm = styled(Form)`
   display: flex;
   flex-direction: column;
-  margin: 1.5rem;
+  margin: 1rem;
+
   button {
     height: 2rem;
     position: absolute;
