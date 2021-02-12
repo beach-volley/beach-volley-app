@@ -22,6 +22,12 @@ command has been executed successfully._
     # create database beachvolley_shadow;
     # grant all privileges on database beachvolley_shadow to beachvolley_graphile;
 
+# Import dummy data
+
+When you need some dummy data to your development database, run the following query:
+
+    $ psql postgres://beachvolley_graphile:dev_password@localhost:5432/beachvolley < data/dummy-data.sql
+
 # Development
 
 For the first time (and later occasionally) run the following commands:
