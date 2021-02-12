@@ -3,65 +3,32 @@ import styled from "styled-components";
 import GameItem from "../components/gameitem";
 import { v4 as uuidv4 } from "uuid";
 
-const games = [
-  {
-    name: "Game 1",
-    id: uuidv4(),
-    location: "Location 1",
-    time: "13:00",
-    players: "2 / 4",
-  },
-  {
-    name: "Game 2",
-    id: uuidv4(),
-    location: "Location 2",
-    time: "13:00",
-    players: "2 / 4",
-  },
-  {
-    name: "Game 3",
-    id: uuidv4(),
-    location: "Location 3",
-    time: "13:00",
-    players: "2 / 4",
-  },
-  {
-    name: "Game 4",
-    id: uuidv4(),
-    location: "Location 4",
-    time: "13:00",
-    players: "2 / 4",
-  },
-  {
-    name: "Game 5",
-    id: uuidv4(),
-    location: "Location 5",
-    time: "13:00",
-    players: "2 / 4",
-  },
-  {
-    name: "Game 6",
-    id: uuidv4(),
-    location: "Location 6",
-    time: "13:00",
-    players: "2 / 4",
-  },
-];
+import { useQuery } from '@apollo/client'
+import { MATCHES } from '../queries'
 
-const GameBox = () => (
-  <ListContainer>
-    {games.map((game) => (
-      <ListStyle key={game.id}>
+
+const GameBox = () => {
+  const matches = useQuery(MATCHES)
+  console.log(matches)
+
+  if (matches.loading){
+    return <div>loading...</div>
+  }
+  
+  return (<ListContainer>
+    {matches.data?.matches.edges.map(({node}) => (
+      <ListStyle key={node.nodeId}>
         <GameItem
-          name={game.name}
-          location={game.location}
-          time={game.time}
-          players={game.players}
+          name={node.id}
+          location={node.location}
+          time={node.time}
+          players={node.playerLimit}
         />
       </ListStyle>
     ))}
   </ListContainer>
-);
+  )
+};
 
 const ListContainer = styled.div`
   display: flex;
