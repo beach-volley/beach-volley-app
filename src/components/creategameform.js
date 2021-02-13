@@ -5,12 +5,12 @@ import {
   FormDropDown,
   FormDatePicker,
   FormTimePicker,
-  FormRadioButton,
+  FormToggle,
+  FormTextArea
 } from "./inputcomponents";
 import StyledButton from "./styledbutton";
 import styled from "styled-components";
 import * as Yup from "yup";
-import { boolean } from "yup/lib/locale";
 
 const CreateGameForm = () => {
   return (
@@ -21,8 +21,9 @@ const CreateGameForm = () => {
         startTime: "",
         endTime: "",
         numPlayers: "",
-        difficulty: "",
-        public: boolean,
+        difficultyLevel: "",
+        publicToggle: true,
+        description: ""
       }}
       validationSchema={Yup.object({
         location: Yup.string()
@@ -30,15 +31,22 @@ const CreateGameForm = () => {
           .max(50, "Maximum 50")
           .required("Required"),
         date: Yup.date().required("Required").nullable(),
-        time: Yup.date().required("Required").nullable(),
+        startTime: Yup.date()
+          .required("Required")
+          .nullable(),
+        endTime: Yup.date()
+          .required("Required")
+          .nullable(),
         numPlayers: Yup.string()
           .oneOf(["1-2", "2-4", "4-6"], "Invalid number of players")
           .required("Required"),
         difficultyLevel: Yup.string()
           .oneOf(["easy", "medium", "hard"], "Invalid difficulty")
           .required("Required"),
-        public: Yup.boolean()
+        publicToggle: Yup.boolean()
           .required("Required"),
+        description: Yup.string()
+
       })}
       onSubmit={(values) => {
         setTimeout(() => {
@@ -66,18 +74,23 @@ const CreateGameForm = () => {
             placeholder={"End Time"}
           />
           <FormDropDown label="Players" name="numPlayers">
-            <option value="">Number of players</option>
+            <option value="">Player amount</option>
             <option value="1-2">1-2</option>
             <option value="2-4">2-4</option>
             <option value="4-6">4-6</option>
           </FormDropDown>
-          <FormDropDown label="Difficulty" name="difficulty">
-            <option value="">Pick a skill level</option>
+          <FormDropDown label="Difficulty" name="difficultyLevel">
+            <option value="">Skill level</option>
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
             <option value="hard">Hard</option>
           </FormDropDown>
-          <FormRadioButton label="Public" name="public" />
+          <FormToggle label="Public" name="publicToggle" toggleYes="Public" toggleNo="Private" />
+          <FormTextArea 
+            label="Game Description"
+            name="description"
+            placeholder={"Write Game Details here"}
+            />
           <StyledButton type={"submit"} text={"Submit"} />
         </GameForm>
       )}
@@ -88,17 +101,15 @@ const CreateGameForm = () => {
 const GameForm = styled(Form)`
   display: flex;
   flex-direction: column;
-  margin: 1rem;
+  padding: 2rem;
+
   button {
     height: 2rem;
     position: absolute;
     bottom: 0;
     right: 0;
-    margin: 1rem;
-  }
-  @media only screen and (min-width: ${(props) =>
-      props.theme.mediaQuery.tabletWidth}) {
-    width: 50%;
+    margin-right: 2rem;
+    margin-bottom: 1rem;
   }
 `;
 

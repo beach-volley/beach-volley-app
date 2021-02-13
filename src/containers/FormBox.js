@@ -11,21 +11,19 @@ const FormBox = () => (
 
 const FormContainer = styled.div`
   grid-row: 2;
-  height: 60%;
-  width: 100%;
   text-align: center;
   position: relative;
   background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
-  margin: auto;
+  margin-bottom: auto;
   h1 {
     color: white;
   }
 
   @media only screen and (min-width: ${(props) =>
-    props.theme.mediaQuery.tabletWidth}) {
-  width: 80%
-}
-
+      props.theme.mediaQuery.tabletWidth}) {
+    width: 80%;
+    margin: auto;
+  }
 `;
 
 export default FormBox;
