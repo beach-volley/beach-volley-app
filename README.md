@@ -1,22 +1,39 @@
 # Setup database
 
-Install PostgreSQL (v12.5).
+Install PostgreSQL (v12.5). In linux run `sudo apt-get install postgresql` and
+in Windows download installer from
+[the Official site](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads).
 
-Create user and databases.
+Create needed users and databases. Open psql as an superuser. In Linux run
+`sudo -u postgres psql` and in Windows open "SQL Shell (psql)" from Windows
+menu. Then in the shell run following commands.
 
-    $ sudo -u postgres psql
+_Remember `;` at the end of every line. If you miss it and hit enter, type it to
+next line and then hit enter again. To skip problems, consider copying and
+pasting the commands. The shell responds something like `CREATE ROLE` when the
+command has been executed successfully._
+
     # create role beachvolley_graphile login encrypted password 'dev_password';
     # create role beachvolley_graphile_superuser superuser login password 'dev_password';
+    # create role beachvolley_graphile_anonymous;
+    # grant beachvolley_graphile_anonymous to beachvolley_graphile;
     # create database beachvolley;
     # grant all privileges on database beachvolley to beachvolley_graphile;
     # create database beachvolley_shadow;
     # grant all privileges on database beachvolley_shadow to beachvolley_graphile;
 
-Open connection to database when needed:
+# Import dummy data
 
-    $ psql postgres://beachvolley_graphile:dev_password@localhost:5432/beachvolley
+When you need some dummy data to your development database, run the following query:
+
+    $ psql postgres://beachvolley_graphile:dev_password@localhost:5432/beachvolley < data/dummy-data.sql
 
 # Development
+
+For the first time (and later occasionally) run the following commands:
+
+    $ npm install
+    $ npm run migrations -- reset --erase
 
 Start front-end:
 
@@ -24,6 +41,7 @@ Start front-end:
 
 Start back-end:
 
+    $ npm run migrations migrate
     $ npm run graphile
 
 ## Development with database migrations
