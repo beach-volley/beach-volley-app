@@ -1,21 +1,18 @@
 import styled from "styled-components";
-import { useFormikContext, useField } from "formik";
-import DatePicker, { registerLocale } from "react-datepicker";
+import { useField } from "formik";
 import "react-datepicker/dist/react-datepicker.css";
-import fi from "date-fns/locale/en-GB";
-registerLocale("FI", fi);
 
 const FormTextInput = ({ label, ...props }) => {
   const [field, meta] = useField(props);
 
   return (
-    <InputRow>
+    <>
       <label htmlFor={props.id || props.name}>{label}</label>
       {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
       <InputContainer>
         <input {...field} {...props} />
       </InputContainer>
-    </InputRow>
+    </>
   );
 };
 
@@ -23,20 +20,20 @@ const FormDropDown = ({ label, ...props }) => {
   const [field, meta] = useField(props);
 
   return (
-    <InputRow>
+    <>
       <label htmlFor={props.id || props.name}>{label}</label>
       {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
       <InputContainer>
         <select {...field} {...props} />
       </InputContainer>
-    </InputRow>
+    </>
   );
 };
 
 const FormToggle = ({ label, ...props }) => {
   const [field] = useField(props);
   return (
-    <InputRow>
+    <>
       <label htmlFor={props.id || props.name}>{label}</label>
 
       <RadioContainer>
@@ -47,108 +44,68 @@ const FormToggle = ({ label, ...props }) => {
           value={true}
           defaultChecked
         />
-        <label htmlFor="radio-one">{props.toggleYes}</label>
+        <label htmlFor="radio-one" className="toggle-label" >{props.toggleYes} </label>
         <input {...field} id="radio-two" type="radio" value={false} />
-        <label htmlFor="radio-two">{props.toggleNo}</label>
+        <label htmlFor="radio-two" className="toggle-label" >{props.toggleNo}</label>
       </RadioContainer>
-    </InputRow>
+    </>
   );
 };
 
 const FormDatePicker = ({ label, ...props }) => {
-  const { setFieldValue } = useFormikContext();
   const [field, meta] = useField(props);
-
+  const minDate = new Date().toISOString().split("T")[0];
   return (
-    <InputRow>
+    <>
       <label htmlFor={props.id || props.name}>{label}</label>
       {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
       <InputContainer>
-        <DatePicker
-          {...field}
-          {...props}
-          selected={(field.value && new Date(field.value)) || null}
-          onChange={(val) => {
-            setFieldValue(field.name, val);
-          }}
-          dateFormat="dd/MM/yyyy"
-          placeholderText="Select date"
-          locale="FI"
-          timeIntervals={30}
-          minDate={new Date()}
-        />
+        <input {...field} {...props} type="date" min={minDate} />
       </InputContainer>
-    </InputRow>
+    </>
   );
 };
 
 const FormTextArea = ({ label, ...props }) => {
   const [field, meta] = useField(props);
   return (
-    <InputRow>
-      <label className="textarea-label" htmlFor={props.id || props.name}>{label}</label>
+    <>
+      <label className="textarea-label" htmlFor={props.id || props.name}>
+        {label}
+      </label>
       <InputContainer>
         <textarea {...field} {...props} />
         {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
       </InputContainer>
-    </InputRow>
+    </>
   );
 };
 
 const FormTimePicker = ({ label, ...props }) => {
-  const { setFieldValue } = useFormikContext();
   const [field, meta] = useField(props);
 
   return (
-    <InputRow>
+    <>
       <label htmlFor={props.id || props.name}>{label}</label>
       {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
       <InputContainer>
-        <DatePicker
-          {...field}
-          {...props}
-          selected={(field.value && new Date(field.value)) || null}
-          onChange={(val) => {
-            setFieldValue(field.name, val);
-          }}
-          placeholderText={props.placeholder}
-          locale="FI"
-          timeIntervals={30}
-          showTimeSelect
-          showTimeSelectOnly
-          dateFormat="p"
-        />
+        <input {...field} {...props} type="time" />
       </InputContainer>
-    </InputRow>
+    </>
   );
 };
 
 const Error = styled.div`
-    color: red;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    align-self: center;
-`;
-
-const InputRow = styled.div`
-  display: flex;
-  margin-bottom: 2rem;
-
-  label {
-    margin-right: auto;
-    align-self: center;
-    color: white;
-    font-size: ${(props) => props.theme.fontSizes.medium};
-  }
-
-  .textarea-label {
-    align-self: flex-start;
-  }
+  color: red;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  align-self: center;
 `;
 
 const InputContainer = styled.div`
   width: 40%;
-  input, select {
+  input,
+  select {
     width: 100%;
     text-align: center;
   }
@@ -159,38 +116,7 @@ const InputContainer = styled.div`
     margin-bottom: 3rem;
     border-radius: 0.3rem;
     resize: none;
-  
   }
-
-  //override datepicker css
-  & .react-datepicker__input-container {
-    input {
-      width: 100%;
-      text-align: center;
-    }
-  }
-
-  & .react-datepicker-wrapper {
-    display: block;
-  }
-
-  & .react-datepicker {
-  
-    button {
-      margin-top: -0.3rem;
-      height: 0.5rem;
-    }
-    margin-left: -5rem
-  }
-
-  & .react-datepicker__triangle {
-    display: none
-  }
-  
-  & .react-datepicker--time-only {
-    margin: auto;
-  }
-  
 `;
 
 const RadioContainer = styled.div`
@@ -205,7 +131,7 @@ const RadioContainer = styled.div`
     width: 100%;
   }
 
-  label {
+  & .toggle-label {
     background-color: #e4e4e4;
     color: black;
     font-size: 0.9rem;
