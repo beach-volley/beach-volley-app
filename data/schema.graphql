@@ -161,6 +161,9 @@ type Match implements Node {
   """Is the match public or private. Default is private."""
   public: Boolean!
 
+  """List of participant names who have joined the match."""
+  participants: [String]!
+
   """Reads and enables pagination through a set of `Invitation`."""
   invitations(
     """Only read the first `n` values of the set."""
@@ -526,6 +529,9 @@ input MatchInput {
 
   """Is the match public or private. Default is private."""
   public: Boolean
+
+  """List of participant names who have joined the match."""
+  participants: [String]
 }
 
 """A range of `Datetime`."""
@@ -710,6 +716,9 @@ input MatchPatch {
 
   """Is the match public or private. Default is private."""
   public: Boolean
+
+  """List of participant names who have joined the match."""
+  participants: [String]
 }
 
 """All input for the `updateMatch` mutation."""
