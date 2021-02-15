@@ -11,7 +11,7 @@ const App = () => {
       <Theme>
         <PageRoutes />
       </Theme>
-    </Router>
+    </Router> 
   );
 };
 

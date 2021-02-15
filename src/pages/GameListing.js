@@ -4,6 +4,7 @@ import Header from "../containers/Header";
 import GameBox from "../containers/GameBox"
 
 const GameListing = () => {
+
   return (
     <PageWrapper>
       <Header />
@@ -14,6 +15,7 @@ const GameListing = () => {
           commodo porta ligula nec dignissim. Maecenas convallis purus mauris,
           eget.
         </p>
+
       </TitleTextBox>
       <GameBox />
     </PageWrapper>

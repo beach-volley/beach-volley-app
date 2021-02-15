@@ -2,15 +2,20 @@ import React from "react";
 import styled from "styled-components";
 import StyledButton from "../components/styledbutton";
 
-const ProjectItem = ({ name, location, time, players }) => (
-  <ItemWrapper>
-    <GameText>{name}</GameText>
-    <GameText>{location}</GameText>
-    <GameText>{time}</GameText>
-    <GameText>{players}</GameText>
-    <StyledButton text={"Join"} />
-  </ItemWrapper>
-);
+const ProjectItem = ({ name, location, time, players }) => {
+
+  let formatted_time = time?.start.value ? new Date(time?.start.value).toLocaleString():null
+
+  return (
+    <ItemWrapper>
+      <GameText>{name}</GameText>
+      <GameText>{location}</GameText>
+      <GameText>{formatted_time}</GameText>
+      <GameText>{players?.start.value} - {players?.end.value}</GameText>
+      <StyledButton text={"Join"} />
+    </ItemWrapper>
+  )
+};
 
 const ItemWrapper = styled.div`
   display: flex;
