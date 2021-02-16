@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useField } from "formik";
-import "react-datepicker/dist/react-datepicker.css";
+
 
 const FormTextInput = ({ label, ...props }) => {
   const [field, meta] = useField(props);
@@ -89,7 +89,7 @@ const FormTimePicker = ({ label, ...props }) => {
       <label htmlFor={props.id || props.name}>{label}</label>
       {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
       <InputContainer>
-        <input {...field} {...props} type="time" />
+        <input type="time" {...field} {...props} locale="fi"/>
       </InputContainer>
     </>
   );
@@ -107,6 +107,7 @@ const InputContainer = styled.div`
   input,
   select {
     width: 100%;
+    height: 100%;
     text-align: center;
   }
 
