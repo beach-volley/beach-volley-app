@@ -113,7 +113,7 @@ const CreateGameForm = () => {
               placeholder={"Write Game Details here"}
             />
           </InputRow>
-          
+
           <StyledButton type={"submit"} text={"Submit"} />
         </GameForm>
       )}
@@ -145,6 +145,5 @@ const InputRow = styled.div`
     color: white;
     font-size: ${(props) => props.theme.fontSizes.medium};
   }
-
 `;
 export default CreateGameForm;
