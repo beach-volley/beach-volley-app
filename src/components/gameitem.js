@@ -11,11 +11,19 @@ const ProjectItem = ({ name, location, time, players }) => {
       <GameText>{name}</GameText>
       <GameText>{location}</GameText>
       <GameText>{formatted_time}</GameText>
-      <GameText>{players?.start.value} - {players?.end.value}</GameText>
+      <GameText>{asInclusive(players?.start.value, players?.start.inclusive)} - {asInclusive(players?.end.value, players?.end.inclusive)}</GameText>
       <StyledButton text={"Join"} />
     </ItemWrapper>
   )
 };
+
+const asInclusive = (value, inclusive) => {
+  if(inclusive === false){
+    return value-1
+  }else{
+    return value
+  }
+}
 
 const ItemWrapper = styled.div`
   display: flex;

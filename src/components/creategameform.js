@@ -12,7 +12,14 @@ import StyledButton from "./styledbutton";
 import styled from "styled-components";
 import * as Yup from "yup";
 
+import { CREATE_MATCH } from '../queries'
+import { useMutation } from '@apollo/client'
+import { useHistory } from "react-router";
+
 const CreateGameForm = () => {
+  let history = useHistory();
+  const [ createMatch ] = useMutation(CREATE_MATCH)
+
   return (
     <Formik
       initialValues={{
@@ -43,10 +50,41 @@ const CreateGameForm = () => {
         description: Yup.string(),
       })}
       onSubmit={(values) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-        }, 400);
-      }}
+        createMatch({
+          variables: {
+            "input": {
+              "match": {
+                "location": values.location,
+                "time": {
+                  "start": {
+                    "value": values.date + " " + values.startTime,
+                    "inclusive": true
+                  },
+                  "end": {
+                    "value": values.date + " " + values.endTime,
+                    "inclusive": true
+                  },  
+                },
+                "playerLimit": {
+                  "start": {
+                    "value": +values.numPlayers.split("-")[0],
+                    "inclusive": true
+                  },
+                  "end": {
+                    "value": +values.numPlayers.split("-")[1],
+                    "inclusive": true
+                  }
+                },
+                "public": values.publicToggle
+              }
+            }
+          }
+        }
+        ).then(() => {
+          history.push("/home")
+        })
+      }
+    }
     >
       {(props) => (
         <GameForm>

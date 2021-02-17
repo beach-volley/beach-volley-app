@@ -1,15 +1,20 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import StyledButton from "../components/styledbutton";
 
 const Header = () => {
   return (
     <Container>
-      <Logo>
-        <h1>LOGO</h1>
-      </Logo>
+      <Link to="/home">
+        <Logo>
+          <h1>LOGO</h1>
+        </Logo>
+      </Link>
       <Profile>
-        <StyledButton text={"Create Game"} />
+        <Link to="/create-game">
+          <StyledButton text={"Create Game"} />
+        </Link>
         <h1>ICON</h1>
       </Profile>
     </Container>
