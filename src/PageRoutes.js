@@ -8,7 +8,7 @@ const PageRoutes = () => {
   return (
     <Switch>
       <Route path="/home" component={GameListing} />
-      <Route path="/game-creation" component={GameCreation} />
+      <Route path="/create-game" component={GameCreation} />
       <Route path="/" component={GameListing}>
         <Redirect to="/home" />
       </Route>

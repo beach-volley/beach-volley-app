@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import GameItem from "../components/gameitem";
-import { v4 as uuidv4 } from "uuid";
-
 import { useQuery } from '@apollo/client'
 import { MATCHES } from '../queries'
 
@@ -38,7 +36,7 @@ const ListContainer = styled.div`
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     margin: auto;
-    width: 60%;
+    width: 80%;
   }
 `;
 

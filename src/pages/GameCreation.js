@@ -1,29 +1,20 @@
 import styled from "styled-components";
+import GameFormBox from "../containers/FormBox";
+import Header from "../containers/Header";
 
 const GameCreation = () => {
   return (
-      <PageWrapper>
-        <Header>Header</Header>
-        <GameCreationBox>Games</GameCreationBox>
-      </PageWrapper>
+    <PageWrapper>
+      <Header />
+      <GameFormBox />
+    </PageWrapper>
   );
 };
 
 const PageWrapper = styled.div`
   display: grid;
-  height: 100vh;
-  grid-template-rows: 10vh auto;
-
-`;
-
-const Header = styled.div`
-  grid-row: 1;
-  background-color: blue;
-`;
-
-const GameCreationBox = styled.div`
-  background-color: lightgreen; 
-  grid-row: 2;
+  min-height: 100vh;
+  grid-template-rows: 8vh auto;
 `;
 
 export default GameCreation;

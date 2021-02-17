@@ -25,7 +25,7 @@ const GameListing = () => {
 const PageWrapper = styled.div`
   display: grid;
   height: 100vh;
-  grid-template-rows: 8vh 12vh auto;
+  grid-template-rows: 8vh auto;
 `;
 
 const TitleTextBox = styled.div`
