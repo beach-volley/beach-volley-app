@@ -100,7 +100,9 @@ CREATE TABLE beachvolley_public.match (
     location text,
     "time" tstzrange,
     player_limit int4range,
-    public boolean DEFAULT false NOT NULL
+    public boolean DEFAULT false NOT NULL,
+    participants text[] DEFAULT ARRAY[]::text[] NOT NULL,
+    CONSTRAINT match_participants_check CHECK ((array_position(participants, NULL::text) IS NULL))
 );
 
 
@@ -158,6 +160,13 @@ COMMENT ON COLUMN beachvolley_public.match.player_limit IS 'Minimun and maximun 
 --
 
 COMMENT ON COLUMN beachvolley_public.match.public IS 'Is the match public or private. Default is private.';
+
+
+--
+-- Name: COLUMN match.participants; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.participants IS 'List of participant names who have joined the match.';
 
 
 --
@@ -260,6 +269,13 @@ GRANT INSERT(player_limit),UPDATE(player_limit) ON TABLE beachvolley_public.matc
 --
 
 GRANT INSERT(public),UPDATE(public) ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+
+
+--
+-- Name: COLUMN match.participants; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT INSERT(participants),UPDATE(participants) ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
 
 
 --
