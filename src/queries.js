@@ -1,5 +1,7 @@
 import { gql } from "@apollo/client";
 
+//Queries
+
 export const MATCHES_TOTAL_COUNT = gql`
   {
     matches {
@@ -38,6 +40,19 @@ export const MATCHES = gql`
           }
           nodeId
         }
+      }
+    }
+  }
+}
+`;
+
+//Mutations
+
+export const CREATE_MATCH = gql`
+  mutation createMatch($input: CreateMatchInput!) {
+    createMatch(input: $input) {
+      match {
+        id
       }
     }
   }
