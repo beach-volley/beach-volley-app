@@ -1,12 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-const StyledButton = ({text, type}) => {
-  return (
-    <Button type={type}>
-      {text}
-    </Button>
-  );
+const StyledButton = ({ text, type }) => {
+  return <Button type={type}>{text}</Button>;
 };
 
 export default StyledButton;

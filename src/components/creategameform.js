@@ -12,13 +12,13 @@ import StyledButton from "./styledbutton";
 import styled from "styled-components";
 import * as Yup from "yup";
 
-import { CREATE_MATCH } from '../queries'
-import { useMutation } from '@apollo/client'
+import { CREATE_MATCH } from "../queries";
+import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
 
 const CreateGameForm = () => {
   let history = useHistory();
-  const [ createMatch ] = useMutation(CREATE_MATCH)
+  const [createMatch] = useMutation(CREATE_MATCH);
 
   return (
     <Formik
@@ -52,39 +52,37 @@ const CreateGameForm = () => {
       onSubmit={(values) => {
         createMatch({
           variables: {
-            "input": {
-              "match": {
-                "location": values.location,
-                "time": {
-                  "start": {
-                    "value": values.date + " " + values.startTime,
-                    "inclusive": true
+            input: {
+              match: {
+                location: values.location,
+                time: {
+                  start: {
+                    value: values.date + " " + values.startTime,
+                    inclusive: true,
                   },
-                  "end": {
-                    "value": values.date + " " + values.endTime,
-                    "inclusive": true
-                  },  
-                },
-                "playerLimit": {
-                  "start": {
-                    "value": +values.numPlayers.split("-")[0],
-                    "inclusive": true
+                  end: {
+                    value: values.date + " " + values.endTime,
+                    inclusive: true,
                   },
-                  "end": {
-                    "value": +values.numPlayers.split("-")[1],
-                    "inclusive": true
-                  }
                 },
-                "public": values.publicToggle
-              }
-            }
-          }
-        }
-        ).then(() => {
-          history.push("/home")
-        })
-      }
-    }
+                playerLimit: {
+                  start: {
+                    value: +values.numPlayers.split("-")[0],
+                    inclusive: true,
+                  },
+                  end: {
+                    value: +values.numPlayers.split("-")[1],
+                    inclusive: true,
+                  },
+                },
+                public: values.publicToggle,
+              },
+            },
+          },
+        }).then(() => {
+          history.push("/home");
+        });
+      }}
     >
       {(props) => (
         <GameForm>
@@ -151,7 +149,7 @@ const CreateGameForm = () => {
               placeholder={"Write Game Details here"}
             />
           </InputRow>
-          
+
           <StyledButton type={"submit"} text={"Submit"} />
         </GameForm>
       )}
@@ -183,6 +181,5 @@ const InputRow = styled.div`
     color: white;
     font-size: ${(props) => props.theme.fontSizes.medium};
   }
-
 `;
 export default CreateGameForm;

@@ -3,27 +3,31 @@ import styled from "styled-components";
 import StyledButton from "../components/styledbutton";
 
 const ProjectItem = ({ name, location, time, players }) => {
-
-  let formatted_time = time?.start.value ? new Date(time?.start.value).toLocaleString():null
+  let formatted_time = time?.start.value
+    ? new Date(time?.start.value).toLocaleString()
+    : null;
 
   return (
     <ItemWrapper>
       <GameText>{name}</GameText>
       <GameText>{location}</GameText>
       <GameText>{formatted_time}</GameText>
-      <GameText>{asInclusive(players?.start.value, players?.start.inclusive)} - {asInclusive(players?.end.value, players?.end.inclusive)}</GameText>
+      <GameText>
+        {asInclusive(players?.start.value, players?.start.inclusive)} -{" "}
+        {asInclusive(players?.end.value, players?.end.inclusive)}
+      </GameText>
       <StyledButton text={"Join"} />
     </ItemWrapper>
-  )
+  );
 };
 
 const asInclusive = (value, inclusive) => {
-  if(inclusive === false){
-    return value-1
-  }else{
-    return value
+  if (inclusive === false) {
+    return value - 1;
+  } else {
+    return value;
   }
-}
+};
 
 const ItemWrapper = styled.div`
   display: flex;
@@ -37,7 +41,8 @@ const ItemWrapper = styled.div`
     width: 3.5rem;
     height: 2rem;
   }
-  @media only screen and (min-width: ${props => props.theme.mediaQuery.tabletWidth}) {
+  @media only screen and (min-width: ${(props) =>
+      props.theme.mediaQuery.tabletWidth}) {
     justify-content: space-between;
   }
 `;

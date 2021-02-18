@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useField } from "formik";
 
-
 const FormTextInput = ({ label, ...props }) => {
   const [field, meta] = useField(props);
 
@@ -44,9 +43,13 @@ const FormToggle = ({ label, ...props }) => {
           value={true}
           defaultChecked
         />
-        <label htmlFor="radio-one" className="toggle-label" >{props.toggleYes} </label>
+        <label htmlFor="radio-one" className="toggle-label">
+          {props.toggleYes}{" "}
+        </label>
         <input {...field} id="radio-two" type="radio" value={false} />
-        <label htmlFor="radio-two" className="toggle-label" >{props.toggleNo}</label>
+        <label htmlFor="radio-two" className="toggle-label">
+          {props.toggleNo}
+        </label>
       </RadioContainer>
     </>
   );
@@ -89,7 +92,7 @@ const FormTimePicker = ({ label, ...props }) => {
       <label htmlFor={props.id || props.name}>{label}</label>
       {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
       <InputContainer>
-        <input type="time" {...field} {...props} locale="fi"/>
+        <input type="time" {...field} {...props} locale="fi" />
       </InputContainer>
     </>
   );
