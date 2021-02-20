@@ -6,8 +6,7 @@ import {
   ApolloClient,
   ApolloProvider,
   HttpLink,
-  InMemoryCache,
-  gql,
+  InMemoryCache
 } from "@apollo/client";
 
 const client = new ApolloClient({
