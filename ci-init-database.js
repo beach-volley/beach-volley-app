@@ -1,4 +1,3 @@
-const { promises: fsp } = require("fs");
 const pg = require("pg");
 
 async function main() {
