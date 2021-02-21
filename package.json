@@ -57,6 +57,7 @@
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.1",
     "husky": "^5.0.9",
+    "pg": "^8.5.1",
     "prettier": "^2.2.1"
   }
 }
