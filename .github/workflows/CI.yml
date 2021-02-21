@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - run: npm install
+      - run: npm ci
       - run: node ./ci-init-database.js
       - run: npm run migrations -- reset --erase
       - run: npm run migrations migrate
