@@ -160,7 +160,6 @@ const CreateFormContainer = () => {
             <InputRow>
               <label>Add player</label>
               <input
-                className="invite-player-input"
                 type="text"
                 value={playerName}
                 placeholder={"Enter email"}
@@ -191,7 +190,7 @@ const CreateFormContainer = () => {
 
             <InputRow>
               <FormTextArea
-                label="Description"
+                label="Info"
                 name="description"
                 placeholder={"Write Game Details here"}
               />
@@ -221,47 +220,52 @@ const SubmitButton = styled(StyledButton)`
 
 const AddButton = styled(StyledButton)`
   width: 3rem;
+  padding: 0.1rem;
+  border-style: solid;
+  border-color: black;
+  position: absolute;
+  right: 2rem;
+  border-radius: 0;
+  
 `;
 
 const InvitedPlayersBox = styled.div`
   text-align: left;
   border-style: solid;
   border-width: 0.1rem;
-  width: 38%;
-  height: 10rem;
+  height: 5rem;
   background-color: white;
-  border-radius: 0.2rem;
+  border-radius: 0.3rem;
   padding: 0.5rem;
   overflow-y: scroll;
+  flex: 2;
 `;
 
 const InputRow = styled.div`
   display: flex;
   margin-bottom: 2rem;
+  align-items: flex-start;
   label {
-    margin-right: auto;
     color: white;
     font-size: ${(props) => props.theme.fontSizes.medium};
+    flex: 1.1;
+    margin-right: 1rem;
   }
 
   input,
-  select {
-    width: 40%;
+  select, textarea {
+    flex: 2;
     text-align: center;
+    
   }
 
-  textarea {
-    width: 40%;
-    height: 5rem;
+  & .form-text-area {
+    height: 10rem;
     margin-bottom: 3rem;
     border-radius: 0.3rem;
     resize: none;
   }
 
-  & .invite-player-input {
-    width: 33.5%;
-  }
 `;
-
 
 export default CreateFormContainer;

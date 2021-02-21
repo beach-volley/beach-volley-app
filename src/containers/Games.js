@@ -37,9 +37,7 @@ const ListContainer = styled.div`
     margin: auto;
     width: 50%;
   }
-
 `;
-
 
 const ListStyle = styled.div`
   list-style: none;

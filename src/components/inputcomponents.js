@@ -7,8 +7,12 @@ const FormTextInput = ({ label, ...props }) => {
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
-      {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+      <ErrorContainer>
+        <ErrorBox>
+          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+        </ErrorBox>
         <input {...field} {...props} />
+      </ErrorContainer>
     </>
   );
 };
@@ -19,8 +23,12 @@ const FormDropDown = ({ label, ...props }) => {
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
-      {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+      <ErrorContainer>
+        <ErrorBox>
+          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+        </ErrorBox>
         <select {...field} {...props} />
+      </ErrorContainer>
     </>
   );
 };
@@ -57,22 +65,24 @@ const FormDatePicker = ({ label, ...props }) => {
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
-      {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-
+      <ErrorContainer>
+        <ErrorBox>
+          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+        </ErrorBox>
         <input {...field} {...props} type="date" min={minDate} />
+      </ErrorContainer>
     </>
   );
 };
 
 const FormTextArea = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
+  const [field] = useField(props);
   return (
     <>
-      <label className="textarea-label" htmlFor={props.id || props.name}>
+      <label htmlFor={props.id || props.name}>
         {label}
       </label>
-        <textarea {...field} {...props} />
-        {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+        <textarea className="form-text-area" {...field} {...props} />
     </>
   );
 };
@@ -83,29 +93,42 @@ const FormTimePicker = ({ label, ...props }) => {
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
-      {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-        <input type="time" {...field} {...props} locale="fi" />
+      <ErrorContainer>
+        <ErrorBox>
+          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+        </ErrorBox>
+        <input type="time" {...field} {...props} />
+      </ErrorContainer>
     </>
   );
 };
 
+const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+
+`;
+
+const ErrorBox = styled.div`
+  height: 1.5rem;
+  margin-top: -1.5rem;
+`;
+
 const Error = styled.div`
   color: red;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-  align-self: center;
+  margin-right: 1rem;
 `;
 
 const RadioContainer = styled.div`
-  display: flex;
   overflow: hidden;
-
+  flex: 2;
+  padding: 0.5rem;
   input {
     position: absolute !important;
     clip: rect(0, 0, 0, 0);
     border: 0;
     overflow: hidden;
-    width: 100%;
   }
 
   & .toggle-label {
@@ -113,7 +136,8 @@ const RadioContainer = styled.div`
     color: black;
     font-size: 0.9rem;
     text-align: center;
-    padding: 0.5rem;
+    padding: 1rem;
+    margin: 1.5;
   }
 
   input:checked + label {
