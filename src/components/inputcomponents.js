@@ -79,10 +79,8 @@ const FormTextArea = ({ label, ...props }) => {
   const [field] = useField(props);
   return (
     <>
-      <label htmlFor={props.id || props.name}>
-        {label}
-      </label>
-        <textarea className="form-text-area" {...field} {...props} />
+      <label htmlFor={props.id || props.name}>{label}</label>
+      <textarea className="form-text-area" {...field} {...props} />
     </>
   );
 };
@@ -107,7 +105,6 @@ const ErrorContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 2;
-
 `;
 
 const ErrorBox = styled.div`

@@ -226,7 +226,6 @@ const AddButton = styled(StyledButton)`
   position: absolute;
   right: 2rem;
   border-radius: 0;
-  
 `;
 
 const InvitedPlayersBox = styled.div`
@@ -253,10 +252,10 @@ const InputRow = styled.div`
   }
 
   input,
-  select, textarea {
+  select,
+  textarea {
     flex: 2;
     text-align: center;
-    
   }
 
   & .form-text-area {
@@ -265,7 +264,6 @@ const InputRow = styled.div`
     border-radius: 0.3rem;
     resize: none;
   }
-
 `;
 
 export default CreateFormContainer;
