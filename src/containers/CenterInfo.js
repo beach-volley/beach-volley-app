@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import CreateGameForm from "../components/creategameform";
 
-const FormBox = () => (
+const InfoBox = ({ title, ...props }) => (
   <FormContainer>
-    <h1>Create new game</h1>
-    <CreateGameForm />
+    <h1>{title}</h1>
+    {props.children}
   </FormContainer>
 );
 
@@ -26,4 +25,4 @@ const FormContainer = styled.div`
   }
 `;
 
-export default FormBox;
+export default InfoBox;
