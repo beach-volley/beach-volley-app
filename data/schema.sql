@@ -237,6 +237,14 @@ GRANT USAGE ON SCHEMA beachvolley_public TO beachvolley_graphile_anonymous;
 
 
 --
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO beachvolley_graphile;
+
+
+--
 -- Name: TABLE match; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
