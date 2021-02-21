@@ -158,7 +158,7 @@ const CreateFormContainer = () => {
             </InputRow>
 
             <InputRow>
-              <label>Invite players</label>
+              <label>Add player</label>
               <input
                 className="invite-player-input"
                 type="text"
@@ -220,14 +220,14 @@ const SubmitButton = styled(StyledButton)`
 `;
 
 const AddButton = styled(StyledButton)`
-  height: 2rem;
+  width: 3rem;
 `;
 
 const InvitedPlayersBox = styled.div`
   text-align: left;
   border-style: solid;
   border-width: 0.1rem;
-  width: 35%;
+  width: 38%;
   height: 10rem;
   background-color: white;
   border-radius: 0.2rem;
@@ -244,9 +244,24 @@ const InputRow = styled.div`
     font-size: ${(props) => props.theme.fontSizes.medium};
   }
 
+  input,
+  select {
+    width: 40%;
+    text-align: center;
+  }
+
+  textarea {
+    width: 40%;
+    height: 5rem;
+    margin-bottom: 3rem;
+    border-radius: 0.3rem;
+    resize: none;
+  }
+
   & .invite-player-input {
-    width: 30%;
-    margin-right: 1rem;
+    width: 33.5%;
   }
 `;
+
+
 export default CreateFormContainer;

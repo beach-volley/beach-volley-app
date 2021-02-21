@@ -20,7 +20,7 @@ const FormContainer = styled.div`
 
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    width: 80%;
+    width: 60%;
     margin: auto;
   }
 `;

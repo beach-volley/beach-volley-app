@@ -35,9 +35,11 @@ const ListContainer = styled.div`
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     margin: auto;
-    width: 80%;
+    width: 50%;
   }
+
 `;
+
 
 const ListStyle = styled.div`
   list-style: none;
