@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Header from "../containers/Header";
-import GameBox from "../containers/Games";
+import GameBox from "../containers/GamesContainer";
 
 const GameListing = () => {
   return (

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import FormContainer from "../containers/CenterInfo";
+import FormContainer from "../containers/CenterContainer";
 import Header from "../containers/Header";
 import CreateGameForm from "../components/creategameform";
 

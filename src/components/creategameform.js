@@ -18,7 +18,7 @@ import { CREATE_MATCH } from "../queries";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
 
-const CreateFormContainer = () => {
+const CreateFormContainer = ({mockData, disabled}) => {
   let history = useHistory();
   const [createMatch] = useMutation(CREATE_MATCH);
   const [playerName, setPlayerName] = useState("");
@@ -35,15 +35,15 @@ const CreateFormContainer = () => {
   return (
     <Formik
       initialValues={{
-        location: "",
-        date: "",
-        startTime: "",
-        endTime: "",
-        numPlayers: "",
-        difficultyLevel: "",
-        publicToggle: true,
-        playerList: [],
-        description: "",
+        location: (disabled ? mockData.location : ""),
+        date: (disabled ? mockData.date : ""),
+        startTime: (disabled ? mockData.startTime : ""),
+        endTime: (disabled ? mockData.endTime : ""),
+        numPlayers: (disabled ? mockData.numPlayers : ""),
+        difficultyLevel: disabled ? mockData.difficultyLevel : "",
+        publicToggle: (disabled ? mockData.publicToggle : true),
+        playerList: (disabled ? mockData.playerList : true),
+        description: disabled ? mockData.description: "",
       }}
       validationSchema={Yup.object({
         location: Yup.string().required("Required"),
@@ -204,6 +204,7 @@ const CreateFormContainer = () => {
 };
 
 const FormContainer = styled.div`
+  pointer-events: none;
   display: flex;
   flex-direction: column;
   padding: 2rem;
@@ -247,7 +248,7 @@ const InputRow = styled.div`
   label {
     color: white;
     font-size: ${(props) => props.theme.fontSizes.medium};
-    flex: 1.1;
+    flex: 1;
     margin-right: 1rem;
   }
 

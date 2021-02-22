@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const InfoBox = ({ title, ...props }) => (
+const CenterContainer = ({ title, ...props }) => (
   <FormContainer>
     <h1>{title}</h1>
     {props.children}
@@ -25,4 +25,4 @@ const FormContainer = styled.div`
   }
 `;
 
-export default InfoBox;
+export default CenterContainer;
