@@ -13,6 +13,7 @@ next line and then hit enter again. To skip problems, consider copying and
 pasting the commands. The shell responds something like `CREATE ROLE` when the
 command has been executed successfully._
 
+    # revoke all on schema public from public;
     # create role beachvolley_graphile login encrypted password 'dev_password';
     # create role beachvolley_graphile_superuser superuser login password 'dev_password';
     # create role beachvolley_graphile_anonymous;
