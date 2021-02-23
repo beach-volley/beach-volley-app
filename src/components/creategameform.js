@@ -18,7 +18,7 @@ import { CREATE_MATCH } from "../queries";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
 
-const CreateFormContainer = ({mockData, disabled}) => {
+const CreateFormContainer = ({ mockData, disabled }) => {
   let history = useHistory();
   const [createMatch] = useMutation(CREATE_MATCH);
   const [playerName, setPlayerName] = useState("");
@@ -35,15 +35,15 @@ const CreateFormContainer = ({mockData, disabled}) => {
   return (
     <Formik
       initialValues={{
-        location: (disabled ? mockData.location : ""),
-        date: (disabled ? mockData.date : ""),
-        startTime: (disabled ? mockData.startTime : ""),
-        endTime: (disabled ? mockData.endTime : ""),
-        numPlayers: (disabled ? mockData.numPlayers : ""),
+        location: disabled ? mockData.location : "",
+        date: disabled ? mockData.date : "",
+        startTime: disabled ? mockData.startTime : "",
+        endTime: disabled ? mockData.endTime : "",
+        numPlayers: disabled ? mockData.numPlayers : "",
         difficultyLevel: disabled ? mockData.difficultyLevel : "",
-        publicToggle: (disabled ? mockData.publicToggle : true),
-        playerList: (disabled ? mockData.playerList : true),
-        description: disabled ? mockData.description: "",
+        publicToggle: disabled ? mockData.publicToggle : true,
+        playerList: disabled ? mockData.playerList : true,
+        description: disabled ? mockData.description : "",
       }}
       validationSchema={Yup.object({
         location: Yup.string().required("Required"),
@@ -154,6 +154,7 @@ const CreateFormContainer = ({mockData, disabled}) => {
                 name="publicToggle"
                 toggleYes="Public"
                 toggleNo="Private"
+                checked = {props.value.publicToggle}
               />
             </InputRow>
 

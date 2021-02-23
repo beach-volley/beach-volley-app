@@ -4,16 +4,16 @@ import GameInfoForm from "../components/creategameform";
 import Header from "../containers/Header";
 
 const mockData = {
-  location: 'test-location',
+  location: "test-location",
   date: "2021-02-24",
-  startTime: '01:33',
-  endTime: '02:44',
-  numPlayers: '2-4',
-  difficultyLevel:"easy",
+  startTime: "01:33",
+  endTime: "02:44",
+  numPlayers: "2-4",
+  difficultyLevel: "easy",
   publicToggle: false,
-  playerList: [{ name: "test"}],
-  description: "test"
-}
+  playerList: [{ name: "test" }],
+  description: "test",
+};
 
 const SingleGame = () => {
   return (
