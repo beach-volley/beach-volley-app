@@ -154,7 +154,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
                 name="publicToggle"
                 toggleYes="Public"
                 toggleNo="Private"
-                checked = {props.value.publicToggle}
+                checked={props.value.publicToggle}
               />
             </InputRow>
 
