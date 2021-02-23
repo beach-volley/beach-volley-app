@@ -31,7 +31,6 @@ const CreateFormContainer = ({ mockData, disabled }) => {
     setPlayerName("");
     return tempList;
   };
-
   return (
     <Formik
       initialValues={{
@@ -42,7 +41,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
         numPlayers: disabled ? mockData.numPlayers : "",
         difficultyLevel: disabled ? mockData.difficultyLevel : "",
         publicToggle: disabled ? mockData.publicToggle : true,
-        playerList: disabled ? mockData.playerList : true,
+        playerList: disabled ? mockData.playerList : [],
         description: disabled ? mockData.description : "",
       }}
       validationSchema={Yup.object({
@@ -99,7 +98,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
       }}
     >
       {(props) => (
-        <FormContainer>
+        <FormContainer disabled={disabled}>
           <Form>
             <InputRow>
               <FormTextInput
@@ -154,7 +153,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
                 name="publicToggle"
                 toggleYes="Public"
                 toggleNo="Private"
-                checked={props.value.publicToggle}
+                checked={props.values.publicToggle}
               />
             </InputRow>
 
@@ -205,7 +204,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
 };
 
 const FormContainer = styled.div`
-  pointer-events: none;
+  pointer-events: ${(props) => (props.disabled ? "none" : "all")};
   display: flex;
   flex-direction: column;
   padding: 2rem;

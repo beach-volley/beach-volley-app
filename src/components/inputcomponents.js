@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { useField } from "formik";
-import { makeProcessSchemaPlugin } from "postgraphile";
 
 const FormTextInput = ({ label, ...props }) => {
   const [field, meta] = useField(props);
@@ -41,14 +40,28 @@ const FormToggle = ({ label, ...props }) => {
       <label htmlFor={props.id || props.name}>{label}</label>
 
       <RadioContainer>
-        <input {...field} id="radio-one" type="radio" value={true} checked />
+        <input 
+          {...field} 
+          id="radio-one" 
+          type="radio" 
+          value={true}
+          defaultChecked={props.checked ? true : null}
+          />
         <label htmlFor="radio-one" className="toggle-label">
           {props.toggleYes}{" "}
         </label>
-        <input {...field} id="radio-two" type="radio" value={false} />
+
+        <input 
+          {...field} 
+          id="radio-two" 
+          type="radio" 
+          value={false}
+          defaultChecked={props.checked ? null : true}
+          />
         <label htmlFor="radio-two" className="toggle-label">
           {props.toggleNo}
         </label>
+        
       </RadioContainer>
     </>
   );
