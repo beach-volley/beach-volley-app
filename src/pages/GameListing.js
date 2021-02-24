@@ -3,6 +3,10 @@ import styled from "styled-components";
 import Header from "../containers/Header";
 import GameBox from "../containers/GameBox";
 
+import firebase from "firebase";
+import * as firebaseui from "firebaseui";
+import { StyledFirebaseAuth } from "react-firebaseui";
+
 const GameListing = () => {
   return (
     <PageWrapper>
@@ -15,6 +19,24 @@ const GameListing = () => {
           eget.
         </p>
       </TitleTextBox>
+      {/* todo: move this to better place */}
+      <StyledFirebaseAuth
+        uiConfig={{
+          signInFlow: "popup",
+          callbacks: {
+            signInSuccessWithAuthResult: () => false,
+          },
+          signInOptions: [
+            {
+              provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+              clientId:
+                "758236414363-fnh0cqp982cp59pg8duuhrbaprq49g99.apps.googleusercontent.com",
+            },
+          ],
+          credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
+        }}
+        firebaseAuth={firebase.auth()}
+      />
       <GameBox />
     </PageWrapper>
   );
