@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import StyledButton from "../components/styledbutton";
+import { StyledButton } from "../components/styledbutton";
 
 const Header = () => {
   return (
@@ -13,7 +13,7 @@ const Header = () => {
       </Link>
       <Profile>
         <Link to="/create-game">
-          <StyledButton text={"Create Game"} />
+          <CreateGameButton>Create Game</CreateGameButton>
         </Link>
         <h1>ICON</h1>
       </Profile>
@@ -38,6 +38,12 @@ const Container = styled.div`
 `;
 
 const Logo = styled.div`
+  margin-right: 1rem;
+`;
+
+const CreateGameButton = styled(StyledButton)`
+  height: 3rem;
+  width: 10rem;
   margin-right: 1rem;
 `;
 

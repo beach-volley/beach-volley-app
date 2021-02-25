@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import CreateGameForm from "../components/creategameform";
 
-const FormBox = () => (
+const CenterContainer = ({ title, ...props }) => (
   <FormContainer>
-    <h1>Create new game</h1>
-    <CreateGameForm />
+    <h1>{title}</h1>
+    {props.children}
   </FormContainer>
 );
 
@@ -21,9 +20,9 @@ const FormContainer = styled.div`
 
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    width: 80%;
+    width: 60%;
     margin: auto;
   }
 `;
 
-export default FormBox;
+export default CenterContainer;

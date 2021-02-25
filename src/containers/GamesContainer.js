@@ -4,9 +4,8 @@ import GameItem from "../components/gameitem";
 import { useQuery } from "@apollo/client";
 import { MATCHES } from "../queries";
 
-const GameBox = () => {
+const Games = () => {
   const matches = useQuery(MATCHES);
-  console.log(matches);
 
   if (matches.loading) {
     return <div>loading...</div>;
@@ -36,7 +35,7 @@ const ListContainer = styled.div`
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     margin: auto;
-    width: 80%;
+    width: 50%;
   }
 `;
 
@@ -45,4 +44,4 @@ const ListStyle = styled.div`
   margin: 0.5rem;
 `;
 
-export default GameBox;
+export default Games;

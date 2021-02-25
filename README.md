@@ -43,7 +43,7 @@ Start front-end:
 Start back-end:
 
     $ npm run migrations migrate
-    $ npm run graphile
+    $ npm run server
 
 ## Development with database migrations
 

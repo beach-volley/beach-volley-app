@@ -7,10 +7,12 @@ const FormTextInput = ({ label, ...props }) => {
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
-      {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-      <InputContainer>
+      <ErrorContainer>
+        <ErrorBox>
+          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+        </ErrorBox>
         <input {...field} {...props} />
-      </InputContainer>
+      </ErrorContainer>
     </>
   );
 };
@@ -21,10 +23,12 @@ const FormDropDown = ({ label, ...props }) => {
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
-      {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-      <InputContainer>
+      <ErrorContainer>
+        <ErrorBox>
+          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+        </ErrorBox>
         <select {...field} {...props} />
-      </InputContainer>
+      </ErrorContainer>
     </>
   );
 };
@@ -41,12 +45,19 @@ const FormToggle = ({ label, ...props }) => {
           id="radio-one"
           type="radio"
           value={true}
-          defaultChecked
+          defaultChecked={props.checked ? true : null}
         />
         <label htmlFor="radio-one" className="toggle-label">
           {props.toggleYes}{" "}
         </label>
-        <input {...field} id="radio-two" type="radio" value={false} />
+
+        <input
+          {...field}
+          id="radio-two"
+          type="radio"
+          value={false}
+          defaultChecked={props.checked ? null : true}
+        />
         <label htmlFor="radio-two" className="toggle-label">
           {props.toggleNo}
         </label>
@@ -61,25 +72,22 @@ const FormDatePicker = ({ label, ...props }) => {
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
-      {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-      <InputContainer>
+      <ErrorContainer>
+        <ErrorBox>
+          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+        </ErrorBox>
         <input {...field} {...props} type="date" min={minDate} />
-      </InputContainer>
+      </ErrorContainer>
     </>
   );
 };
 
 const FormTextArea = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
+  const [field] = useField(props);
   return (
     <>
-      <label className="textarea-label" htmlFor={props.id || props.name}>
-        {label}
-      </label>
-      <InputContainer>
-        <textarea {...field} {...props} />
-        {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-      </InputContainer>
+      <label htmlFor={props.id || props.name}>{label}</label>
+      <textarea className="form-text-area" {...field} {...props} />
     </>
   );
 };
@@ -90,49 +98,41 @@ const FormTimePicker = ({ label, ...props }) => {
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
-      {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-      <InputContainer>
-        <input type="time" {...field} {...props} locale="fi" />
-      </InputContainer>
+      <ErrorContainer>
+        <ErrorBox>
+          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+        </ErrorBox>
+        <input type="time" {...field} {...props} />
+      </ErrorContainer>
     </>
   );
 };
 
-const Error = styled.div`
-  color: red;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-  align-self: center;
+const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 2;
 `;
 
-const InputContainer = styled.div`
-  width: 40%;
-  input,
-  select {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-  }
+const ErrorBox = styled.div`
+  height: 1.5rem;
+  margin-top: -1.5rem;
+`;
 
-  textarea {
-    width: 100%;
-    height: 5rem;
-    margin-bottom: 3rem;
-    border-radius: 0.3rem;
-    resize: none;
-  }
+const Error = styled.div`
+  color: red;
+  margin-right: 1rem;
 `;
 
 const RadioContainer = styled.div`
-  display: flex;
   overflow: hidden;
-
+  flex: 2;
+  padding: 0.5rem;
   input {
     position: absolute !important;
     clip: rect(0, 0, 0, 0);
     border: 0;
     overflow: hidden;
-    width: 100%;
   }
 
   & .toggle-label {
@@ -140,7 +140,8 @@ const RadioContainer = styled.div`
     color: black;
     font-size: 0.9rem;
     text-align: center;
-    padding: 0.5rem;
+    padding: 1rem;
+    margin: 1.5;
   }
 
   input:checked + label {

@@ -1,7 +1,6 @@
 import styled from "styled-components";
-
 import Header from "../containers/Header";
-import GameBox from "../containers/GameBox";
+import GameBox from "../containers/GamesContainer";
 
 const GameListing = () => {
   return (
@@ -23,7 +22,7 @@ const GameListing = () => {
 const PageWrapper = styled.div`
   display: grid;
   height: 100vh;
-  grid-template-rows: 8vh auto;
+  grid-template-rows: 8vh 15vh auto;
 `;
 
 const TitleTextBox = styled.div`
