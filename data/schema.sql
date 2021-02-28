@@ -63,6 +63,133 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: user; Type: TABLE; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TABLE beachvolley_public."user" (
+    id integer NOT NULL,
+    uid text NOT NULL,
+    name text NOT NULL,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now()
+);
+
+
+--
+-- Name: TABLE "user"; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON TABLE beachvolley_public."user" IS 'A user of the app.';
+
+
+--
+-- Name: COLUMN "user".id; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public."user".id IS 'Unique id of the user.';
+
+
+--
+-- Name: COLUMN "user".uid; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public."user".uid IS '@omit all,create,delete,many,read,update';
+
+
+--
+-- Name: COLUMN "user".name; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public."user".name IS 'Display name of the user.';
+
+
+--
+-- Name: COLUMN "user".created_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public."user".created_at IS '@omit all,create,delete,many,read,update';
+
+
+--
+-- Name: COLUMN "user".updated_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public."user".updated_at IS '@omit all,create,delete,many,read,update';
+
+
+--
+-- Name: current_user(); Type: FUNCTION; Schema: beachvolley_public; Owner: -
+--
+
+CREATE FUNCTION beachvolley_public."current_user"() RETURNS beachvolley_public."user"
+    LANGUAGE sql STABLE
+    AS $$
+  select *
+  from beachvolley_public.user
+  where uid = nullif(current_setting('jwt.claims.firebase.uid', true), '')
+$$;
+
+
+--
+-- Name: FUNCTION "current_user"(); Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON FUNCTION beachvolley_public."current_user"() IS 'Get the current user.';
+
+
+--
+-- Name: upsert_user(); Type: FUNCTION; Schema: beachvolley_public; Owner: -
+--
+
+CREATE FUNCTION beachvolley_public.upsert_user() RETURNS beachvolley_public."user"
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+declare
+  new_user beachvolley_public.user;
+begin
+  -- do nothing if called without a valid jwt
+  if current_setting('jwt.claims.firebase.uid', true) is null then
+    return null;
+  end if;
+
+  -- upsert public part of user
+  insert into beachvolley_public.user (uid, name)
+  values (current_setting('jwt.claims.firebase.uid', true), current_setting('jwt.claims.firebase.name', true))
+  on conflict (uid) do update set name = current_setting('jwt.claims.firebase.name', true)
+  returning * into new_user;
+
+  -- upsert private part of user
+  insert into beachvolley_private.user (user_id, email)
+  values (new_user.id, current_setting('jwt.claims.firebase.email', true))
+  on conflict (user_id) do update set email = current_setting('jwt.claims.firebase.email', true);
+
+  -- return the created user (public part)
+  return new_user;
+end;
+$$;
+
+
+--
+-- Name: FUNCTION upsert_user(); Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON FUNCTION beachvolley_public.upsert_user() IS 'Create user or update it''s details based on JWT.';
+
+
+--
+-- Name: user; Type: TABLE; Schema: beachvolley_private; Owner: -
+--
+
+CREATE TABLE beachvolley_private."user" (
+    user_id integer NOT NULL,
+    email text NOT NULL,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now(),
+    CONSTRAINT user_email_check CHECK ((email ~* '^.+@.+\..+$'::text))
+);
+
+
+--
 -- Name: invitation; Type: TABLE; Schema: beachvolley_public; Owner: -
 --
 
@@ -184,6 +311,36 @@ ALTER TABLE beachvolley_public.match ALTER COLUMN id ADD GENERATED ALWAYS AS IDE
 
 
 --
+-- Name: user_id_seq; Type: SEQUENCE; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE beachvolley_public."user" ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME beachvolley_public.user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: user user_email_key; Type: CONSTRAINT; Schema: beachvolley_private; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_private."user"
+    ADD CONSTRAINT user_email_key UNIQUE (email);
+
+
+--
+-- Name: user user_pkey; Type: CONSTRAINT; Schema: beachvolley_private; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_private."user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (user_id);
+
+
+--
 -- Name: invitation invitation_pkey; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
 --
 
@@ -208,6 +365,22 @@ ALTER TABLE ONLY beachvolley_public.match
 
 
 --
+-- Name: user user_pkey; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_public."user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user user_uid_key; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_public."user"
+    ADD CONSTRAINT user_uid_key UNIQUE (uid);
+
+
+--
 -- Name: invitation_match_id_idx; Type: INDEX; Schema: beachvolley_public; Owner: -
 --
 
@@ -215,10 +388,32 @@ CREATE INDEX invitation_match_id_idx ON beachvolley_public.invitation USING btre
 
 
 --
+-- Name: user user_private_updated_at; Type: TRIGGER; Schema: beachvolley_private; Owner: -
+--
+
+CREATE TRIGGER user_private_updated_at BEFORE UPDATE ON beachvolley_private."user" FOR EACH ROW EXECUTE FUNCTION beachvolley_private.set_updated_at();
+
+
+--
 -- Name: match match_updated_at; Type: TRIGGER; Schema: beachvolley_public; Owner: -
 --
 
 CREATE TRIGGER match_updated_at BEFORE UPDATE ON beachvolley_public.match FOR EACH ROW EXECUTE FUNCTION beachvolley_private.set_updated_at();
+
+
+--
+-- Name: user user_updated_at; Type: TRIGGER; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TRIGGER user_updated_at BEFORE UPDATE ON beachvolley_public."user" FOR EACH ROW EXECUTE FUNCTION beachvolley_private.set_updated_at();
+
+
+--
+-- Name: user user_user_id_fkey; Type: FK CONSTRAINT; Schema: beachvolley_private; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_private."user"
+    ADD CONSTRAINT user_user_id_fkey FOREIGN KEY (user_id) REFERENCES beachvolley_public."user"(id) ON DELETE CASCADE;
 
 
 --
@@ -242,6 +437,29 @@ GRANT USAGE ON SCHEMA beachvolley_public TO beachvolley_graphile_anonymous;
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO beachvolley_graphile;
+
+
+--
+-- Name: TABLE "user"; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT SELECT ON TABLE beachvolley_public."user" TO beachvolley_graphile_anonymous;
+
+
+--
+-- Name: FUNCTION "current_user"(); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public."current_user"() FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public."current_user"() TO beachvolley_graphile_anonymous;
+
+
+--
+-- Name: FUNCTION upsert_user(); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public.upsert_user() FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_anonymous;
 
 
 --

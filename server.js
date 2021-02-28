@@ -1,6 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const { postgraphile } = require("postgraphile");
+const admin = require("firebase-admin");
+const firebaseAdminPrivateKey = require("./firebase-admin-private-key.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(firebaseAdminPrivateKey),
+});
 
 const app = express();
 
@@ -29,7 +35,23 @@ app.use(
       legacyRelations: "omit",
       ownerConnectionString:
         "postgres://beachvolley_graphile_superuser:dev_password@localhost:5432/beachvolley",
-      pgDefaultRole: "beachvolley_graphile_anonymous",
+      async pgSettings(req) {
+        const token = (req.headers.authorization ?? '').split('Bearer ')[1];
+
+        if (!token) {
+          return {
+            'role': 'beachvolley_graphile_anonymous',
+          };
+        }
+
+        const decodedToken = await admin.auth().verifyIdToken(token, true);
+        return {
+          role: 'beachvolley_graphile',
+          'jwt.claims.firebase.uid': decodedToken.uid,
+          'jwt.claims.firebase.name': decodedToken.name,
+          'jwt.claims.firebase.email': decodedToken.email,
+        };
+      },
     }
   )
 );
