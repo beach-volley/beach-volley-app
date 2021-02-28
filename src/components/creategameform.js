@@ -18,7 +18,23 @@ import { CREATE_MATCH } from "../queries";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
 
-const CreateFormContainer = ({ mockData, disabled }) => {
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+  DateTimePicker,
+} from '@material-ui/pickers';
+import { setDate } from "date-fns";
+
+const CreateFormContainer = ({ mockData, disabled }) => { 
+  const [selectedDate, setSelectedDate] = React.useState(new Date('2021-02-27T12:11:54'));
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  }; 
+
   let history = useHistory();
   const [createMatch] = useMutation(CREATE_MATCH);
   const [playerName, setPlayerName] = useState("");
@@ -40,7 +56,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
         endTime: disabled ? mockData.endTime : "",
         numPlayers: disabled ? mockData.numPlayers : "",
         difficultyLevel: disabled ? mockData.difficultyLevel : "",
-        publicToggle: disabled ? mockData.publicToggle : true,
+        publicToggle: disabled ? mockData.publicToggle : "true",
         playerList: disabled ? mockData.playerList : [],
         description: disabled ? mockData.description : "",
       }}
@@ -88,7 +104,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
                     inclusive: true,
                   },
                 },
-                public: values.publicToggle,
+                public: (values.publicToggle === "true")
               },
             },
           },
@@ -109,10 +125,55 @@ const CreateFormContainer = ({ mockData, disabled }) => {
               />
             </InputRow>
 
+            {/* New material-ui date and time pickers added here */}
+
+            {/**
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <InputRow>
+                  <KeyboardDatePicker
+                    margin="normal"
+                    name="date"
+                    label="Date"
+                    format="MM/dd/yyyy"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change date',
+                    }}
+                  />
+                </InputRow>
+                <InputRow>
+                  <KeyboardTimePicker
+                    margin="normal"
+                    name="startTime"
+                    label="Start time"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change time',
+                    }}
+                  />
+                </InputRow>
+                <InputRow>
+                  <KeyboardTimePicker
+                    margin="normal"
+                    name="endTime"
+                    label="End time"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change time',
+                    }}
+                  />
+                </InputRow>
+            </MuiPickersUtilsProvider>
+            **/}
+
+            {/** OLD DATE/TIME PICKERS **/}
             <InputRow>
               <FormDatePicker label="Date" name="date" />
             </InputRow>
-
+            
             <InputRow>
               <FormTimePicker
                 label="Start time"
@@ -127,7 +188,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
                 name="endTime"
                 placeholder={"End Time"}
               />
-            </InputRow>
+            </InputRow>   
 
             <InputRow>
               <FormDropDown label="Players" name="numPlayers">
@@ -136,7 +197,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
                 <option value="2-4">2-4</option>
                 <option value="4-6">4-6</option>
               </FormDropDown>
-            </InputRow>
+            </InputRow>         
 
             <InputRow>
               <FormDropDown label="Difficulty" name="difficultyLevel">

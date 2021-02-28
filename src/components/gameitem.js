@@ -1,22 +1,49 @@
 import React from "react";
 import styled from "styled-components";
 import { StyledButton } from "../components/styledbutton";
+import { useMutation } from "@apollo/client";
+import { DELETE_MATCH } from "../queries";
+import { useHistory } from "react-router";
 
-const ProjectItem = ({ name, location, time, players }) => {
+const ProjectItem = ({ id, location, time, players }) => {
+  const [deleteMatch] = useMutation( DELETE_MATCH );
+
+  let history = useHistory();
+
+  const deleteMatchByName = () => {
+    console.log('match with id/name: "' + id + '" deleted' )
+    deleteMatch({
+      variables: {
+        input: {
+          id: id,
+        }
+      }
+    })
+  }
+
+  const viewMatchById = () => {
+    console.log('Joined to match with id: "' + id + '"')
+    history.push({
+      pathname: "/single-game",
+      id: {id}
+    })
+  }
+
   let formatted_time = time?.start.value
     ? new Date(time?.start.value).toLocaleString()
     : null;
 
   return (
     <ItemWrapper>
-      <GameText>{name}</GameText>
+      <GameText>{id}</GameText>
       <GameText>{location}</GameText>
       <GameText>{formatted_time}</GameText>
       <GameText>
         {asInclusive(players?.start.value, players?.start.inclusive)} -{" "}
         {asInclusive(players?.end.value, players?.end.inclusive)}
       </GameText>
-      <JoinGameButton>Join</JoinGameButton>
+      <JoinGameButton onClick={viewMatchById}>Join</JoinGameButton>
+      <DeleteButton onClick={deleteMatchByName}>X</DeleteButton>
     </ItemWrapper>
   );
 };
@@ -46,6 +73,15 @@ const JoinGameButton = styled(StyledButton)`
   margin-left: 1rem;
   width: 3.5rem;
   height: 2rem;
+`;
+
+const DeleteButton = styled(StyledButton)`
+  margin-right: -2rem;
+  margin-left: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: white;
+  background: red;
 `;
 
 const GameText = styled.p`
