@@ -45,6 +45,19 @@ COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
+-- Name: current_user_id(); Type: FUNCTION; Schema: beachvolley_private; Owner: -
+--
+
+CREATE FUNCTION beachvolley_private.current_user_id() RETURNS integer
+    LANGUAGE sql STABLE
+    AS $$
+  select id
+  from beachvolley_public.user
+  where uid = nullif(current_setting('jwt.claims.firebase.uid', true), '')
+$$;
+
+
+--
 -- Name: set_updated_at(); Type: FUNCTION; Schema: beachvolley_private; Owner: -
 --
 
@@ -229,6 +242,7 @@ CREATE TABLE beachvolley_public.match (
     player_limit int4range,
     public boolean DEFAULT false NOT NULL,
     participants text[] DEFAULT ARRAY[]::text[] NOT NULL,
+    host_id integer DEFAULT beachvolley_private.current_user_id() NOT NULL,
     CONSTRAINT match_participants_check CHECK ((array_position(participants, NULL::text) IS NULL))
 );
 
@@ -294,6 +308,13 @@ COMMENT ON COLUMN beachvolley_public.match.public IS 'Is the match public or pri
 --
 
 COMMENT ON COLUMN beachvolley_public.match.participants IS 'List of participant names who have joined the match.';
+
+
+--
+-- Name: COLUMN match.host_id; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.host_id IS 'Host and creator of the match.';
 
 
 --
@@ -388,6 +409,13 @@ CREATE INDEX invitation_match_id_idx ON beachvolley_public.invitation USING btre
 
 
 --
+-- Name: match_host_id_idx; Type: INDEX; Schema: beachvolley_public; Owner: -
+--
+
+CREATE INDEX match_host_id_idx ON beachvolley_public.match USING btree (host_id);
+
+
+--
 -- Name: user user_private_updated_at; Type: TRIGGER; Schema: beachvolley_private; Owner: -
 --
 
@@ -425,10 +453,19 @@ ALTER TABLE ONLY beachvolley_public.invitation
 
 
 --
+-- Name: match match_host_id_fkey; Type: FK CONSTRAINT; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_public.match
+    ADD CONSTRAINT match_host_id_fkey FOREIGN KEY (host_id) REFERENCES beachvolley_public."user"(id) ON DELETE CASCADE;
+
+
+--
 -- Name: SCHEMA beachvolley_public; Type: ACL; Schema: -; Owner: -
 --
 
 GRANT USAGE ON SCHEMA beachvolley_public TO beachvolley_graphile_anonymous;
+GRANT USAGE ON SCHEMA beachvolley_public TO beachvolley_graphile_authenticated;
 
 
 --
@@ -436,7 +473,16 @@ GRANT USAGE ON SCHEMA beachvolley_public TO beachvolley_graphile_anonymous;
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
-GRANT ALL ON SCHEMA public TO beachvolley_graphile;
+GRANT ALL ON SCHEMA public TO beachvolley_db_owner;
+
+
+--
+-- Name: FUNCTION current_user_id(); Type: ACL; Schema: beachvolley_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_private.current_user_id() FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_private.current_user_id() TO beachvolley_graphile_authenticated;
+GRANT ALL ON FUNCTION beachvolley_private.current_user_id() TO beachvolley_graphile_anonymous;
 
 
 --
@@ -444,6 +490,7 @@ GRANT ALL ON SCHEMA public TO beachvolley_graphile;
 --
 
 GRANT SELECT ON TABLE beachvolley_public."user" TO beachvolley_graphile_anonymous;
+GRANT SELECT ON TABLE beachvolley_public."user" TO beachvolley_graphile_authenticated;
 
 
 --
@@ -452,6 +499,7 @@ GRANT SELECT ON TABLE beachvolley_public."user" TO beachvolley_graphile_anonymou
 
 REVOKE ALL ON FUNCTION beachvolley_public."current_user"() FROM PUBLIC;
 GRANT ALL ON FUNCTION beachvolley_public."current_user"() TO beachvolley_graphile_anonymous;
+GRANT ALL ON FUNCTION beachvolley_public."current_user"() TO beachvolley_graphile_authenticated;
 
 
 --
@@ -460,55 +508,57 @@ GRANT ALL ON FUNCTION beachvolley_public."current_user"() TO beachvolley_graphil
 
 REVOKE ALL ON FUNCTION beachvolley_public.upsert_user() FROM PUBLIC;
 GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_anonymous;
+GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_authenticated;
 
 
 --
 -- Name: TABLE match; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
-GRANT SELECT,DELETE ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+GRANT SELECT ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+GRANT SELECT,DELETE ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
 
 
 --
 -- Name: COLUMN match.location; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
-GRANT INSERT(location),UPDATE(location) ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+GRANT INSERT(location),UPDATE(location) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
 
 
 --
 -- Name: COLUMN match."time"; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
-GRANT INSERT("time"),UPDATE("time") ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+GRANT INSERT("time"),UPDATE("time") ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
 
 
 --
 -- Name: COLUMN match.player_limit; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
-GRANT INSERT(player_limit),UPDATE(player_limit) ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+GRANT INSERT(player_limit),UPDATE(player_limit) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
 
 
 --
 -- Name: COLUMN match.public; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
-GRANT INSERT(public),UPDATE(public) ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+GRANT INSERT(public),UPDATE(public) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
 
 
 --
 -- Name: COLUMN match.participants; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
-GRANT INSERT(participants),UPDATE(participants) ON TABLE beachvolley_public.match TO beachvolley_graphile_anonymous;
+GRANT INSERT(participants),UPDATE(participants) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
 
 
 --
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: -; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE beachvolley_graphile REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE beachvolley_db_owner REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
 
 
 --

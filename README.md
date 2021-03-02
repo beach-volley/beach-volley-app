@@ -14,20 +14,21 @@ pasting the commands. The shell responds something like `CREATE ROLE` when the
 command has been executed successfully._
 
     # revoke all on schema public from public;
+    # create role beachvolley_db_owner login encrypted password 'dev_password';
     # create role beachvolley_graphile login encrypted password 'dev_password';
-    # create role beachvolley_graphile_superuser superuser login password 'dev_password';
+    # create role beachvolley_db_admin superuser login password 'dev_password';
+    # create role beachvolley_graphile_authenticated;
+    # grant beachvolley_graphile_authenticated to beachvolley_graphile;
     # create role beachvolley_graphile_anonymous;
     # grant beachvolley_graphile_anonymous to beachvolley_graphile;
-    # create database beachvolley;
-    # grant all privileges on database beachvolley to beachvolley_graphile;
-    # create database beachvolley_shadow;
-    # grant all privileges on database beachvolley_shadow to beachvolley_graphile;
+    # create database beachvolley with owner beachvolley_db_owner;
+    # create database beachvolley_shadow with owner beachvolley_db_owner;
 
 # Import dummy data
 
 When you need some dummy data to your development database, run the following query:
 
-    $ psql postgres://beachvolley_graphile:dev_password@localhost:5432/beachvolley < data/dummy-data.sql
+    $ psql postgres://beachvolley_db_owner:dev_password@localhost:5432/beachvolley < data/dummy-data.sql
 
 # Development
 

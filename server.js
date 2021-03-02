@@ -34,8 +34,9 @@ app.use(
       enableQueryBatching: true,
       legacyRelations: "omit",
       ownerConnectionString:
-        "postgres://beachvolley_graphile_superuser:dev_password@localhost:5432/beachvolley",
+        "postgres://beachvolley_db_admin:dev_password@localhost:5432/beachvolley",
       async pgSettings(req) {
+        console.log(req.headers.authorization);
         const token = (req.headers.authorization ?? '').split('Bearer ')[1];
 
         if (!token) {
@@ -46,7 +47,7 @@ app.use(
 
         const decodedToken = await admin.auth().verifyIdToken(token, true);
         return {
-          role: 'beachvolley_graphile',
+          role: 'beachvolley_graphile_authenticated',
           'jwt.claims.firebase.uid': decodedToken.uid,
           'jwt.claims.firebase.name': decodedToken.name,
           'jwt.claims.firebase.email': decodedToken.email,
