@@ -36,7 +36,6 @@ app.use(
       ownerConnectionString:
         "postgres://beachvolley_db_admin:dev_password@localhost:5432/beachvolley",
       async pgSettings(req) {
-        console.log(req.headers.authorization);
         const token = (req.headers.authorization ?? '').split('Bearer ')[1];
 
         if (!token) {
