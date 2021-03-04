@@ -6,7 +6,7 @@ import { DELETE_MATCH } from "../queries";
 import { useHistory } from "react-router";
 
 const ProjectItem = ({ id, location, time, players }) => {
-  const [deleteMatch] = useMutation( DELETE_MATCH );
+  const [deleteMatch] = useMutation(DELETE_MATCH);
 
   let history = useHistory();
 
@@ -15,16 +15,16 @@ const ProjectItem = ({ id, location, time, players }) => {
       variables: {
         input: {
           id: id,
-        }
-      }
-    })
-  }
+        },
+      },
+    });
+  };
 
   const joinMatchById = () => {
     history.push({
       pathname: "/single-game/" + id,
-    })
-  }
+    });
+  };
 
   let formatted_time = time?.start.value
     ? new Date(time?.start.value).toLocaleString()

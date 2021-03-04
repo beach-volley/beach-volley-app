@@ -6,13 +6,15 @@ import { useQuery } from "@apollo/client";
 import { MATCH_BY_ID } from "../queries";
 
 const SingleGame = () => {
-  const matchById = useQuery( MATCH_BY_ID, {variables: {id: +window.location.pathname.slice(13)}});
+  const matchById = useQuery(MATCH_BY_ID, {
+    variables: { id: +window.location.pathname.slice(13) },
+  });
 
   if (matchById.loading) {
     return <div>loading...</div>;
   }
 
-  console.log(matchById.data?.match)
+  console.log(matchById.data?.match);
 
   const asInclusive = (value, inclusive) => {
     if (inclusive === false) {
@@ -22,8 +24,16 @@ const SingleGame = () => {
     }
   };
 
-  const numPlayers = asInclusive(matchById.data?.match.playerLimit.start.value, matchById.data?.match.playerLimit.start.inclusive) +
-   "-" + asInclusive(matchById.data?.match.playerLimit.end.value, matchById.data?.match.playerLimit.end.inclusive)
+  const numPlayers =
+    asInclusive(
+      matchById.data?.match.playerLimit.start.value,
+      matchById.data?.match.playerLimit.start.inclusive
+    ) +
+    "-" +
+    asInclusive(
+      matchById.data?.match.playerLimit.end.value,
+      matchById.data?.match.playerLimit.end.inclusive
+    );
 
   const matchData = {
     location: matchById.data?.match.location,
@@ -35,8 +45,8 @@ const SingleGame = () => {
     publicToggle: matchById.data?.match.public,
     playerList: [{ name: "test" }],
     description: "test",
-  }
-  console.log({matchData})
+  };
+  console.log({ matchData });
 
   return (
     <PageWrapper>

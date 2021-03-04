@@ -9,16 +9,13 @@ import { v4 as uuidv4 } from "uuid";
 import { CREATE_MATCH } from "../queries";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  TimePicker,
-  DatePicker,
-} from 'formik-material-ui-pickers';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { TextField } from 'formik-material-ui';
-import moment from 'moment';
-import { Select } from 'material-ui-formik-components/Select'
-import Input from '@material-ui/core/Input'
+import DateFnsUtils from "@date-io/date-fns";
+import { TimePicker, DatePicker } from "formik-material-ui-pickers";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { TextField } from "formik-material-ui";
+import moment from "moment";
+import { Select } from "material-ui-formik-components/Select";
+import Input from "@material-ui/core/Input";
 
 const CreateFormContainer = ({ mockData, disabled }) => {
   let history = useHistory();
@@ -78,11 +75,17 @@ const CreateFormContainer = ({ mockData, disabled }) => {
                   location: values.location,
                   time: {
                     start: {
-                      value: moment(values.date).format('YYYY-MM-DD') + " " + values.startTime.toString().split(" ")[4],
+                      value:
+                        moment(values.date).format("YYYY-MM-DD") +
+                        " " +
+                        values.startTime.toString().split(" ")[4],
                       inclusive: true,
                     },
                     end: {
-                      value: moment(values.date).format('YYYY-MM-DD') + " " + values.endTime.toString().split(" ")[4],
+                      value:
+                        moment(values.date).format("YYYY-MM-DD") +
+                        " " +
+                        values.endTime.toString().split(" ")[4],
                       inclusive: true,
                     },
                   },
@@ -96,7 +99,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
                       inclusive: true,
                     },
                   },
-                  public: (values.publicToggle === "true"),
+                  public: values.publicToggle === "true",
                 },
               },
             },
@@ -118,15 +121,30 @@ const CreateFormContainer = ({ mockData, disabled }) => {
               </InputRowMUI>
 
               <InputRowMUI>
-                <Field component={DatePicker} name="date" label="Date" required />
+                <Field
+                  component={DatePicker}
+                  name="date"
+                  label="Date"
+                  required
+                />
               </InputRowMUI>
 
               <InputRowMUI>
-                <Field component={TimePicker} name="startTime" label="Start Time" required />
+                <Field
+                  component={TimePicker}
+                  name="startTime"
+                  label="Start Time"
+                  required
+                />
               </InputRowMUI>
 
               <InputRowMUI>
-                <Field component={TimePicker} name="endTime" label="End Time" required/>
+                <Field
+                  component={TimePicker}
+                  name="endTime"
+                  label="End Time"
+                  required
+                />
               </InputRowMUI>
 
               <InputRowMUI>
@@ -181,10 +199,10 @@ const CreateFormContainer = ({ mockData, disabled }) => {
                   type="button"
                   value="Add"
                   onClick={() =>
-                  (props.values.playerList = SendInvite(
-                    props.values.playerList,
-                    playerName
-                  ))
+                    (props.values.playerList = SendInvite(
+                      props.values.playerList,
+                      playerName
+                    ))
                   }
                 >
                   Add
