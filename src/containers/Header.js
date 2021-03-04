@@ -17,7 +17,6 @@ const Header = () => {
           <CreateGameButton>Create Game</CreateGameButton>
         </Link>
         <SignOutButton />
-        <h1>ICON</h1>
       </Profile>
     </Container>
   );

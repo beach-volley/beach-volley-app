@@ -128,6 +128,7 @@ const RadioContainer = styled.div`
   overflow: hidden;
   flex: 2;
   padding: 0.5rem;
+
   input {
     position: absolute !important;
     clip: rect(0, 0, 0, 0);
@@ -137,7 +138,7 @@ const RadioContainer = styled.div`
 
   & .toggle-label {
     background-color: #e4e4e4;
-    color: black;
+    color: black !important;
     font-size: 0.9rem;
     text-align: center;
     padding: 1rem;

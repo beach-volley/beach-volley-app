@@ -13,7 +13,8 @@ const FormContainer = styled.div`
   text-align: center;
   position: relative;
   background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
-  margin-bottom: auto;
+  margin: auto;
+  width: 90%;
   h1 {
     color: white;
   }

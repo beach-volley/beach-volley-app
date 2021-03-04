@@ -66,8 +66,6 @@ const CreateFormContainer = ({ mockData, disabled }) => {
             alert(JSON.stringify(values, null, 2));
           }, 500);
 
-          console.log(values);
-
           createMatch({
             variables: {
               input: {
@@ -134,6 +132,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
                   component={TimePicker}
                   name="startTime"
                   label="Start Time"
+                  ampm={false}
                   required
                 />
               </InputRowMUI>
@@ -143,6 +142,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
                   component={TimePicker}
                   name="endTime"
                   label="End Time"
+                  ampm={false}
                   required
                 />
               </InputRowMUI>
@@ -164,7 +164,6 @@ const CreateFormContainer = ({ mockData, disabled }) => {
 
               <InputRowMUI>
                 <Field
-                  style={{ color: "white" }}
                   name="difficultyLevel"
                   label="Difficulty"
                   required
@@ -188,8 +187,9 @@ const CreateFormContainer = ({ mockData, disabled }) => {
               </InputRowMUI>
 
               <InputRowMUI>
-                <label style={{ marginRight: 65 }}>Add player</label>
+                <label>Add player</label>
                 <Input
+                  label="Add player"
                   type="text"
                   value={playerName}
                   placeholder={"Enter Email"}
@@ -209,17 +209,17 @@ const CreateFormContainer = ({ mockData, disabled }) => {
                 </AddButton>
               </InputRowMUI>
 
-              <InputRow>
+              <InputRowMUI>
                 <label>Invited players</label>
                 <InvitedPlayersBox>
                   {props.values.playerList.map((player) => (
                     <p key={uuidv4()}>{player.name}</p>
                   ))}
                 </InvitedPlayersBox>
-              </InputRow>
+              </InputRowMUI>
 
               <InputRowMUI>
-                <label style={{ marginRight: 115 }}>Info</label>
+                <label>Info</label>
                 <Field
                   component={TextField}
                   name="description"
@@ -276,42 +276,74 @@ const InvitedPlayersBox = styled.div`
   flex: 2;
 `;
 
+//override material-ui css
 const InputRowMUI = styled.div`
   display: flex;
-  margin-bottom: 2rem;
-
+  margin-bottom: 1rem;
   label {
-    color: white;
+    color: white !important;
     font-size: ${(props) => props.theme.fontSizes.medium};
+    flex: 1.75;
+    text-align: left;
   }
-  input,
-  select,
-  textarea {
-    color: white;
-  }
-`;
 
-const InputRow = styled.div`
-  display: flex;
-  margin-bottom: 2rem;
-  align-items: flex-start;
-  label {
-    color: white;
-    font-size: ${(props) => props.theme.fontSizes.medium};
-    flex: 1;
-    margin-right: 1rem;
+  .MuiFormControl-root {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: 0;
   }
-  input,
-  select,
-  textarea {
+
+  .MuiInputLabel-formControl {
+    transform: none;
+    position: relative;
+  }
+
+  .MuiInput-root, .MuiTextField-root {
     flex: 2;
+  }
+
+  .MuiInput-underline::before {
+    transition: none;
+    border-bottom: 1px solid white;
+  }
+
+  .MuiInput-underline::after {
+    transition: none;
+    border-bottom: none;
+    border-color: white;
+  }
+
+  .MuiInputBase-input {
+    color: white;
     text-align: center;
   }
-  & .form-text-area {
-    height: 10rem;
-    margin-bottom: 3rem;
-    border-radius: 0.3rem;
-    resize: none;
+
+  & .MuiFormLabel-root {
+    display: flex;
+    align-items: flex-end;
+    font-family: inherit;
+  }
+
+  & .MuiFormLabel-root:focus {
+    color: none;
+  }
+
+  .MuiSelect-nativeInput {
+    display: none;
+  }
+
+  .MuiSelect-select.MuiSelect-select {
+    padding-right: 0;
+  }
+
+  .MuiSvgIcon-root {
+    color: white;
+  }
+
+  .MuiFormHelperText-root {
+    position: absolute;
+    left: 0;
   }
 `;
 
