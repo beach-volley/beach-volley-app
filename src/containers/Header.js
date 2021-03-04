@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import SignOutButton from "../components/SignOutButton";
 import { StyledButton } from "../components/styledbutton";
 
 const Header = () => {
@@ -15,6 +16,7 @@ const Header = () => {
         <Link to="/create-game">
           <CreateGameButton>Create Game</CreateGameButton>
         </Link>
+        <SignOutButton />
         <h1>ICON</h1>
       </Profile>
     </Container>

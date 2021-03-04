@@ -26,13 +26,13 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DATABASE_URL: postgres://beachvolley_graphile_superuser:dev_password@localhost:5432/beachvolley
+      DATABASE_URL: postgres://beachvolley_db_admin:dev_password@localhost:5432/beachvolley
 
     services:
       postgres:
         image: postgres:12
         env:
-          POSTGRES_USER: beachvolley_graphile_superuser
+          POSTGRES_USER: beachvolley_db_admin
           POSTGRES_PASSWORD: dev_password
           POSTGRES_DB: beachvolley
         ports:
