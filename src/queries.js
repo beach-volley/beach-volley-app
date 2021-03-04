@@ -53,6 +53,36 @@ export const MATCHES = gql`
   }
 `;
 
+export const MATCH_BY_ID = gql`
+  query match($id: Int!) {
+    match(id: $id) {
+      id
+      location
+      playerLimit {
+        end {
+          inclusive
+          value
+        }
+        start {
+          inclusive
+          value
+        }
+      }
+      public
+      time {
+        end {
+          inclusive
+          value
+        }
+        start {
+          inclusive
+          value
+        }
+      }
+    }
+  }
+`;
+
 //Mutations
 
 export const CREATE_MATCH = gql`
@@ -69,6 +99,16 @@ export const UPSERT_USER = gql`
   mutation {
     upsertUser(input: {}) {
       user {
+        id
+      }
+    }
+  }
+`;
+
+export const DELETE_MATCH = gql`
+  mutation deleteMatch($input: DeleteMatchInput!) {
+    deleteMatch(input: $input) {
+      match {
         id
       }
     }

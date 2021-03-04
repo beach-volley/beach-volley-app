@@ -16,7 +16,7 @@ const Games = () => {
       {matches.data?.matches.edges.map(({ node }) => (
         <ListStyle key={node.nodeId}>
           <GameItem
-            name={node.id}
+            id={node.id}
             location={node.location}
             time={node.time}
             players={node.playerLimit}
