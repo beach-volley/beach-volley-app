@@ -10,8 +10,7 @@ const ProjectItem = ({ id, location, time, players }) => {
 
   let history = useHistory();
 
-  const deleteMatchByName = () => {
-    console.log('match with id/name: "' + id + '" deleted' )
+  const deleteMatchById = () => {
     deleteMatch({
       variables: {
         input: {
@@ -21,11 +20,9 @@ const ProjectItem = ({ id, location, time, players }) => {
     })
   }
 
-  const viewMatchById = () => {
-    console.log('Joined to match with id: "' + id + '"')
+  const joinMatchById = () => {
     history.push({
-      pathname: "/single-game",
-      id: {id}
+      pathname: "/single-game/" + id,
     })
   }
 
@@ -42,8 +39,8 @@ const ProjectItem = ({ id, location, time, players }) => {
         {asInclusive(players?.start.value, players?.start.inclusive)} -{" "}
         {asInclusive(players?.end.value, players?.end.inclusive)}
       </GameText>
-      <JoinGameButton onClick={viewMatchById}>Join</JoinGameButton>
-      <DeleteButton onClick={deleteMatchByName}>X</DeleteButton>
+      <JoinGameButton onClick={joinMatchById}>Join</JoinGameButton>
+      <DeleteButton onClick={deleteMatchById}>X</DeleteButton>
     </ItemWrapper>
   );
 };

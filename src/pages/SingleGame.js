@@ -5,22 +5,8 @@ import Header from "../containers/Header";
 import { useQuery } from "@apollo/client";
 import { MATCH_BY_ID } from "../queries";
 
-/**
-const mockData = {
-  location: "test-location",
-  date: "2021-02-24",
-  startTime: "01:33",
-  endTime: "02:44",
-  numPlayers: "2-4",
-  difficultyLevel: "easy",
-  publicToggle: false,
-  playerList: [{ name: "test" }],
-  description: "test",
-};
-**/
-
-const SingleGame = (id) => {
-  const matchById = useQuery( MATCH_BY_ID, {variables: {id: id.location.id.id}});
+const SingleGame = () => {
+  const matchById = useQuery( MATCH_BY_ID, {variables: {id: +window.location.pathname.slice(13)}});
 
   if (matchById.loading) {
     return <div>loading...</div>;
@@ -43,12 +29,12 @@ const SingleGame = (id) => {
     location: matchById.data?.match.location,
     date: matchById.data?.match.time.start.value.slice(0, 10),
     startTime: matchById.data?.match.time.start.value,
-    endTime: matchById.data?.match.endTime,
+    endTime: matchById.data?.match.time.end.value,
     numPlayers: numPlayers,
-    difficultyLevel: matchById.data?.match.difficultyLevel,
+    difficultyLevel: "easy",
     publicToggle: matchById.data?.match.public,
     playerList: [{ name: "test" }],
-    description: matchById.data?.match.description,
+    description: "test",
   }
   console.log({matchData})
 
