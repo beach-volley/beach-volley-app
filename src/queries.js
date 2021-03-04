@@ -2,6 +2,14 @@ import { gql } from "@apollo/client";
 
 //Queries
 
+export const CURRENT_USER = gql`
+  {
+    currentUser {
+      id
+    }
+  }
+`;
+
 export const MATCHES_TOTAL_COUNT = gql`
   {
     matches {
@@ -51,6 +59,16 @@ export const CREATE_MATCH = gql`
   mutation createMatch($input: CreateMatchInput!) {
     createMatch(input: $input) {
       match {
+        id
+      }
+    }
+  }
+`;
+
+export const UPSERT_USER = gql`
+  mutation {
+    upsertUser(input: {}) {
+      user {
         id
       }
     }
