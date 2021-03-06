@@ -14,8 +14,6 @@ const SingleGame = () => {
     return <div>loading...</div>;
   }
 
-  console.log(matchById.data?.match);
-
   const asInclusive = (value, inclusive) => {
     if (inclusive === false) {
       return value - 1;
@@ -46,13 +44,12 @@ const SingleGame = () => {
     playerList: [{ name: "test" }],
     description: "test",
   };
-  console.log({ matchData });
 
   return (
     <PageWrapper>
       <Header />
       <GameInfoContainer title="Player's Game">
-        <GameInfoForm mockData={matchData} disabled={true} />
+        <GameInfoForm matchData={matchData} singleGameView={true} />
       </GameInfoContainer>
     </PageWrapper>
   );

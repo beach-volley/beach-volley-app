@@ -1,24 +1,32 @@
 import React from "react";
 import { useState } from "react";
 import { Form, Formik } from "formik";
-import { FormToggle } from "./inputcomponents";
 import { StyledButton } from "./styledbutton";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { CREATE_MATCH } from "../queries";
+import { CREATE_MATCH, CURRENT_USER } from "../queries";
+import { useQuery } from "@apollo/client";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import moment from "moment";
 
-import { TextInput, PickTime, PickDate, DropDown } from "./inputcomponents";
+import {
+  TextInput,
+  PickTime,
+  PickDate,
+  DropDown,
+  ToggleInput,
+  FormTextArea,
+} from "./inputcomponents";
 
-const CreateFieldSet = ({ mockData, disabled }) => {
+const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
   const [createMatch] = useMutation(CREATE_MATCH);
   const [playerName, setPlayerName] = useState("");
+  const currentUser = useQuery(CURRENT_USER);
 
   const SendInvite = (list, name) => {
     if (name === "") {
@@ -33,15 +41,15 @@ const CreateFieldSet = ({ mockData, disabled }) => {
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Formik
         initialValues={{
-          location: disabled ? mockData.location : "",
-          date: disabled ? mockData.date : new Date(),
-          startTime: disabled ? mockData.startTime : new Date(),
-          endTime: disabled ? mockData.endTime : new Date(),
-          numPlayers: disabled ? mockData.numPlayers : "",
-          difficultyLevel: disabled ? mockData.difficultyLevel : "",
-          publicToggle: disabled ? mockData.publicToggle : "true",
-          playerList: disabled ? mockData.playerList : [],
-          description: disabled ? mockData.description : "",
+          location: singleGameView ? matchData.location : "",
+          date: singleGameView ? matchData.date : new Date(),
+          startTime: singleGameView ? matchData.startTime : new Date(),
+          endTime: singleGameView ? matchData.endTime : new Date(),
+          numPlayers: singleGameView ? matchData.numPlayers : "",
+          difficultyLevel: singleGameView ? matchData.difficultyLevel : "",
+          publicToggle: singleGameView ? matchData.publicToggle : "true",
+          playerList: singleGameView ? matchData.playerList : [],
+          description: singleGameView ? matchData.description : "",
         }}
         validationSchema={Yup.object({
           location: Yup.string().required("Required"),
@@ -106,7 +114,7 @@ const CreateFieldSet = ({ mockData, disabled }) => {
         }}
       >
         {(props) => (
-          <FieldSet disabled={disabled}>
+          <FieldSet singleGameView={singleGameView}>
             <Form>
               <TextInput name="location" label="Location" required />
               <PickDate name="date" label="Date" required />
@@ -142,7 +150,7 @@ const CreateFieldSet = ({ mockData, disabled }) => {
                 ]}
               />
 
-              <FormToggle
+              <ToggleInput
                 label="Public"
                 name="publicToggle"
                 toggleYes="Public"
@@ -150,28 +158,30 @@ const CreateFieldSet = ({ mockData, disabled }) => {
                 checked={props.values.publicToggle}
               />
 
-              <AddPlayerInput
-                name="playerList"
-                label="Add player"
-                type="text"
-                value={playerName}
-                placeholder={"Enter Email"}
-                onChange={(e) => setPlayerName(e.target.value)}
-                extraComponent={
-                  <AddPlayerButton
-                    type="button"
-                    value="Add"
-                    onClick={() =>
-                      (props.values.playerList = SendInvite(
-                        props.values.playerList,
-                        playerName
-                      ))
-                    }
-                  >
-                    Add
-                  </AddPlayerButton>
-                }
-              />
+              {!singleGameView && (
+                <AddPlayerInput
+                  name="playerList"
+                  label="Add player"
+                  type="text"
+                  value={playerName}
+                  placeholder={"Enter Email"}
+                  onChange={(e) => setPlayerName(e.target.value)}
+                  extraComponent={
+                    <AddPlayerButton
+                      type="button"
+                      value="Add"
+                      onClick={() =>
+                        (props.values.playerList = SendInvite(
+                          props.values.playerList,
+                          playerName
+                        ))
+                      }
+                    >
+                      Add
+                    </AddPlayerButton>
+                  }
+                />
+              )}
 
               <InvitedPlayersBox>
                 <label htmlFor="playernames">Invited players</label>
@@ -180,17 +190,21 @@ const CreateFieldSet = ({ mockData, disabled }) => {
                     <p key={uuidv4()}>{player.name}</p>
                   ))}
                 </InvitedPlayers>
-              </InvitedPlayersBox>
 
-              <TextInput
+                <GameDescription
                 name="description"
-                label="Description"
                 placeholder="Write Game Details Here"
-                multiline
-                InputProps={{ disableUnderline: true }}
               />
 
-              <ConfirmGameButton type="submit">Confirm Game</ConfirmGameButton>
+              </InvitedPlayersBox>
+
+
+
+              {!singleGameView && (
+                <ConfirmGameButton type="submit" visible={currentUser}>
+                  Confirm Game
+                </ConfirmGameButton>
+              )}
             </Form>
           </FieldSet>
         )}
@@ -200,14 +214,17 @@ const CreateFieldSet = ({ mockData, disabled }) => {
 };
 
 const FieldSet = styled.fieldset`
-  pointer-events: ${(props) => (props.disabled ? "none" : "all")};
+  pointer-events: ${(props) => (props.singleGameView ? "none" : "all")};
   display: flex;
   flex-direction: column;
   padding: 2rem;
   border: none;
-
   label {
     color: white;
+  }
+
+  .MuiSvgIcon-root {
+    display: ${(props) => (props.singleGameView ? "none" : "initial")};
   }
 `;
 
@@ -216,6 +233,8 @@ const AddPlayerInput = styled(TextInput)`
     margin-left: 1.5rem;
   }
 `;
+
+
 
 const AddPlayerButton = styled(StyledButton)`
   width: 3rem;
@@ -229,8 +248,16 @@ const InvitedPlayersBox = styled.div`
   margin-left: auto;
 `;
 
+const GameDescription = styled(FormTextArea)`
+  width: 100%;
+  height: 5rem;
+  margin: 2rem 0;
+  overflow-y: scroll;
+  resize: none;
+`;
+
 const InvitedPlayers = styled.div`
-  text-align: left;
+  text-align: center;
   border-style: solid;
   border-width: 0.1rem;
   height: 5rem;

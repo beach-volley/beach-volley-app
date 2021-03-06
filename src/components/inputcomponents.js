@@ -5,53 +5,40 @@ import { TextField } from "formik-material-ui";
 import { TimePicker, DatePicker } from "formik-material-ui-pickers";
 import { Select } from "material-ui-formik-components/Select";
 
-export const TextInput = ({extraComponent, ...props }) => {
+export const TextInput = ({ extraComponent, ...props }) => {
   return (
-      <InputRowMUI>
-        <Field
-          component={TextField}
-          {...props}
-        />
-        {extraComponent}
-      </InputRowMUI>
+    <InputRowMUI>
+      <Field component={TextField} {...props} />
+      {extraComponent}
+    </InputRowMUI>
   );
 };
 
-export const PickTime = ({...props }) => {
+export const PickTime = ({ ...props }) => {
   return (
-      <InputRowMUI>
-        <Field
-          component={TimePicker}
-          {...props}
-        />
-      </InputRowMUI>
+    <InputRowMUI>
+      <Field component={TimePicker} {...props} />
+    </InputRowMUI>
   );
 };
 
-export const PickDate = ({...props }) => {
+export const PickDate = ({ ...props }) => {
   return (
-      <InputRowMUI>
-        <Field
-          component={DatePicker}
-          {...props}
-        />
-      </InputRowMUI>
+    <InputRowMUI>
+      <Field component={DatePicker} {...props} />
+    </InputRowMUI>
   );
 };
 
-export const DropDown = ({...props }) => {
+export const DropDown = ({ ...props }) => {
   return (
-      <InputRowMUI>
-        <Field
-          component={Select}
-          {...props}
-        />
-      </InputRowMUI>
+    <InputRowMUI>
+      <Field component={Select} {...props} />
+    </InputRowMUI>
   );
 };
 
-
-export const FormToggle = ({ label, ...props }) => {
+export const ToggleInput = ({ label, ...props }) => {
   const [field] = useField(props);
   return (
     <InputRowMUI>
@@ -83,10 +70,19 @@ export const FormToggle = ({ label, ...props }) => {
   );
 };
 
+export const FormTextArea = ({ label, ...props }) => {
+  const [field] = useField(props);
+  return (
+    <>
+      <label htmlFor={props.id || props.name}>{label}</label>
+      <textarea className="form-text-area" {...field} {...props} />
+    </>
+  );
+};
 
 const RadioContainer = styled.div`
   width: 50%;
-  margin-top: 2rem;
+  margin: 1rem 0;
   overflow: hidden;
   padding: 0.5rem;
   input {
@@ -124,13 +120,12 @@ const InputRowMUI = styled.div`
   margin-bottom: 1rem;
 
   label {
-      font-size: ${(props) => props.theme.fontSizes.medium};
-      flex: 1;
-      color: white !important;
+    font-size: ${(props) => props.theme.fontSizes.medium};
+    flex: 1;
+    color: white !important;
   }
 
   .MuiFormControl-root {
-    display: flex;
     flex-direction: row;
     margin: 0;
   }
@@ -177,11 +172,6 @@ const InputRowMUI = styled.div`
 
   .MuiSvgIcon-root {
     color: white;
-  }
-
-  textarea {
-    background: white;
-    color: black !important;
   }
 
   .MuiFormHelperText-root {

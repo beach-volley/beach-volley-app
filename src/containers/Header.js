@@ -8,7 +8,7 @@ const Header = () => {
   return (
     <Container>
       <Link to="/home">
-          <h1>LOGO</h1>
+        <h1>LOGO</h1>
       </Link>
       <Profile>
         <Link to="/create-game">

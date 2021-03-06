@@ -2,7 +2,7 @@ import React from "react";
 import firebase from "firebase";
 import { useQuery } from "@apollo/client";
 import { CURRENT_USER } from "../queries";
-import { StyledButton } from "../components/styledbutton";
+import { StyledButton } from "./styledbutton";
 import styled from "styled-components";
 
 const SignOutButton = () => {
@@ -19,6 +19,5 @@ const SignOut = styled(StyledButton)`
   height: 2rem;
   width: 7rem;
 `;
-
 
 export default SignOutButton;
