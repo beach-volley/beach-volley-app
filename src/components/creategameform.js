@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Form, Formik, Field } from "formik";
+import { Form, Formik } from "formik";
 import { FormToggle } from "./inputcomponents";
 import { StyledButton } from "./styledbutton";
 import styled from "styled-components";
@@ -10,14 +10,12 @@ import { CREATE_MATCH } from "../queries";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
-import { TimePicker, DatePicker } from "formik-material-ui-pickers";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { TextField } from "formik-material-ui";
 import moment from "moment";
-import { Select } from "material-ui-formik-components/Select";
-import Input from "@material-ui/core/Input";
 
-const CreateFormContainer = ({ mockData, disabled }) => {
+import { TextInput, PickTime, PickDate, DropDown } from "./inputcomponents";
+
+const CreateFieldSet = ({ mockData, disabled }) => {
   let history = useHistory();
   const [createMatch] = useMutation(CREATE_MATCH);
   const [playerName, setPlayerName] = useState("");
@@ -30,6 +28,7 @@ const CreateFormContainer = ({ mockData, disabled }) => {
     setPlayerName("");
     return tempList;
   };
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Formik
@@ -107,145 +106,142 @@ const CreateFormContainer = ({ mockData, disabled }) => {
         }}
       >
         {(props) => (
-          <FormContainer disabled={disabled}>
+          <FieldSet disabled={disabled}>
             <Form>
-              <InputRowMUI>
-                <Field
-                  component={TextField}
-                  name="location"
-                  label="Location"
-                  required
-                />
-              </InputRowMUI>
+              <TextInput name="location" label="Location" required />
+              <PickDate name="date" label="Date" required />
 
-              <InputRowMUI>
-                <Field
-                  component={DatePicker}
-                  name="date"
-                  label="Date"
-                  required
-                />
-              </InputRowMUI>
+              <PickTime
+                name="startTime"
+                label="Start Time"
+                ampm={false}
+                required
+              />
 
-              <InputRowMUI>
-                <Field
-                  component={TimePicker}
-                  name="startTime"
-                  label="Start Time"
-                  ampm={false}
-                  required
-                />
-              </InputRowMUI>
+              <PickTime name="endTime" label="End Time" ampm={false} required />
 
-              <InputRowMUI>
-                <Field
-                  component={TimePicker}
-                  name="endTime"
-                  label="End Time"
-                  ampm={false}
-                  required
-                />
-              </InputRowMUI>
+              <DropDown
+                name="numPlayers"
+                label="Players"
+                required
+                options={[
+                  { value: "1-2", label: "1-2" },
+                  { value: "2-4", label: "2-4" },
+                  { value: "4-6", label: "4-6" },
+                ]}
+              />
 
-              <InputRowMUI>
-                <Field
-                  style={{ color: "white" }}
-                  name="numPlayers"
-                  label="Players"
-                  required
-                  options={[
-                    { value: "1-2", label: "1-2" },
-                    { value: "2-4", label: "2-4" },
-                    { value: "4-6", label: "4-6" },
-                  ]}
-                  component={Select}
-                />
-              </InputRowMUI>
+              <DropDown
+                name="difficultyLevel"
+                label="Difficulty"
+                required
+                options={[
+                  { value: "easy", label: "Easy" },
+                  { value: "medium", label: "Medium" },
+                  { value: "hard", label: "Hard" },
+                ]}
+              />
 
-              <InputRowMUI>
-                <Field
-                  name="difficultyLevel"
-                  label="Difficulty"
-                  required
-                  options={[
-                    { value: "easy", label: "Easy" },
-                    { value: "medium", label: "Medium" },
-                    { value: "hard", label: "Hard" },
-                  ]}
-                  component={Select}
-                />
-              </InputRowMUI>
+              <FormToggle
+                label="Public"
+                name="publicToggle"
+                toggleYes="Public"
+                toggleNo="Private"
+                checked={props.values.publicToggle}
+              />
 
-              <InputRowMUI>
-                <FormToggle
-                  label="Public"
-                  name="publicToggle"
-                  toggleYes="Public"
-                  toggleNo="Private"
-                  checked={props.values.publicToggle}
-                />
-              </InputRowMUI>
+              <AddPlayerInput
+                name="playerList"
+                label="Add player"
+                type="text"
+                value={playerName}
+                placeholder={"Enter Email"}
+                onChange={(e) => setPlayerName(e.target.value)}
+                extraComponent={
+                  <AddPlayerButton
+                    type="button"
+                    value="Add"
+                    onClick={() =>
+                      (props.values.playerList = SendInvite(
+                        props.values.playerList,
+                        playerName
+                      ))
+                    }
+                  >
+                    Add
+                  </AddPlayerButton>
+                }
+              />
 
-              <InputRowMUI>
-                <label>Add player</label>
-                <Input
-                  label="Add player"
-                  type="text"
-                  value={playerName}
-                  placeholder={"Enter Email"}
-                  onChange={(e) => setPlayerName(e.target.value)}
-                />
-                <AddButton
-                  type="button"
-                  value="Add"
-                  onClick={() =>
-                    (props.values.playerList = SendInvite(
-                      props.values.playerList,
-                      playerName
-                    ))
-                  }
-                >
-                  Add
-                </AddButton>
-              </InputRowMUI>
-
-              <InputRowMUI>
-                <label>Invited players</label>
-                <InvitedPlayersBox>
+              <InvitedPlayersBox>
+                <label htmlFor="playernames">Invited players</label>
+                <InvitedPlayers>
                   {props.values.playerList.map((player) => (
                     <p key={uuidv4()}>{player.name}</p>
                   ))}
-                </InvitedPlayersBox>
-              </InputRowMUI>
+                </InvitedPlayers>
+              </InvitedPlayersBox>
 
-              <InputRowMUI>
-                <label>Info</label>
-                <Field
-                  component={TextField}
-                  name="description"
-                  variant="outlined"
-                  placeholder="Write Game Details Here"
-                  multiline
-                  rows={4}
-                />
-              </InputRowMUI>
-              <SubmitButton type="submit">Confirm Game</SubmitButton>
+              <TextInput
+                name="description"
+                label="Description"
+                placeholder="Write Game Details Here"
+                multiline
+                InputProps={{ disableUnderline: true }}
+              />
+
+              <ConfirmGameButton type="submit">Confirm Game</ConfirmGameButton>
             </Form>
-          </FormContainer>
+          </FieldSet>
         )}
       </Formik>
     </MuiPickersUtilsProvider>
   );
 };
 
-const FormContainer = styled.div`
+const FieldSet = styled.fieldset`
   pointer-events: ${(props) => (props.disabled ? "none" : "all")};
   display: flex;
   flex-direction: column;
   padding: 2rem;
+  border: none;
+
+  label {
+    color: white;
+  }
 `;
 
-const SubmitButton = styled(StyledButton)`
+const AddPlayerInput = styled(TextInput)`
+  .MuiInput-underline::before {
+    margin-left: 1.5rem;
+  }
+`;
+
+const AddPlayerButton = styled(StyledButton)`
+  width: 3rem;
+  padding: 0.1rem;
+  height: 80%;
+  margin-top: auto;
+`;
+
+const InvitedPlayersBox = styled.div`
+  width: 50%;
+  margin-left: auto;
+`;
+
+const InvitedPlayers = styled.div`
+  text-align: left;
+  border-style: solid;
+  border-width: 0.1rem;
+  height: 5rem;
+  background-color: white;
+  overflow-y: scroll;
+  width: 100%;
+  padding: 0;
+  margin-left: auto;
+`;
+
+const ConfirmGameButton = styled(StyledButton)`
   height: 2rem;
   position: absolute;
   bottom: 0;
@@ -254,97 +250,4 @@ const SubmitButton = styled(StyledButton)`
   margin-bottom: 1rem;
 `;
 
-const AddButton = styled(StyledButton)`
-  width: 3rem;
-  padding: 0.1rem;
-  border-style: solid;
-  border-color: black;
-  position: absolute;
-  right: 2rem;
-  border-radius: 0;
-`;
-
-const InvitedPlayersBox = styled.div`
-  text-align: left;
-  border-style: solid;
-  border-width: 0.1rem;
-  height: 5rem;
-  background-color: white;
-  border-radius: 0.3rem;
-  padding: 0.5rem;
-  overflow-y: scroll;
-  flex: 2;
-`;
-
-//override material-ui css
-const InputRowMUI = styled.div`
-  display: flex;
-  margin-bottom: 1rem;
-  label {
-    color: white !important;
-    font-size: ${(props) => props.theme.fontSizes.medium};
-    flex: 1.75;
-    text-align: left;
-  }
-
-  .MuiFormControl-root {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    margin: 0;
-  }
-
-  .MuiInputLabel-formControl {
-    transform: none;
-    position: relative;
-  }
-
-  .MuiInput-root, .MuiTextField-root {
-    flex: 2;
-  }
-
-  .MuiInput-underline::before {
-    transition: none;
-    border-bottom: 1px solid white;
-  }
-
-  .MuiInput-underline::after {
-    transition: none;
-    border-bottom: none;
-    border-color: white;
-  }
-
-  .MuiInputBase-input {
-    color: white;
-    text-align: center;
-  }
-
-  & .MuiFormLabel-root {
-    display: flex;
-    align-items: flex-end;
-    font-family: inherit;
-  }
-
-  & .MuiFormLabel-root:focus {
-    color: none;
-  }
-
-  .MuiSelect-nativeInput {
-    display: none;
-  }
-
-  .MuiSelect-select.MuiSelect-select {
-    padding-right: 0;
-  }
-
-  .MuiSvgIcon-root {
-    color: white;
-  }
-
-  .MuiFormHelperText-root {
-    position: absolute;
-    left: 0;
-  }
-`;
-
-export default CreateFormContainer;
+export default CreateFieldSet;

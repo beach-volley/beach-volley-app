@@ -1,44 +1,61 @@
 import styled from "styled-components";
 import { useField } from "formik";
+import { Field } from "formik";
+import { TextField } from "formik-material-ui";
+import { TimePicker, DatePicker } from "formik-material-ui-pickers";
+import { Select } from "material-ui-formik-components/Select";
 
-const FormTextInput = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
-
+export const TextInput = ({extraComponent, ...props }) => {
   return (
-    <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <ErrorContainer>
-        <ErrorBox>
-          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-        </ErrorBox>
-        <input {...field} {...props} />
-      </ErrorContainer>
-    </>
+      <InputRowMUI>
+        <Field
+          component={TextField}
+          {...props}
+        />
+        {extraComponent}
+      </InputRowMUI>
   );
 };
 
-const FormDropDown = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
-
+export const PickTime = ({...props }) => {
   return (
-    <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <ErrorContainer>
-        <ErrorBox>
-          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-        </ErrorBox>
-        <select {...field} {...props} />
-      </ErrorContainer>
-    </>
+      <InputRowMUI>
+        <Field
+          component={TimePicker}
+          {...props}
+        />
+      </InputRowMUI>
   );
 };
 
-const FormToggle = ({ label, ...props }) => {
+export const PickDate = ({...props }) => {
+  return (
+      <InputRowMUI>
+        <Field
+          component={DatePicker}
+          {...props}
+        />
+      </InputRowMUI>
+  );
+};
+
+export const DropDown = ({...props }) => {
+  return (
+      <InputRowMUI>
+        <Field
+          component={Select}
+          {...props}
+        />
+      </InputRowMUI>
+  );
+};
+
+
+export const FormToggle = ({ label, ...props }) => {
   const [field] = useField(props);
   return (
-    <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-
+    <InputRowMUI>
+      <label htmlFor={props.id || props.name}></label>
       <RadioContainer>
         <input
           {...field}
@@ -62,80 +79,22 @@ const FormToggle = ({ label, ...props }) => {
           {props.toggleNo}
         </label>
       </RadioContainer>
-    </>
+    </InputRowMUI>
   );
 };
 
-const FormDatePicker = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
-  const minDate = new Date().toISOString().split("T")[0];
-  return (
-    <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <ErrorContainer>
-        <ErrorBox>
-          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-        </ErrorBox>
-        <input {...field} {...props} type="date" min={minDate} />
-      </ErrorContainer>
-    </>
-  );
-};
-
-const FormTextArea = ({ label, ...props }) => {
-  const [field] = useField(props);
-  return (
-    <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <textarea className="form-text-area" {...field} {...props} />
-    </>
-  );
-};
-
-const FormTimePicker = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
-
-  return (
-    <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <ErrorContainer>
-        <ErrorBox>
-          {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-        </ErrorBox>
-        <input type="time" {...field} {...props} />
-      </ErrorContainer>
-    </>
-  );
-};
-
-const ErrorContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 2;
-`;
-
-const ErrorBox = styled.div`
-  height: 1.5rem;
-  margin-top: -1.5rem;
-`;
-
-const Error = styled.div`
-  color: red;
-  margin-right: 1rem;
-`;
 
 const RadioContainer = styled.div`
+  width: 50%;
+  margin-top: 2rem;
   overflow: hidden;
-  flex: 2;
   padding: 0.5rem;
-
   input {
     position: absolute !important;
     clip: rect(0, 0, 0, 0);
     border: 0;
     overflow: hidden;
   }
-
   & .toggle-label {
     background-color: #e4e4e4;
     color: black !important;
@@ -159,11 +118,74 @@ const RadioContainer = styled.div`
   }
 `;
 
-export {
-  FormTextInput,
-  FormDropDown,
-  FormDatePicker,
-  FormTimePicker,
-  FormToggle,
-  FormTextArea,
-};
+//override material-ui css
+const InputRowMUI = styled.div`
+  display: flex;
+  margin-bottom: 1rem;
+
+  label {
+      font-size: ${(props) => props.theme.fontSizes.medium};
+      flex: 1;
+      color: white !important;
+  }
+
+  .MuiFormControl-root {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+  }
+
+  .MuiInputLabel-formControl {
+    transform: none;
+    position: relative;
+  }
+
+  .MuiInput-root,
+  .MuiTextField-root {
+    flex: 1;
+  }
+
+  .MuiInput-underline::before {
+    transition: none;
+    border-bottom: 1px solid white;
+  }
+
+  .MuiInput-underline::after {
+    transition: none;
+    border-bottom: none;
+    border-color: white;
+  }
+
+  .MuiInputBase-input {
+    color: white;
+    text-align: center;
+  }
+
+  & .MuiFormLabel-root {
+    display: flex;
+    align-items: flex-end;
+    font-family: inherit;
+  }
+
+  .MuiSelect-nativeInput {
+    display: none;
+  }
+
+  .MuiSelect-select.MuiSelect-select {
+    padding-right: 0;
+  }
+
+  .MuiSvgIcon-root {
+    color: white;
+  }
+
+  textarea {
+    background: white;
+    color: black !important;
+  }
+
+  .MuiFormHelperText-root {
+    position: absolute;
+    left: 0;
+  }
+`;

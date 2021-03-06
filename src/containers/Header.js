@@ -8,9 +8,7 @@ const Header = () => {
   return (
     <Container>
       <Link to="/home">
-        <Logo>
           <h1>LOGO</h1>
-        </Logo>
       </Link>
       <Profile>
         <Link to="/create-game">
@@ -37,21 +35,12 @@ const Container = styled.div`
     margin-left: ${(props) => props.theme.margins.large};
   }
 `;
-
-const Logo = styled.div`
-  margin-right: 1rem;
+const Profile = styled.div`
+  margin-left: 0.5rem;
 `;
 
 const CreateGameButton = styled(StyledButton)`
-  height: 3rem;
+  height: 2rem;
   width: 10rem;
   margin-right: 1rem;
-`;
-
-const Profile = styled.div`
-  display: flex;
-  align-items: center;
-  h1 {
-    margin-left: 1rem;
-  }
 `;
