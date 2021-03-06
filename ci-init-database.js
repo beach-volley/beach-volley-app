@@ -4,7 +4,7 @@ async function main() {
   const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
   try {
     await pool.query("create role beachvolley_db_owner login encrypted password 'dev_password';");
-    await pool.query("alter database beachvolley owner to beachvolley_db_owner");
+    await pool.query("alter database beachvolley owner to beachvolley_db_owner;");
     await pool.query("revoke all on schema public from public;");
     await pool.query("create role beachvolley_graphile login encrypted password 'dev_password';");
     await pool.query("create role beachvolley_graphile_authenticated;");
