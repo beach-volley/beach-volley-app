@@ -2,19 +2,28 @@ const express = require("express");
 const cors = require("cors");
 const { postgraphile } = require("postgraphile");
 const admin = require("firebase-admin");
-const firebaseAdminPrivateKey = require("./firebase-admin-private-key.json");
+
+const getFirebaseAdminPrivateKey = () => {
+  if (process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
+    return JSON.parse(process.env.FIREBASE_ADMIN_PRIVATE_KEY);
+  }
+
+  return require("./firebase-admin-private-key.json");
+}
 
 admin.initializeApp({
-  credential: admin.credential.cert(firebaseAdminPrivateKey),
+  credential: admin.credential.cert(getFirebaseAdminPrivateKey()),
 });
 
 const app = express();
 
+const DATABASE_URL = process.env.DATABASE_URL || "postgres://beachvolley_graphile:dev_password@localhost:5432/beachvolley";
+const DATABASE_ADMIN_URL = process.env.DATABASE_ADMIN_URL || "postgres://beachvolley_db_admin:dev_password@localhost:5432/beachvolley";
+
 app.use(cors());
 app.use(
   postgraphile(
-    process.env.DATABASE_URL ||
-      "postgres://beachvolley_graphile:dev_password@localhost:5432/beachvolley",
+    DATABASE_URL,
     "beachvolley_public",
     {
       subscriptions: true,
@@ -33,8 +42,7 @@ app.use(
       allowExplain: true,
       enableQueryBatching: true,
       legacyRelations: "omit",
-      ownerConnectionString:
-        "postgres://beachvolley_db_admin:dev_password@localhost:5432/beachvolley",
+      ownerConnectionString: DATABASE_ADMIN_URL,
       async pgSettings(req) {
         const token = (req.headers.authorization ?? '').split('Bearer ')[1];
 

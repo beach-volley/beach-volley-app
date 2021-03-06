@@ -443,6 +443,9 @@ input MatchInput {
 
   """List of participant names who have joined the match."""
   participants: [String]
+
+  """Host and creator of the match."""
+  hostId: Int
 }
 
 """A range of `Datetime`."""
