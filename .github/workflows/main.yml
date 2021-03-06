@@ -20,32 +20,18 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm run build --if-present
-        env:
-          ENVIRONMENT: staging
-      # Disable tests as there is no any tests currently
-      # - run: npm test
-      - name: Archive Production Artifact
-        uses: actions/upload-artifact@master
-        with:
-          name: build
-          path: build
 
   deploy:
     name: Deploy to staging
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@master
-      - name: Download Artifact
-        uses: actions/download-artifact@master
-        with:
-          name: build
-          path: build
+      - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - run: npm ci
       - name: Run migrations
         run: ./node_modules/.bin/graphile-migrate migrate
         env:
