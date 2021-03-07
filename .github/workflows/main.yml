@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: '14'
       - run: npm ci
-      - run: npm run build --if-present
+      - run: npm run build:staging
       - name: Run migrations
         run: ./node_modules/.bin/graphile-migrate migrate
         env:
