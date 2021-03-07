@@ -199,7 +199,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
 
               {!singleGameView && (
                 <ConfirmGameButton type="submit" visible={currentUser}>
-                  Confirm Game
+                  Publish Game
                 </ConfirmGameButton>
               )}
             </Form>
