@@ -1,26 +1,32 @@
 import React from "react";
 import { useState } from "react";
-import { Form, Formik, Field } from "formik";
-import { FormToggle } from "./inputcomponents";
+import { Form, Formik } from "formik";
 import { StyledButton } from "./styledbutton";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { CREATE_MATCH } from "../queries";
+import { CREATE_MATCH, CURRENT_USER } from "../queries";
+import { useQuery } from "@apollo/client";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
-import { TimePicker, DatePicker } from "formik-material-ui-pickers";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { TextField } from "formik-material-ui";
 import moment from "moment";
-import { Select } from "material-ui-formik-components/Select";
-import Input from "@material-ui/core/Input";
 
-const CreateFormContainer = ({ mockData, disabled }) => {
+import {
+  TextInput,
+  PickTime,
+  PickDate,
+  DropDown,
+  ToggleInput,
+  FormTextArea,
+} from "./inputcomponents";
+
+const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
   const [createMatch] = useMutation(CREATE_MATCH);
   const [playerName, setPlayerName] = useState("");
+  const currentUser = useQuery(CURRENT_USER);
 
   const SendInvite = (list, name) => {
     if (name === "") {
@@ -30,19 +36,20 @@ const CreateFormContainer = ({ mockData, disabled }) => {
     setPlayerName("");
     return tempList;
   };
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Formik
         initialValues={{
-          location: disabled ? mockData.location : "",
-          date: disabled ? mockData.date : new Date(),
-          startTime: disabled ? mockData.startTime : new Date(),
-          endTime: disabled ? mockData.endTime : new Date(),
-          numPlayers: disabled ? mockData.numPlayers : "",
-          difficultyLevel: disabled ? mockData.difficultyLevel : "",
-          publicToggle: disabled ? mockData.publicToggle : "true",
-          playerList: disabled ? mockData.playerList : [],
-          description: disabled ? mockData.description : "",
+          location: singleGameView ? matchData.location : "",
+          date: singleGameView ? matchData.date : new Date(),
+          startTime: singleGameView ? matchData.startTime : new Date(),
+          endTime: singleGameView ? matchData.endTime : new Date(),
+          numPlayers: singleGameView ? matchData.numPlayers : "",
+          difficultyLevel: singleGameView ? matchData.difficultyLevel : "",
+          publicToggle: singleGameView ? matchData.publicToggle : "true",
+          playerList: singleGameView ? matchData.playerList : [],
+          description: singleGameView ? matchData.description : "",
         }}
         validationSchema={Yup.object({
           location: Yup.string().required("Required"),
@@ -65,8 +72,6 @@ const CreateFormContainer = ({ mockData, disabled }) => {
           setTimeout(() => {
             alert(JSON.stringify(values, null, 2));
           }, 500);
-
-          console.log(values);
 
           createMatch({
             variables: {
@@ -109,143 +114,159 @@ const CreateFormContainer = ({ mockData, disabled }) => {
         }}
       >
         {(props) => (
-          <FormContainer disabled={disabled}>
+          <FieldSet singleGameView={singleGameView}>
             <Form>
-              <InputRowMUI>
-                <Field
-                  component={TextField}
-                  name="location"
-                  label="Location"
-                  required
-                />
-              </InputRowMUI>
+              <TextInput name="location" label="Location" required />
+              <PickDate name="date" label="Date" required />
 
-              <InputRowMUI>
-                <Field
-                  component={DatePicker}
-                  name="date"
-                  label="Date"
-                  required
-                />
-              </InputRowMUI>
+              <PickTime
+                name="startTime"
+                label="Start Time"
+                ampm={false}
+                required
+              />
 
-              <InputRowMUI>
-                <Field
-                  component={TimePicker}
-                  name="startTime"
-                  label="Start Time"
-                  required
-                />
-              </InputRowMUI>
+              <PickTime name="endTime" label="End Time" ampm={false} required />
 
-              <InputRowMUI>
-                <Field
-                  component={TimePicker}
-                  name="endTime"
-                  label="End Time"
-                  required
-                />
-              </InputRowMUI>
+              <DropDown
+                name="numPlayers"
+                label="Players"
+                required
+                options={[
+                  { value: "1-2", label: "1-2" },
+                  { value: "2-4", label: "2-4" },
+                  { value: "4-6", label: "4-6" },
+                ]}
+              />
 
-              <InputRowMUI>
-                <Field
-                  style={{ color: "white" }}
-                  name="numPlayers"
-                  label="Players"
-                  required
-                  options={[
-                    { value: "1-2", label: "1-2" },
-                    { value: "2-4", label: "2-4" },
-                    { value: "4-6", label: "4-6" },
-                  ]}
-                  component={Select}
-                />
-              </InputRowMUI>
+              <DropDown
+                name="difficultyLevel"
+                label="Difficulty"
+                required
+                options={[
+                  { value: "easy", label: "Easy" },
+                  { value: "medium", label: "Medium" },
+                  { value: "hard", label: "Hard" },
+                ]}
+              />
 
-              <InputRowMUI>
-                <Field
-                  style={{ color: "white" }}
-                  name="difficultyLevel"
-                  label="Difficulty"
-                  required
-                  options={[
-                    { value: "easy", label: "Easy" },
-                    { value: "medium", label: "Medium" },
-                    { value: "hard", label: "Hard" },
-                  ]}
-                  component={Select}
-                />
-              </InputRowMUI>
+              <ToggleInput
+                label="Public"
+                name="publicToggle"
+                toggleYes="Public"
+                toggleNo="Private"
+                checked={props.values.publicToggle}
+              />
 
-              <InputRowMUI>
-                <FormToggle
-                  label="Public"
-                  name="publicToggle"
-                  toggleYes="Public"
-                  toggleNo="Private"
-                  checked={props.values.publicToggle}
-                />
-              </InputRowMUI>
-
-              <InputRowMUI>
-                <label style={{ marginRight: 65 }}>Add player</label>
-                <Input
+              {!singleGameView && (
+                <AddPlayerInput
+                  name="playerList"
+                  label="Add player"
                   type="text"
                   value={playerName}
                   placeholder={"Enter Email"}
                   onChange={(e) => setPlayerName(e.target.value)}
-                />
-                <AddButton
-                  type="button"
-                  value="Add"
-                  onClick={() =>
-                    (props.values.playerList = SendInvite(
-                      props.values.playerList,
-                      playerName
-                    ))
+                  extraComponent={
+                    <AddPlayerButton
+                      type="button"
+                      value="Add"
+                      onClick={() =>
+                        (props.values.playerList = SendInvite(
+                          props.values.playerList,
+                          playerName
+                        ))
+                      }
+                    >
+                      Add
+                    </AddPlayerButton>
                   }
-                >
-                  Add
-                </AddButton>
-              </InputRowMUI>
+                />
+              )}
 
-              <InputRow>
-                <label>Invited players</label>
-                <InvitedPlayersBox>
+              <TextAreaContainer>
+                <label htmlFor="playernames">Invited players</label>
+                <InvitedPlayers>
                   {props.values.playerList.map((player) => (
                     <p key={uuidv4()}>{player.name}</p>
                   ))}
-                </InvitedPlayersBox>
-              </InputRow>
+                </InvitedPlayers>
 
-              <InputRowMUI>
-                <label style={{ marginRight: 115 }}>Info</label>
-                <Field
-                  component={TextField}
+                <GameDescription
                   name="description"
-                  variant="outlined"
                   placeholder="Write Game Details Here"
-                  multiline
-                  rows={4}
                 />
-              </InputRowMUI>
-              <SubmitButton type="submit">Confirm Game</SubmitButton>
+              </TextAreaContainer>
+
+              {!singleGameView && (
+                <ConfirmGameButton type="submit" visible={currentUser}>
+                  Publish Game
+                </ConfirmGameButton>
+              )}
             </Form>
-          </FormContainer>
+          </FieldSet>
         )}
       </Formik>
     </MuiPickersUtilsProvider>
   );
 };
 
-const FormContainer = styled.div`
-  pointer-events: ${(props) => (props.disabled ? "none" : "all")};
+const FieldSet = styled.fieldset`
+  pointer-events: ${(props) => (props.singleGameView ? "none" : "all")};
   display: flex;
   flex-direction: column;
   padding: 2rem;
+  border: none;
+  label {
+    color: white;
+  }
+
+  .MuiSvgIcon-root {
+    display: ${(props) => (props.singleGameView ? "none" : "initial")};
+  }
 `;
 
-const SubmitButton = styled(StyledButton)`
+const AddPlayerInput = styled(TextInput)`
+  .MuiInput-underline::before {
+    margin-left: 1.5rem;
+  }
+`;
+
+const AddPlayerButton = styled(StyledButton)`
+  width: 3rem;
+  padding: 0.1rem;
+  height: 80%;
+  margin-top: auto;
+`;
+
+const TextAreaContainer = styled.div`
+  @media only screen and (min-width: ${(props) =>
+      props.theme.mediaQuery.tabletWidth}) {
+    width: 50%;
+    margin-left: auto;
+  }
+`;
+
+const GameDescription = styled(FormTextArea)`
+  width: 100%;
+  height: 5rem;
+  margin: 2rem 0;
+  overflow-y: scroll;
+  resize: none;
+`;
+
+const InvitedPlayers = styled.div`
+  text-align: center;
+  border-style: solid;
+  border-width: 0.1rem;
+  height: 5rem;
+  background-color: white;
+  overflow-y: scroll;
+  width: 100%;
+  padding: 0;
+  margin-left: auto;
+`;
+
+const ConfirmGameButton = styled(StyledButton)`
   height: 2rem;
   position: absolute;
   bottom: 0;
@@ -254,65 +275,4 @@ const SubmitButton = styled(StyledButton)`
   margin-bottom: 1rem;
 `;
 
-const AddButton = styled(StyledButton)`
-  width: 3rem;
-  padding: 0.1rem;
-  border-style: solid;
-  border-color: black;
-  position: absolute;
-  right: 2rem;
-  border-radius: 0;
-`;
-
-const InvitedPlayersBox = styled.div`
-  text-align: left;
-  border-style: solid;
-  border-width: 0.1rem;
-  height: 5rem;
-  background-color: white;
-  border-radius: 0.3rem;
-  padding: 0.5rem;
-  overflow-y: scroll;
-  flex: 2;
-`;
-
-const InputRowMUI = styled.div`
-  display: flex;
-  margin-bottom: 2rem;
-
-  label {
-    color: white;
-    font-size: ${(props) => props.theme.fontSizes.medium};
-  }
-  input,
-  select,
-  textarea {
-    color: white;
-  }
-`;
-
-const InputRow = styled.div`
-  display: flex;
-  margin-bottom: 2rem;
-  align-items: flex-start;
-  label {
-    color: white;
-    font-size: ${(props) => props.theme.fontSizes.medium};
-    flex: 1;
-    margin-right: 1rem;
-  }
-  input,
-  select,
-  textarea {
-    flex: 2;
-    text-align: center;
-  }
-  & .form-text-area {
-    height: 10rem;
-    margin-bottom: 3rem;
-    border-radius: 0.3rem;
-    resize: none;
-  }
-`;
-
-export default CreateFormContainer;
+export default CreateFieldSet;

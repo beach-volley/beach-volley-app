@@ -8,16 +8,13 @@ const Header = () => {
   return (
     <Container>
       <Link to="/home">
-        <Logo>
-          <h1>LOGO</h1>
-        </Logo>
+        <h1>LOGO</h1>
       </Link>
       <Profile>
         <Link to="/create-game">
           <CreateGameButton>Create Game</CreateGameButton>
         </Link>
         <SignOutButton />
-        <h1>ICON</h1>
       </Profile>
     </Container>
   );
@@ -30,29 +27,22 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   grid-row: 1;
-
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     justify-content: space-between;
     margin-right: ${(props) => props.theme.margins.large};
     margin-left: ${(props) => props.theme.margins.large};
   }
-`;
-
-const Logo = styled.div`
-  margin-right: 1rem;
-`;
-
-const CreateGameButton = styled(StyledButton)`
-  height: 3rem;
-  width: 10rem;
-  margin-right: 1rem;
-`;
-
-const Profile = styled.div`
-  display: flex;
-  align-items: center;
   h1 {
     margin-left: 1rem;
   }
+`;
+const Profile = styled.div`
+  margin: 0 1rem 0 auto;
+`;
+
+const CreateGameButton = styled(StyledButton)`
+  height: 2rem;
+  width: 10rem;
+  margin-right: 1rem;
 `;

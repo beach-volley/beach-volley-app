@@ -11,6 +11,7 @@ const GlobalStyle = createGlobalStyle`
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+    height: 100%;
   }
 
   input, select {
@@ -21,6 +22,11 @@ const GlobalStyle = createGlobalStyle`
             -webkit-appearance: none;
             -moz-appearance: none;
 }
+
+h1, h2, p, span, input, textarea, label, body, button, html {
+  font-family: "sans-serif", "Roboto";
+}
+
 `;
 
 const theme = {
@@ -36,7 +42,6 @@ const theme = {
     medium: "5rem",
     large: "10rem",
   },
-  fonts: ["sans-serif", "Roboto"],
   fontSizes: {
     small: "0.75em",
     medium: "1.5em",
