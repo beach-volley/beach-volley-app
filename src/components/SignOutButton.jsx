@@ -9,7 +9,7 @@ const SignOutButton = () => {
   const currentUser = useQuery(CURRENT_USER);
 
   if (currentUser?.data?.currentUser) {
-    return <SignOut onClick={()=>firebase.auth().signOut}>Sign Out</SignOut>;
+    return <SignOut onClick={() => firebase.auth().signOut}>Sign Out</SignOut>;
   }
 
   return null;

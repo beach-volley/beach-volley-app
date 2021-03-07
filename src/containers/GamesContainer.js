@@ -14,20 +14,19 @@ const Games = () => {
   return (
     <ListContainer>
       <ColumnDescriptions>
-      
-      <p>Location</p>
-      <p>Time</p>
-      <p>Number of players</p>
+        <p>Location</p>
+        <p>Time</p>
+        <p>Number of players</p>
       </ColumnDescriptions>
       {matches.data?.matches.edges.map(({ node }) => (
         <ListStyle key={node.nodeId}>
           <RowWrapper>
-          <GameItem
-            id={node.id}
-            location={node.location}
-            time={node.time}
-            players={node.playerLimit}
-          />
+            <GameItem
+              id={node.id}
+              location={node.location}
+              time={node.time}
+              players={node.playerLimit}
+            />
           </RowWrapper>
         </ListStyle>
       ))}
@@ -52,7 +51,6 @@ const ListStyle = styled.div`
   margin: 0.5rem 0;
 `;
 
-
 const RowWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -64,11 +62,11 @@ const RowWrapper = styled.div`
     justify-content: space-between;
   }
   p {
-  color: white;
-  font-size: ${(props) => props.theme.fontSizes.small};
-  margin-left: ${(props) => props.theme.margins.small};
-  font-weight: 900;
-  flex: 1;
+    color: white;
+    font-size: ${(props) => props.theme.fontSizes.small};
+    margin-left: ${(props) => props.theme.margins.small};
+    font-weight: 900;
+    flex: 1;
   }
 
   p:last-child {

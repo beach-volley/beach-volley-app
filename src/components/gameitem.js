@@ -45,7 +45,6 @@ const JoinGameButton = styled(StyledButton)`
   margin-left: 1rem;
   width: 3.5rem;
   height: 2rem;
-
 `;
 
 export default ProjectItem;

@@ -39,7 +39,6 @@ const Container = styled.div`
 `;
 const Profile = styled.div`
   margin: 0 1rem 0 auto;
-  
 `;
 
 const CreateGameButton = styled(StyledButton)`
