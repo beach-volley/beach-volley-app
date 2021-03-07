@@ -4,8 +4,6 @@ const { postgraphile } = require("postgraphile");
 const admin = require("firebase-admin");
 
 const getFirebaseAdminPrivateKey = () => {
-  console.log('in env var', { a: process.env.FIREBASE_ADMIN_PRIVATE_KEY });
-
   if (process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
     return JSON.parse(process.env.FIREBASE_ADMIN_PRIVATE_KEY);
   }
@@ -13,11 +11,8 @@ const getFirebaseAdminPrivateKey = () => {
   return require("./firebase-admin-private-key.json");
 }
 
-const firebaseAdminPrivateKey = getFirebaseAdminPrivateKey();
-console.log('result', typeof firebaseAdminPrivateKey, firebaseAdminPrivateKey);
-
 admin.initializeApp({
-  credential: admin.credential.cert(firebaseAdminPrivateKey),
+  credential: admin.credential.cert(getFirebaseAdminPrivateKey()),
 });
 
 const app = express();
