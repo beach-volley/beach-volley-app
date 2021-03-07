@@ -27,16 +27,19 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   grid-row: 1;
-
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     justify-content: space-between;
     margin-right: ${(props) => props.theme.margins.large};
     margin-left: ${(props) => props.theme.margins.large};
   }
+  h1 {
+    margin-left: 1rem;
+  }
 `;
 const Profile = styled.div`
-  margin-left: 0.5rem;
+  margin: 0 1rem 0 auto;
+  
 `;
 
 const CreateGameButton = styled(StyledButton)`

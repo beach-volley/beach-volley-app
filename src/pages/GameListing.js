@@ -45,6 +45,9 @@ const PageWrapper = styled.div`
   display: grid;
   height: 100vh;
   grid-template-rows: 8vh 15vh auto;
+  #firebaseui_container {
+    height: 10vh;
+  }
 `;
 
 const TitleTextBox = styled.div`
