@@ -4,14 +4,12 @@ const { postgraphile } = require("postgraphile");
 const admin = require("firebase-admin");
 
 const getFirebaseAdminPrivateKey = () => {
-  console.log('in env var', process.env.FIREBASE_ADMIN_PRIVATE_KEY);
+  console.log('in env var', { a: process.env.FIREBASE_ADMIN_PRIVATE_KEY });
 
   if (process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
-    console.log('choice A');
     return JSON.parse(process.env.FIREBASE_ADMIN_PRIVATE_KEY);
   }
 
-  console.log('choice B');
   return require("./firebase-admin-private-key.json");
 }
 
