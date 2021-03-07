@@ -192,13 +192,10 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 </InvitedPlayers>
 
                 <GameDescription
-                name="description"
-                placeholder="Write Game Details Here"
-              />
-
+                  name="description"
+                  placeholder="Write Game Details Here"
+                />
               </InvitedPlayersBox>
-
-
 
               {!singleGameView && (
                 <ConfirmGameButton type="submit" visible={currentUser}>
@@ -226,6 +223,7 @@ const FieldSet = styled.fieldset`
   .MuiSvgIcon-root {
     display: ${(props) => (props.singleGameView ? "none" : "initial")};
   }
+  
 `;
 
 const AddPlayerInput = styled(TextInput)`
@@ -233,8 +231,6 @@ const AddPlayerInput = styled(TextInput)`
     margin-left: 1.5rem;
   }
 `;
-
-
 
 const AddPlayerButton = styled(StyledButton)`
   width: 3rem;

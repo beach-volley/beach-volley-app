@@ -33,7 +33,10 @@ export const PickDate = ({ ...props }) => {
 export const DropDown = ({ ...props }) => {
   return (
     <InputRowMUI>
-      <Field component={Select} {...props} />
+      <Field
+        {...props}
+        component={Select}
+      />
     </InputRowMUI>
   );
 };
@@ -178,4 +181,9 @@ const InputRowMUI = styled.div`
     position: absolute;
     left: 0;
   }
+
+  .MuiPopover-paper:enabled {
+    margin-top: 2.5rem !important;
+  }
+
 `;
