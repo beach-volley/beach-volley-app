@@ -33,10 +33,7 @@ export const PickDate = ({ ...props }) => {
 export const DropDown = ({ ...props }) => {
   return (
     <InputRowMUI>
-      <Field
-        {...props}
-        component={Select}
-      />
+      <Field {...props} component={Select} />
     </InputRowMUI>
   );
 };
@@ -84,10 +81,17 @@ export const FormTextArea = ({ label, ...props }) => {
 };
 
 const RadioContainer = styled.div`
-  width: 50%;
-  margin: 1rem 0;
+  width: 100%;
+  margin-top: 1rem;
   overflow: hidden;
   padding: 0.5rem;
+  text-align: center;
+
+  @media only screen and (min-width: ${(props) =>
+      props.theme.mediaQuery.tabletWidth}) {
+    width: 50%;
+  }
+
   input {
     position: absolute !important;
     clip: rect(0, 0, 0, 0);
@@ -181,9 +185,4 @@ const InputRowMUI = styled.div`
     position: absolute;
     left: 0;
   }
-
-  .MuiPopover-paper:enabled {
-    margin-top: 2.5rem !important;
-  }
-
 `;
