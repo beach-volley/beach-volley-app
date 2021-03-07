@@ -24,7 +24,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: authLink.concat(
     new HttpLink({
-      uri: "http://localhost:5000/graphql",
+      uri: process.env.REACT_APP_API_ENDPOINT,
     })
   ),
 });
