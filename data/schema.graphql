@@ -146,6 +146,15 @@ type Match implements Node {
   """Host and creator of the match."""
   hostId: Int!
 
+  """Is the match men only, women only, or mixed. Default is mixed."""
+  matchType: MatchType!
+
+  """Required player skill level for the match. Default is EASY_HARD."""
+  requiredSkillLevel: SkillLevel!
+
+  """Optional description of the match."""
+  description: String
+
   """Reads a single `User` that is related to this `Match`."""
   host: User
 }
@@ -194,6 +203,29 @@ type IntRangeBound {
 
   """Whether or not the value of this bound is included in the range."""
   inclusive: Boolean!
+}
+
+"""Match type (men, women, or mixed)."""
+enum MatchType {
+  MEN
+  WOMEN
+  MIXED
+}
+
+"""Skill level (easy, medium, hard, or a combination of them)."""
+enum SkillLevel {
+  EASY
+  MEDIUM
+  HARD
+
+  """EASY or MEDIUM"""
+  EASY_MEDIUM
+
+  """MEDIUM or HARD"""
+  MEDIUM_HARD
+
+  """EASY or MEDIUM or HARD"""
+  EASY_HARD
 }
 
 """A user of the app."""
@@ -443,6 +475,18 @@ input MatchInput {
 
   """List of participant names who have joined the match."""
   participants: [String]
+
+  """Host and creator of the match."""
+  hostId: Int
+
+  """Is the match men only, women only, or mixed. Default is mixed."""
+  matchType: MatchType
+
+  """Required player skill level for the match. Default is EASY_HARD."""
+  requiredSkillLevel: SkillLevel
+
+  """Optional description of the match."""
+  description: String
 }
 
 """A range of `Datetime`."""
