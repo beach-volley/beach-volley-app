@@ -21,12 +21,15 @@ const ProjectItem = ({ id, location, time, players }) => {
 
   return (
     <>
-      <p>{location}</p>
-      <p>{formatted_time}</p>
-      <p>
-        {asInclusive(players?.start.value, players?.start.inclusive)} -{" "}
-        {asInclusive(players?.end.value, players?.end.inclusive)}
-      </p>
+     {location ?  <p>Location: {location}</p> : null}
+     {formatted_time ?  <p> Time: {formatted_time}</p> : null}
+      {players ? 
+            <p>Players: {" "}
+            {asInclusive(players?.start.value, players?.start.inclusive)} -{" "}
+            {asInclusive(players?.end.value, players?.end.inclusive)}
+          </p>
+      : null}
+
       <JoinGameButton onClick={joinMatchById}>View</JoinGameButton>
     </>
   );
@@ -41,8 +44,10 @@ const asInclusive = (value, inclusive) => {
 };
 
 const JoinGameButton = styled(StyledButton)`
+  position: absolute;
+  right: 0;
+  bottom: 1rem;
   margin-right: 1rem;
-  margin-left: 1rem;
   width: 3.5rem;
   height: 2rem;
 `;

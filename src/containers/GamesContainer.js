@@ -13,21 +13,19 @@ const Games = () => {
 
   return (
     <ListContainer>
-      <ColumnDescriptions>
-        <p>Location</p>
-        <p>Time</p>
-        <p>Number of players</p>
-      </ColumnDescriptions>
       {matches.data?.matches.edges.map(({ node }) => (
         <ListStyle key={node.nodeId}>
-          <RowWrapper>
-            <GameItem
-              id={node.id}
-              location={node.location}
-              time={node.time}
-              players={node.playerLimit}
-            />
-          </RowWrapper>
+          <CardWrapper>
+            <Row>
+              <GameItem
+                location={node.location}
+                time={node.time}
+              />
+            </Row>
+            <Row>
+              <GameItem players={node.playerLimit} />
+            </Row>
+          </CardWrapper>
         </ListStyle>
       ))}
     </ListContainer>
@@ -37,11 +35,16 @@ const Games = () => {
 const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
   grid-row: 3;
-  margin: 4rem 1rem 0 1rem;
+  margin-top: 10rem;
+  width: 95%;
+  margin: auto;
+  margin-top: 10rem;
+  overflow-y: auto;
+  height: 50vh;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    margin: auto;
     width: 50%;
   }
 `;
@@ -51,32 +54,28 @@ const ListStyle = styled.div`
   margin: 0.5rem 0;
 `;
 
-const RowWrapper = styled.div`
+const CardWrapper = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 5rem;
+  flex-direction: column;
+  position: relative;
+  height: 8rem;
   background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    justify-content: space-between;
   }
+`;
+
+const Row = styled.div`
+  display: flex;
+
   p {
     color: white;
     font-size: ${(props) => props.theme.fontSizes.small};
     margin-left: ${(props) => props.theme.margins.small};
     font-weight: 900;
-    flex: 1;
   }
 
-  p:last-child {
-    margin-right: 5.5rem;
-  }
-`;
-
-const ColumnDescriptions = styled(RowWrapper)`
-  height: 2.5rem;
-  border-style: solid;
+ 
 `;
 
 export default Games;

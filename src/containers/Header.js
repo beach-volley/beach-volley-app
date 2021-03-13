@@ -40,11 +40,13 @@ const Container = styled.div`
   }
 `;
 const Profile = styled.div`
-  margin: 0 1rem 0 auto;
+  display: flex;
+
 `;
 
 const CreateGameButton = styled(StyledButton)`
   height: 2rem;
-  width: 10rem;
-  margin-right: 1rem;
+  width: 8rem;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
 `;

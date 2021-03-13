@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Header from "../containers/Header";
-import GameBox from "../containers/GamesContainer";
+import GamesContainer from "../containers/GamesContainer";
 
 const GameListing = () => {
   return (
@@ -14,7 +14,7 @@ const GameListing = () => {
           eget.
         </p>
       </TitleTextBox>
-      <GameBox />
+      <GamesContainer />
     </PageWrapper>
   );
 };
@@ -23,9 +23,6 @@ const PageWrapper = styled.div`
   display: grid;
   height: 100vh;
   grid-template-rows: 8vh 15vh auto;
-  #firebaseui_container {
-    height: 10vh;
-  }
 `;
 
 const TitleTextBox = styled.div`
