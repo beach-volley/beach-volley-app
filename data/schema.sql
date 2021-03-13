@@ -243,6 +243,9 @@ CREATE TABLE beachvolley_public.match (
     public boolean DEFAULT false NOT NULL,
     participants text[] DEFAULT ARRAY[]::text[] NOT NULL,
     host_id integer DEFAULT beachvolley_private.current_user_id() NOT NULL,
+    match_type text DEFAULT 'mixed'::text NOT NULL,
+    required_skill_level text DEFAULT 'easy-hard'::text NOT NULL,
+    description text,
     CONSTRAINT match_participants_check CHECK ((array_position(participants, NULL::text) IS NULL))
 );
 
@@ -318,6 +321,27 @@ COMMENT ON COLUMN beachvolley_public.match.host_id IS 'Host and creator of the m
 
 
 --
+-- Name: COLUMN match.match_type; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.match_type IS 'Is the match men only, women only, or mixed. Default is mixed.';
+
+
+--
+-- Name: COLUMN match.required_skill_level; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.required_skill_level IS 'Required player skill level for the match. Default is EASY_HARD.';
+
+
+--
+-- Name: COLUMN match.description; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.description IS 'Optional description of the match.';
+
+
+--
 -- Name: match_id_seq; Type: SEQUENCE; Schema: beachvolley_public; Owner: -
 --
 
@@ -329,6 +353,42 @@ ALTER TABLE beachvolley_public.match ALTER COLUMN id ADD GENERATED ALWAYS AS IDE
     NO MAXVALUE
     CACHE 1
 );
+
+
+--
+-- Name: match_type; Type: TABLE; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TABLE beachvolley_public.match_type (
+    type text NOT NULL,
+    description text
+);
+
+
+--
+-- Name: TABLE match_type; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON TABLE beachvolley_public.match_type IS '@enum
+Match type (men, women, or mixed).';
+
+
+--
+-- Name: skill_level; Type: TABLE; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TABLE beachvolley_public.skill_level (
+    type text NOT NULL,
+    description text
+);
+
+
+--
+-- Name: TABLE skill_level; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON TABLE beachvolley_public.skill_level IS '@enum
+Skill level (easy, medium, hard, or a combination of them).';
 
 
 --
@@ -383,6 +443,22 @@ ALTER TABLE ONLY beachvolley_public.invitation
 
 ALTER TABLE ONLY beachvolley_public.match
     ADD CONSTRAINT match_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: match_type match_type_pkey; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_public.match_type
+    ADD CONSTRAINT match_type_pkey PRIMARY KEY (type);
+
+
+--
+-- Name: skill_level skill_level_pkey; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_public.skill_level
+    ADD CONSTRAINT skill_level_pkey PRIMARY KEY (type);
 
 
 --
@@ -458,6 +534,22 @@ ALTER TABLE ONLY beachvolley_public.invitation
 
 ALTER TABLE ONLY beachvolley_public.match
     ADD CONSTRAINT match_host_id_fkey FOREIGN KEY (host_id) REFERENCES beachvolley_public."user"(id) ON DELETE CASCADE;
+
+
+--
+-- Name: match match_match_type_fkey; Type: FK CONSTRAINT; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_public.match
+    ADD CONSTRAINT match_match_type_fkey FOREIGN KEY (match_type) REFERENCES beachvolley_public.match_type(type);
+
+
+--
+-- Name: match match_required_skill_level_fkey; Type: FK CONSTRAINT; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_public.match
+    ADD CONSTRAINT match_required_skill_level_fkey FOREIGN KEY (required_skill_level) REFERENCES beachvolley_public.skill_level(type);
 
 
 --
@@ -552,6 +644,22 @@ GRANT INSERT(public),UPDATE(public) ON TABLE beachvolley_public.match TO beachvo
 --
 
 GRANT INSERT(participants),UPDATE(participants) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: TABLE match_type; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT SELECT ON TABLE beachvolley_public.match_type TO beachvolley_graphile_anonymous;
+GRANT SELECT ON TABLE beachvolley_public.match_type TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: TABLE skill_level; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT SELECT ON TABLE beachvolley_public.skill_level TO beachvolley_graphile_anonymous;
+GRANT SELECT ON TABLE beachvolley_public.skill_level TO beachvolley_graphile_authenticated;
 
 
 --
