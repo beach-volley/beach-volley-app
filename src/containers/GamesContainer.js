@@ -17,10 +17,7 @@ const Games = () => {
         <ListStyle key={node.nodeId}>
           <CardWrapper>
             <Row>
-              <GameItem
-                location={node.location}
-                time={node.time}
-              />
+              <GameItem location={node.location} time={node.time} />
             </Row>
             <Row>
               <GameItem players={node.playerLimit} />
@@ -74,8 +71,6 @@ const Row = styled.div`
     margin-left: ${(props) => props.theme.margins.small};
     font-weight: 900;
   }
-
- 
 `;
 
 export default Games;

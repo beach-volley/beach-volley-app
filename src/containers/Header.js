@@ -41,7 +41,6 @@ const Container = styled.div`
 `;
 const Profile = styled.div`
   display: flex;
-
 `;
 
 const CreateGameButton = styled(StyledButton)`

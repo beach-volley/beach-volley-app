@@ -21,14 +21,14 @@ const ProjectItem = ({ id, location, time, players }) => {
 
   return (
     <>
-     {location ?  <p>Location: {location}</p> : null}
-     {formatted_time ?  <p> Time: {formatted_time}</p> : null}
-      {players ? 
-            <p>Players: {" "}
-            {asInclusive(players?.start.value, players?.start.inclusive)} -{" "}
-            {asInclusive(players?.end.value, players?.end.inclusive)}
-          </p>
-      : null}
+      {location ? <p>Location: {location}</p> : null}
+      {formatted_time ? <p> Time: {formatted_time}</p> : null}
+      {players ? (
+        <p>
+          Players: {asInclusive(players?.start.value, players?.start.inclusive)}{" "}
+          - {asInclusive(players?.end.value, players?.end.inclusive)}
+        </p>
+      ) : null}
 
       <JoinGameButton onClick={joinMatchById}>View</JoinGameButton>
     </>
