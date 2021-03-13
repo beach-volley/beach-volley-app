@@ -1,4 +1,19 @@
-# Setup database
+# Easy set-up
+
+Unless you need to make changes to the back-end, you can use development server
+in Heroku as your back-end. It is free so don't blame me if it is slow. To use
+it, you need only two commands:
+
+    $ npm install
+    $ npm run start:staging
+
+GraphiQL is available at https://beach-volley-app-dev.herokuapp.com.
+
+# Full set-up
+
+When you need to work with back-end or Heroku is too slow for you, setup your back-end with these instructions.
+
+## Setup database
 
 Install PostgreSQL (v12.5). In linux run `sudo apt-get install postgresql` and
 in Windows download installer from
@@ -24,13 +39,13 @@ command has been executed successfully._
     # create database beachvolley with owner beachvolley_db_owner;
     # create database beachvolley_shadow with owner beachvolley_db_owner;
 
-# Import dummy data
+## Import dummy data
 
 When you need some dummy data to your development database, run the following query:
 
     $ psql postgres://beachvolley_db_owner:dev_password@localhost:5432/beachvolley < data/dummy-data.sql
 
-# Development
+## Development
 
 For the first time (and later occasionally) run the following commands:
 
@@ -46,7 +61,7 @@ Start back-end:
     $ npm run migrations migrate
     $ npm run server
 
-## Development with database migrations
+### Development with database migrations
 
 First, start watcher `npm run migrate watch`.
 
