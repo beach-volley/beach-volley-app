@@ -12,7 +12,7 @@ const Header = () => {
       </Link>
       <Profile>
         <Link to="/create-game">
-          <CreateGameButton>Create Game</CreateGameButton>
+          <CreateGameButton>Luo Peli</CreateGameButton>
         </Link>
         <SignOutButton />
       </Profile>

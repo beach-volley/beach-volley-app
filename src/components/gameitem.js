@@ -27,7 +27,7 @@ const ProjectItem = ({ id, location, time, players }) => {
         {asInclusive(players?.start.value, players?.start.inclusive)} -{" "}
         {asInclusive(players?.end.value, players?.end.inclusive)}
       </p>
-      <JoinGameButton onClick={joinMatchById}>View</JoinGameButton>
+      <JoinGameButton onClick={joinMatchById}>Näytä</JoinGameButton>
     </>
   );
 };
