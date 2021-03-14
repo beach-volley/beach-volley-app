@@ -45,11 +45,12 @@ const Container = styled.div`
 `;
 const Profile = styled.div`
   display: flex;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
 `;
 
 const CreateGameButton = styled(StyledButton)`
   height: 2rem;
   width: 8rem;
   margin-right: 0.5rem;
-  margin-left: 0.5rem;
 `;

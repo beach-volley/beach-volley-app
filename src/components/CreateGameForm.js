@@ -5,8 +5,7 @@ import { StyledButton } from "./StyledButton";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { CREATE_MATCH, CURRENT_USER } from "../queries";
-import { useQuery } from "@apollo/client";
+import { CREATE_MATCH } from "../queries";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
@@ -24,16 +23,14 @@ import {
 
 const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
-  const [playerName, setPlayerName] = useState("");
   const [createMatch] = useMutation(CREATE_MATCH);
-  const currentUser = useQuery(CURRENT_USER);
+  const [playerName, setPlayerName] = useState("");
 
-  const AddPlayer = (list, AddPlayerName) => {
-    console.log(list);
-    if (AddPlayerName === "") {
+  const SendInvite = (list, name) => {
+    if (name === "") {
       return;
     }
-    const tempList = [...list, { name: AddPlayerName }];
+    const tempList = [...list, { name: playerName }];
     setPlayerName("");
     return tempList;
   };
@@ -172,7 +169,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                       type="button"
                       value="Add"
                       onClick={() =>
-                        (props.values.playerList = AddPlayer(
+                        (props.values.playerList = SendInvite(
                           props.values.playerList,
                           playerName
                         ))
@@ -185,7 +182,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
               )}
 
               <TextAreaContainer>
-                <label htmlFor="playernames">Players</label>
+                <label htmlFor="playernames">Invited players</label>
                 <InvitedPlayers>
                   {props.values.playerList.map((player) => (
                     <p key={uuidv4()}>{player.name}</p>
@@ -198,17 +195,10 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 />
               </TextAreaContainer>
 
-              {singleGameView ? (
-                <CornerButton
-                  type="button"
-                  // onClick={() =>
-                  //   TODO: lisää pelaaja pelaajien listaan)
-                  // }
-                >
-                  Join
-                </CornerButton>
-              ) : (
-                <CornerButton type="submit">Publish Game</CornerButton>
+              {!singleGameView && (
+                <ConfirmGameButton type="submit">
+                  Publish Game
+                </ConfirmGameButton>
               )}
             </Form>
           </FieldSet>
@@ -274,8 +264,7 @@ const InvitedPlayers = styled.div`
   margin-left: auto;
 `;
 
-const CornerButton = styled(StyledButton)`
-  pointer-events: all;
+const ConfirmGameButton = styled(StyledButton)`
   height: 2rem;
   position: absolute;
   bottom: 0;
