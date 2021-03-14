@@ -8,7 +8,6 @@ const ProjectItem = ({ id, location, time, players }) => {
       })
     : null;
 
-  console.log(id);
   return (
     <>
       {location ? <p>Location: {location}</p> : null}

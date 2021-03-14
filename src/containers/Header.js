@@ -3,21 +3,25 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import SignOutButton from "../components/SignOutButton";
 import { StyledButton } from "../components/StyledButton";
+import { useQuery } from "@apollo/client";
+import { CURRENT_USER } from "../queries";
 
-const Header = ({ noProfile = false }) => {
+const Header = () => {
+  const currentUser = useQuery(CURRENT_USER);
   return (
     <Container>
       <Link to="/home">
         <h1>LOGO</h1>
       </Link>
-      {!noProfile ? (
+ 
         <Profile>
+          {currentUser?.data?.currentUser &&
           <Link to="/create-game">
             <CreateGameButton>Create Game</CreateGameButton>
-          </Link>
+          </Link>}
           <SignOutButton />
         </Profile>
-      ) : null}
+
     </Container>
   );
 };

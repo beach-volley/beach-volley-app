@@ -24,15 +24,16 @@ import {
 
 const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
-  const [createMatch] = useMutation(CREATE_MATCH);
   const [playerName, setPlayerName] = useState("");
+  const [createMatch] = useMutation(CREATE_MATCH);
   const currentUser = useQuery(CURRENT_USER);
 
-  const SendInvite = (list, name) => {
-    if (name === "") {
+  const AddPlayer = (list, AddPlayerName) => {
+    console.log(list)
+    if (AddPlayerName === "") {
       return;
     }
-    const tempList = [...list, { name: playerName }];
+    const tempList = [...list, { name: AddPlayerName }];
     setPlayerName("");
     return tempList;
   };
@@ -171,7 +172,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                       type="button"
                       value="Add"
                       onClick={() =>
-                        (props.values.playerList = SendInvite(
+                        (props.values.playerList = AddPlayer(
                           props.values.playerList,
                           playerName
                         ))
@@ -184,7 +185,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
               )}
 
               <TextAreaContainer>
-                <label htmlFor="playernames">Invited players</label>
+                <label htmlFor="playernames">Players</label>
                 <InvitedPlayers>
                   {props.values.playerList.map((player) => (
                     <p key={uuidv4()}>{player.name}</p>
@@ -197,10 +198,19 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 />
               </TextAreaContainer>
 
-              {!singleGameView && (
-                <ConfirmGameButton type="submit" visible={currentUser}>
+              {singleGameView ? (
+                <CornerButton
+                  type="button"
+                  // onClick={() =>
+                  //   TODO: lisää pelaaja pelaajien listaan)
+                  // }
+                >
+                  Join
+                </CornerButton>
+              ) : (
+                <CornerButton type="submit">
                   Publish Game
-                </ConfirmGameButton>
+                </CornerButton>
               )}
             </Form>
           </FieldSet>
@@ -266,7 +276,8 @@ const InvitedPlayers = styled.div`
   margin-left: auto;
 `;
 
-const ConfirmGameButton = styled(StyledButton)`
+const CornerButton = styled(StyledButton)`
+  pointer-events: all;
   height: 2rem;
   position: absolute;
   bottom: 0;
