@@ -1,11 +1,20 @@
 import React from "react";
 import styled from "styled-components";
-import GameItem from "../components/gameitem";
+import GameItemInfo from "../components/GameItemInfo";
+import { StyledButton } from "../components/StyledButton";
+import { useHistory } from "react-router";
 import { useQuery } from "@apollo/client";
 import { MATCHES } from "../queries";
 
 const Games = () => {
   const matches = useQuery(MATCHES);
+  let history = useHistory();
+
+  const joinMatchById = (id) => {
+    history.push({
+      pathname: "/single-game/" + id,
+    });
+  };
 
   if (matches.loading) {
     return <div>loading...</div>;
@@ -17,11 +26,14 @@ const Games = () => {
         <ListStyle key={node.nodeId}>
           <CardWrapper>
             <Row>
-              <GameItem location={node.location} time={node.time} />
+              <GameItemInfo location={node.location} time={node.time} />
             </Row>
             <Row>
-              <GameItem players={node.playerLimit} />
+              <GameItemInfo players={node.playerLimit} />
             </Row>
+            <JoinGameButton onClick={() => joinMatchById(node.id)}>
+              View
+            </JoinGameButton>
           </CardWrapper>
         </ListStyle>
       ))}
@@ -71,6 +83,15 @@ const Row = styled.div`
     margin-left: ${(props) => props.theme.margins.small};
     font-weight: 900;
   }
+`;
+
+const JoinGameButton = styled(StyledButton)`
+  position: absolute;
+  right: 0;
+  bottom: 1rem;
+  margin-right: 1rem;
+  width: 3.5rem;
+  height: 2rem;
 `;
 
 export default Games;

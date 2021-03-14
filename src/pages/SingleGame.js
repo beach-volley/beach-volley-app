@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import GameInfoContainer from "../containers/CenterContainer";
-import GameInfoForm from "../components/creategameform";
+import GameInfoForm from "../components/CreateGameForm";
 import Header from "../containers/Header";
 import { useQuery } from "@apollo/client";
 import { MATCH_BY_ID } from "../queries";

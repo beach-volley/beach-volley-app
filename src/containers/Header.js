@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import SignOutButton from "../components/SignOutButton";
-import { StyledButton } from "../components/styledbutton";
+import { StyledButton } from "../components/StyledButton";
 
 const Header = ({ noProfile = false }) => {
   return (
