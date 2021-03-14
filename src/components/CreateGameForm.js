@@ -29,7 +29,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   const currentUser = useQuery(CURRENT_USER);
 
   const AddPlayer = (list, AddPlayerName) => {
-    console.log(list)
+    console.log(list);
     if (AddPlayerName === "") {
       return;
     }
@@ -208,9 +208,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   Join
                 </CornerButton>
               ) : (
-                <CornerButton type="submit">
-                  Publish Game
-                </CornerButton>
+                <CornerButton type="submit">Publish Game</CornerButton>
               )}
             </Form>
           </FieldSet>

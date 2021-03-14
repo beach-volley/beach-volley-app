@@ -13,15 +13,15 @@ const Header = () => {
       <Link to="/home">
         <h1>LOGO</h1>
       </Link>
- 
-        <Profile>
-          {currentUser?.data?.currentUser &&
+
+      <Profile>
+        {currentUser?.data?.currentUser && (
           <Link to="/create-game">
             <CreateGameButton>Create Game</CreateGameButton>
-          </Link>}
-          <SignOutButton />
-        </Profile>
-
+          </Link>
+        )}
+        <SignOutButton />
+      </Profile>
     </Container>
   );
 };
