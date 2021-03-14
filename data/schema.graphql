@@ -17,6 +17,35 @@ type Query implements Node {
     nodeId: ID!
   ): Node
 
+  """Reads and enables pagination through a set of `Join`."""
+  joins(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Join`."""
+    orderBy: [JoinsOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: JoinCondition
+  ): JoinsConnection
+
   """Reads and enables pagination through a set of `Match`."""
   matches(
     """Only read the first `n` values of the set."""
@@ -74,11 +103,18 @@ type Query implements Node {
     """
     condition: UserCondition
   ): UsersConnection
+  join(id: Int!): Join
   match(id: Int!): Match
   user(id: Int!): User
 
   """Get the current user."""
   currentUser: User
+
+  """Reads a single `Join` using its globally unique `ID`."""
+  joinByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Join`."""
+    nodeId: ID!
+  ): Join
 
   """Reads a single `Match` using its globally unique `ID`."""
   matchByNodeId(
@@ -101,21 +137,49 @@ interface Node {
   nodeId: ID!
 }
 
-"""A connection to a list of `Match` values."""
-type MatchesConnection {
-  """A list of `Match` objects."""
-  nodes: [Match!]!
+"""A connection to a list of `Join` values."""
+type JoinsConnection {
+  """A list of `Join` objects."""
+  nodes: [Join!]!
 
   """
-  A list of edges which contains the `Match` and cursor to aid in pagination.
+  A list of edges which contains the `Join` and cursor to aid in pagination.
   """
-  edges: [MatchesEdge!]!
+  edges: [JoinsEdge!]!
 
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  """The count of *all* `Match` you could get from the connection."""
+  """The count of *all* `Join` you could get from the connection."""
   totalCount: Int!
+}
+
+"""Participant of a single match."""
+type Join implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+
+  """Unique id of the join."""
+  id: Int!
+
+  """Match that this join belongs to."""
+  matchId: Int!
+
+  """User who is joining. Either this or `name` is given."""
+  participantId: Int
+
+  """
+  Name of anonymous user who is joining. Either this or `participant` is given.
+  """
+  name: String
+
+  """Reads a single `Match` that is related to this `Join`."""
+  match: Match
+
+  """Reads a single `User` that is related to this `Join`."""
+  participant: User
 }
 
 """A single beach volley match."""
@@ -140,9 +204,6 @@ type Match implements Node {
   """Is the match public or private. Default is private."""
   public: Boolean!
 
-  """List of participant names who have joined the match."""
-  participants: [String]!
-
   """Host and creator of the match."""
   hostId: Int!
 
@@ -157,6 +218,35 @@ type Match implements Node {
 
   """Reads a single `User` that is related to this `Match`."""
   host: User
+
+  """Reads and enables pagination through a set of `Join`."""
+  joins(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Join`."""
+    orderBy: [JoinsOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: JoinCondition
+  ): JoinsConnection!
 }
 
 """A range of `Datetime`."""
@@ -269,10 +359,80 @@ type User implements Node {
     """
     condition: MatchCondition
   ): MatchesConnection!
+
+  """Reads and enables pagination through a set of `Join`."""
+  joinsByParticipantId(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Join`."""
+    orderBy: [JoinsOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: JoinCondition
+  ): JoinsConnection!
+}
+
+"""A connection to a list of `Match` values."""
+type MatchesConnection {
+  """A list of `Match` objects."""
+  nodes: [Match!]!
+
+  """
+  A list of edges which contains the `Match` and cursor to aid in pagination.
+  """
+  edges: [MatchesEdge!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Match` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Match` edge in the connection."""
+type MatchesEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Match` at the end of the edge."""
+  node: Match!
 }
 
 """A location in a connection that can be used for resuming pagination."""
 scalar Cursor
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: Cursor
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: Cursor
+}
 
 """Methods to use when ordering `Match`."""
 enum MatchesOrderBy {
@@ -296,28 +456,40 @@ input MatchCondition {
   hostId: Int
 }
 
-"""A `Match` edge in the connection."""
-type MatchesEdge {
+"""Methods to use when ordering `Join`."""
+enum JoinsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  MATCH_ID_ASC
+  MATCH_ID_DESC
+  PARTICIPANT_ID_ASC
+  PARTICIPANT_ID_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""
+A condition to be used against `Join` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input JoinCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: Int
+
+  """Checks for equality with the object’s `matchId` field."""
+  matchId: Int
+
+  """Checks for equality with the object’s `participantId` field."""
+  participantId: Int
+}
+
+"""A `Join` edge in the connection."""
+type JoinsEdge {
   """A cursor for use in pagination."""
   cursor: Cursor
 
-  """The `Match` at the end of the edge."""
-  node: Match!
-}
-
-"""Information about pagination in a connection."""
-type PageInfo {
-  """When paginating forwards, are there more items?"""
-  hasNextPage: Boolean!
-
-  """When paginating backwards, are there more items?"""
-  hasPreviousPage: Boolean!
-
-  """When paginating backwards, the cursor to continue."""
-  startCursor: Cursor
-
-  """When paginating forwards, the cursor to continue."""
-  endCursor: Cursor
+  """The `Join` at the end of the edge."""
+  node: Join!
 }
 
 """A connection to a list of `User` values."""
@@ -412,6 +584,22 @@ type Mutation {
     input: DeleteMatchInput!
   ): DeleteMatchPayload
 
+  """Join current user to the match."""
+  join(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: JoinInput!
+  ): JoinPayload
+
+  """Join with name to the private match. _Anonymous user only._"""
+  joinAnonymously(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: JoinAnonymouslyInput!
+  ): JoinAnonymouslyPayload
+
   """Create user or update it's details based on JWT."""
   upsertUser(
     """
@@ -472,12 +660,6 @@ input MatchInput {
 
   """Is the match public or private. Default is private."""
   public: Boolean
-
-  """List of participant names who have joined the match."""
-  participants: [String]
-
-  """Host and creator of the match."""
-  hostId: Int
 
   """Is the match men only, women only, or mixed. Default is mixed."""
   matchType: MatchType
@@ -590,8 +772,14 @@ input MatchPatch {
   """Is the match public or private. Default is private."""
   public: Boolean
 
-  """List of participant names who have joined the match."""
-  participants: [String]
+  """Is the match men only, women only, or mixed. Default is mixed."""
+  matchType: MatchType
+
+  """Required player skill level for the match. Default is EASY_HARD."""
+  requiredSkillLevel: SkillLevel
+
+  """Optional description of the match."""
+  description: String
 }
 
 """All input for the `updateMatch` mutation."""
@@ -662,6 +850,81 @@ input DeleteMatchInput {
 
   """Unique id of the match."""
   id: Int!
+}
+
+"""The output of our `join` mutation."""
+type JoinPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  join: Join
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `Match` that is related to this `Join`."""
+  match: Match
+
+  """Reads a single `User` that is related to this `Join`."""
+  participant: User
+
+  """An edge for our `Join`. May be used by Relay 1."""
+  joinEdge(
+    """The method to use when ordering `Join`."""
+    orderBy: [JoinsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): JoinsEdge
+}
+
+"""All input for the `join` mutation."""
+input JoinInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  matchId: Int!
+}
+
+"""The output of our `joinAnonymously` mutation."""
+type JoinAnonymouslyPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  join: Join
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `Match` that is related to this `Join`."""
+  match: Match
+
+  """Reads a single `User` that is related to this `Join`."""
+  participant: User
+
+  """An edge for our `Join`. May be used by Relay 1."""
+  joinEdge(
+    """The method to use when ordering `Join`."""
+    orderBy: [JoinsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): JoinsEdge
+}
+
+"""All input for the `joinAnonymously` mutation."""
+input JoinAnonymouslyInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  matchId: Int!
+  name: String!
 }
 
 """The output of our `upsertUser` mutation."""
