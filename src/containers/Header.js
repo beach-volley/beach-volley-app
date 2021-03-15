@@ -4,18 +4,20 @@ import styled from "styled-components";
 import SignOutButton from "../components/SignOutButton";
 import { StyledButton } from "../components/styledbutton";
 
-const Header = () => {
+const Header = ({ noProfile = false }) => {
   return (
     <Container>
       <Link to="/home">
         <h1>LOGO</h1>
       </Link>
-      <Profile>
-        <Link to="/create-game">
-          <CreateGameButton>Luo Peli</CreateGameButton>
-        </Link>
-        <SignOutButton />
-      </Profile>
+      {!noProfile ? (
+        <Profile>
+          <Link to="/create-game">
+            <CreateGameButton>Luo Peli</CreateGameButton>
+          </Link>
+          <SignOutButton />
+        </Profile>
+      ) : null}
     </Container>
   );
 };
