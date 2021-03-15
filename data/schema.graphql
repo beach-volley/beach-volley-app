@@ -660,6 +660,15 @@ input MatchInput {
 
   """Is the match public or private. Default is private."""
   public: Boolean
+
+  """Is the match men only, women only, or mixed. Default is mixed."""
+  matchType: MatchType
+
+  """Required player skill level for the match. Default is EASY_HARD."""
+  requiredSkillLevel: SkillLevel
+
+  """Optional description of the match."""
+  description: String
 }
 
 """A range of `Datetime`."""
