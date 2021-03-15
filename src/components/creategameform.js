@@ -126,7 +126,12 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 required
               />
 
-              <PickTime name="endTime" label="Lopetusaika" ampm={false} required />
+              <PickTime
+                name="endTime"
+                label="Lopetusaika"
+                ampm={false}
+                required
+              />
 
               <DropDown
                 name="numPlayers"
