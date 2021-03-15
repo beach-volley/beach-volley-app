@@ -52,7 +52,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           description: singleGameView ? matchData.description : "",
         }}
         validationSchema={Yup.object({
-          location: Yup.string().required("Required"),
+          location: Yup.string().required("Pakollinen kenttä"),
           date: Yup.date().required("Required").nullable(),
           startTime: Yup.string().required("Required").nullable(),
           endTime: Yup.string().required("Required").nullable(),
@@ -116,21 +116,26 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         {(props) => (
           <FieldSet singleGameView={singleGameView}>
             <Form>
-              <TextInput name="location" label="Location" required />
-              <PickDate name="date" label="Date" required />
+              <TextInput name="location" label="Sijainti" required />
+              <PickDate name="date" label="Päivämäärä" required />
 
               <PickTime
                 name="startTime"
-                label="Start Time"
+                label="Aloitusaika"
                 ampm={false}
                 required
               />
 
-              <PickTime name="endTime" label="End Time" ampm={false} required />
+              <PickTime
+                name="endTime"
+                label="Lopetusaika"
+                ampm={false}
+                required
+              />
 
               <DropDown
                 name="numPlayers"
-                label="Players"
+                label="Pelaajamäärä"
                 required
                 options={[
                   { value: "1-2", label: "1-2" },
@@ -141,27 +146,27 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
 
               <DropDown
                 name="difficultyLevel"
-                label="Difficulty"
+                label="Taso"
                 required
                 options={[
-                  { value: "easy", label: "Easy" },
-                  { value: "medium", label: "Medium" },
-                  { value: "hard", label: "Hard" },
+                  { value: "easy", label: "Aloittelija" },
+                  { value: "medium", label: "Keskitaso" },
+                  { value: "hard", label: "Pro" },
                 ]}
               />
 
               <ToggleInput
                 label="Public"
                 name="publicToggle"
-                toggleYes="Public"
-                toggleNo="Private"
+                toggleYes="Julkinen"
+                toggleNo="Yksityinen"
                 checked={props.values.publicToggle}
               />
 
               {!singleGameView && (
                 <AddPlayerInput
                   name="playerList"
-                  label="Add player"
+                  label="Lisää pelaajia"
                   type="text"
                   value={playerName}
                   placeholder={"Enter Email"}
@@ -177,14 +182,14 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                         ))
                       }
                     >
-                      Add
+                      Lisää
                     </AddPlayerButton>
                   }
                 />
               )}
 
               <TextAreaContainer>
-                <label htmlFor="playernames">Invited players</label>
+                <label htmlFor="playernames">Kutsutut pelaajat</label>
                 <InvitedPlayers>
                   {props.values.playerList.map((player) => (
                     <p key={uuidv4()}>{player.name}</p>
@@ -193,13 +198,13 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
 
                 <GameDescription
                   name="description"
-                  placeholder="Write Game Details Here"
+                  placeholder="Kirjoita pelin tiedot tänne"
                 />
               </TextAreaContainer>
 
               {!singleGameView && (
                 <ConfirmGameButton type="submit" visible={currentUser}>
-                  Publish Game
+                  Julkaise peli
                 </ConfirmGameButton>
               )}
             </Form>

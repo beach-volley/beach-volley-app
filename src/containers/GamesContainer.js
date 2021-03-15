@@ -14,9 +14,9 @@ const Games = () => {
   return (
     <ListContainer>
       <ColumnDescriptions>
-        <p>Location</p>
-        <p>Time</p>
-        <p>Number of players</p>
+        <p>Sijainti</p>
+        <p>Aika</p>
+        <p>Pelaajien lukumäärä</p>
       </ColumnDescriptions>
       {matches.data?.matches.edges.map(({ node }) => (
         <ListStyle key={node.nodeId}>
