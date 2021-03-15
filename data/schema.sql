@@ -654,6 +654,20 @@ CREATE INDEX match_host_id_idx ON beachvolley_public.match USING btree (host_id)
 
 
 --
+-- Name: match_match_type_idx; Type: INDEX; Schema: beachvolley_public; Owner: -
+--
+
+CREATE INDEX match_match_type_idx ON beachvolley_public.match USING btree (match_type);
+
+
+--
+-- Name: match_required_skill_level_idx; Type: INDEX; Schema: beachvolley_public; Owner: -
+--
+
+CREATE INDEX match_required_skill_level_idx ON beachvolley_public.match USING btree (required_skill_level);
+
+
+--
 -- Name: user user_private_updated_at; Type: TRIGGER; Schema: beachvolley_private; Owner: -
 --
 
