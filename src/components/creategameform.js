@@ -5,7 +5,7 @@ import { StyledButton } from "./styledbutton";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { CREATE_MATCH, CURRENT_USER } from "../queries";
+import { CREATE_MATCH, CURRENT_USER, REFETCH_MATCHES } from "../queries";
 import { useQuery } from "@apollo/client";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
@@ -24,7 +24,9 @@ import {
 
 const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
-  const [createMatch] = useMutation(CREATE_MATCH);
+  const [createMatch] = useMutation(CREATE_MATCH, {
+    refetchQueries: [{ query: REFETCH_MATCHES }],
+  });
   const [playerName, setPlayerName] = useState("");
   const currentUser = useQuery(CURRENT_USER);
 
