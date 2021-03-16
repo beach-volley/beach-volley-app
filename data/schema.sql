@@ -281,7 +281,7 @@ declare
   new_user beachvolley_public.user;
 begin
   -- do nothing if called without a valid jwt
-  if current_setting('jwt.claims.firebase.uid', true) is null then
+  if current_setting('jwt.claims.firebase.uid', true) is null or current_setting('jwt.claims.firebase.uid', true) = '' then
     return null;
   end if;
 
