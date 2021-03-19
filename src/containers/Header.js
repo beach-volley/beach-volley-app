@@ -17,7 +17,7 @@ const Header = () => {
       <Profile>
         {currentUser?.data?.currentUser && (
           <Link to="/create-game">
-            <CreateGameButton>Create Game</CreateGameButton>
+            <CreateGameButton>Luo Peli</CreateGameButton>
           </Link>
         )}
         <SignOutButton />

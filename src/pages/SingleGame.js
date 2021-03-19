@@ -48,7 +48,7 @@ const SingleGame = () => {
   return (
     <PageWrapper>
       <Header />
-      <GameInfoContainer title="Player's Game">
+      <GameInfoContainer title="Pelaajan Peli">
         <GameInfoForm matchData={matchData} singleGameView={true} />
       </GameInfoContainer>
     </PageWrapper>
