@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import FormContainer from "../containers/CenterContainer";
 import Header from "../containers/Header";
-import CreateGameForm from "../components/creategameform";
+import CreateGameForm from "../components/CreateGameForm";
 
 const GameCreation = () => {
   return (
@@ -16,7 +16,7 @@ const GameCreation = () => {
 
 const PageWrapper = styled.div`
   display: grid;
-  min-height: 100vh;
+  min-height: 98vh;
   grid-template-rows: 8vh auto;
 `;
 
