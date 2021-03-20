@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import firebase from "firebase";
 import { useQuery } from "@apollo/client";
 import { CURRENT_USER } from "../queries";
-import { StyledButton } from "./styledbutton";
+import { StyledButton } from "./StyledButton";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 

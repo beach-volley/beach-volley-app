@@ -2,22 +2,26 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import SignOutButton from "../components/SignOutButton";
-import { StyledButton } from "../components/styledbutton";
+import { StyledButton } from "../components/StyledButton";
+import { useQuery } from "@apollo/client";
+import { CURRENT_USER } from "../queries";
 
-const Header = ({ noProfile = false }) => {
+const Header = () => {
+  const currentUser = useQuery(CURRENT_USER);
   return (
     <Container>
       <Link to="/home">
         <h1>LOGO</h1>
       </Link>
-      {!noProfile ? (
-        <Profile>
+
+      <Profile>
+        {currentUser?.data?.currentUser && (
           <Link to="/create-game">
             <CreateGameButton>Luo Peli</CreateGameButton>
           </Link>
-          <SignOutButton />
-        </Profile>
-      ) : null}
+        )}
+        <SignOutButton />
+      </Profile>
     </Container>
   );
 };
@@ -40,11 +44,13 @@ const Container = styled.div`
   }
 `;
 const Profile = styled.div`
-  margin: 0 1rem 0 auto;
+  display: flex;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
 `;
 
 const CreateGameButton = styled(StyledButton)`
   height: 2rem;
-  width: 10rem;
-  margin-right: 1rem;
+  width: 8rem;
+  margin-right: 0.5rem;
 `;

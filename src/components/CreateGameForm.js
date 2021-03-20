@@ -1,12 +1,11 @@
 import React from "react";
 import { useState } from "react";
 import { Form, Formik } from "formik";
-import { StyledButton } from "./styledbutton";
+import { StyledButton } from "./StyledButton";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { CREATE_MATCH, CURRENT_USER, REFETCH_MATCHES } from "../queries";
-import { useQuery } from "@apollo/client";
+import { CREATE_MATCH } from "../queries";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
@@ -20,7 +19,7 @@ import {
   DropDown,
   ToggleInput,
   FormTextArea,
-} from "./inputcomponents";
+} from "./InputComponents";
 
 const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
@@ -28,7 +27,6 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
   const [playerName, setPlayerName] = useState("");
-  const currentUser = useQuery(CURRENT_USER);
 
   const SendInvite = (list, name) => {
     if (name === "") {
@@ -205,7 +203,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
               </TextAreaContainer>
 
               {!singleGameView && (
-                <ConfirmGameButton type="submit" visible={currentUser}>
+                <ConfirmGameButton type="submit">
                   Julkaise peli
                 </ConfirmGameButton>
               )}
