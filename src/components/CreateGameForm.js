@@ -5,7 +5,7 @@ import { StyledButton } from "./StyledButton";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { CREATE_MATCH } from "../queries";
+import { CREATE_MATCH, REFETCH_MATCHES } from "../queries";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
@@ -23,7 +23,9 @@ import {
 
 const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
-  const [createMatch] = useMutation(CREATE_MATCH);
+  const [createMatch] = useMutation(CREATE_MATCH, {
+    refetchQueries: [{ query: REFETCH_MATCHES }],
+  });
   const [playerName, setPlayerName] = useState("");
 
   const SendInvite = (list, name) => {
