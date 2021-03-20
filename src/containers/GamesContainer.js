@@ -32,11 +32,12 @@ const Games = () => {
               <GameItemInfo players={node.playerLimit} />
             </Row>
             <JoinGameButton onClick={() => joinMatchById(node.id)}>
-              View
+              Näytä
             </JoinGameButton>
           </CardWrapper>
         </ListStyle>
-      ))}
+        //newest first
+      )).reverse()}
     </ListContainer>
   );
 };
@@ -90,7 +91,7 @@ const JoinGameButton = styled(StyledButton)`
   right: 0;
   bottom: 1rem;
   margin-right: 1rem;
-  width: 3.5rem;
+  width: 4rem;
   height: 2rem;
 `;
 
