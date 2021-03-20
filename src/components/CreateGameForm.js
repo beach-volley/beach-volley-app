@@ -5,7 +5,7 @@ import { StyledButton } from "./StyledButton";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { CREATE_MATCH, REFETCH_MATCHES } from "../queries";
+import { CREATE_MATCH, REFETCH_MATCHES, JOIN_MATCH, DELETE_MATCH } from "../queries";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
@@ -27,6 +27,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
   const [playerName, setPlayerName] = useState("");
+  const [joinMatch] = useMutation(JOIN_MATCH);
+  const [ deleteMatch ] = useMutation( DELETE_MATCH );
 
   const SendInvite = (list, name) => {
     if (name === "") {
@@ -36,6 +38,27 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     setPlayerName("");
     return tempList;
   };
+
+  const joinGame = () => {  
+    joinMatch({
+      variables: {
+        input: {
+          matchId: +window.location.pathname.slice(13),
+        }
+      }
+    })
+  }
+
+  const deleteMatchById = () => { 
+    deleteMatch({
+      variables: {
+        input: {
+          id: +window.location.pathname.slice(13),
+        }
+      }
+    })
+    history.push("/home");
+  }
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -65,7 +88,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
             "Invalid difficulty"
           ),
           publicToggle: Yup.boolean(),
-          invitedPlayers: Yup.array(),
+          //invitedPlayers: Yup.array(),
           description: Yup.string(),
         })}
         onSubmit={(values) => {
@@ -211,6 +234,18 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           </FieldSet>
         )}
       </Formik>
+      <>
+        {singleGameView && (
+          <JoinGameButton onClick={joinGame}>
+            Liity Peliin
+          </JoinGameButton>
+        )}
+        {singleGameView && (
+          <DeleteGameButton onClick={deleteMatchById}>
+            Poista Peli
+          </DeleteGameButton>
+        )}
+      </>
     </MuiPickersUtilsProvider>
   );
 };
@@ -277,6 +312,24 @@ const ConfirmGameButton = styled(StyledButton)`
   bottom: 0;
   right: 0;
   margin-right: 2rem;
+  margin-bottom: 1rem;
+`;
+
+const JoinGameButton = styled(StyledButton)`
+  height: 2rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-right: 2rem;
+  margin-bottom: 1rem;
+`;
+
+const DeleteGameButton = styled(StyledButton)`
+  height: 2rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-right: 10rem;
   margin-bottom: 1rem;
 `;
 
