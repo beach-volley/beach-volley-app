@@ -441,6 +441,10 @@ enum MatchesOrderBy {
   ID_DESC
   HOST_ID_ASC
   HOST_ID_DESC
+  MATCH_TYPE_ASC
+  MATCH_TYPE_DESC
+  REQUIRED_SKILL_LEVEL_ASC
+  REQUIRED_SKILL_LEVEL_DESC
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
 }
@@ -454,6 +458,12 @@ input MatchCondition {
 
   """Checks for equality with the object’s `hostId` field."""
   hostId: Int
+
+  """Checks for equality with the object’s `matchType` field."""
+  matchType: MatchType
+
+  """Checks for equality with the object’s `requiredSkillLevel` field."""
+  requiredSkillLevel: SkillLevel
 }
 
 """Methods to use when ordering `Join`."""

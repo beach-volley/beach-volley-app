@@ -53,6 +53,18 @@ export const MATCHES = gql`
   }
 `;
 
+export const REFETCH_MATCHES = gql`
+  {
+    matches {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const MATCH_BY_ID = gql`
   query match($id: Int!) {
     match(id: $id) {
