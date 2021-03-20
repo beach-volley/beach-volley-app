@@ -281,7 +281,7 @@ declare
   new_user beachvolley_public.user;
 begin
   -- do nothing if called without a valid jwt
-  if current_setting('jwt.claims.firebase.uid', true) is null then
+  if current_setting('jwt.claims.firebase.uid', true) is null or current_setting('jwt.claims.firebase.uid', true) = '' then
     return null;
   end if;
 
@@ -651,6 +651,20 @@ CREATE INDEX join_participant_id_idx ON beachvolley_public."join" USING btree (p
 --
 
 CREATE INDEX match_host_id_idx ON beachvolley_public.match USING btree (host_id);
+
+
+--
+-- Name: match_match_type_idx; Type: INDEX; Schema: beachvolley_public; Owner: -
+--
+
+CREATE INDEX match_match_type_idx ON beachvolley_public.match USING btree (match_type);
+
+
+--
+-- Name: match_required_skill_level_idx; Type: INDEX; Schema: beachvolley_public; Owner: -
+--
+
+CREATE INDEX match_required_skill_level_idx ON beachvolley_public.match USING btree (required_skill_level);
 
 
 --
