@@ -72,14 +72,7 @@
   /*
    * afterAllMigrations: actions executed once all migrations are complete.
    */
-  "afterAllMigrations": [
-    {
-      "_": "command",
-      "shadow": true,
-      // NOTE: this script does nothing when envvar `IN_TESTS` is `1`
-      "command": "node scripts/dump-db.js"
-    },
-  ],
+  "afterAllMigrations": [],
 
   /*
    * afterCurrent: actions executed once the current migration has been
