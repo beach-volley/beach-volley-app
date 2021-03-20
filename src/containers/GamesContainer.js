@@ -22,22 +22,24 @@ const Games = () => {
 
   return (
     <ListContainer>
-      {matches.data?.matches.edges.map(({ node }) => (
-        <ListStyle key={node.nodeId}>
-          <CardWrapper>
-            <Row>
-              <GameItemInfo location={node.location} time={node.time} />
-            </Row>
-            <Row>
-              <GameItemInfo players={node.playerLimit} />
-            </Row>
-            <JoinGameButton onClick={() => joinMatchById(node.id)}>
-              Näytä
-            </JoinGameButton>
-          </CardWrapper>
-        </ListStyle>
-        //newest first
-      )).reverse()}
+      {matches.data?.matches.edges
+        .map(({ node }) => (
+          <ListStyle key={node.nodeId}>
+            <CardWrapper>
+              <Row>
+                <GameItemInfo location={node.location} time={node.time} />
+              </Row>
+              <Row>
+                <GameItemInfo players={node.playerLimit} />
+              </Row>
+              <JoinGameButton onClick={() => joinMatchById(node.id)}>
+                Näytä
+              </JoinGameButton>
+            </CardWrapper>
+          </ListStyle>
+          //newest first
+        ))
+        .reverse()}
     </ListContainer>
   );
 };
