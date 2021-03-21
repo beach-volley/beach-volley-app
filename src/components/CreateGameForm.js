@@ -71,8 +71,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   };
 
   const joinGame = () => {
-    if(currentUser.data?.currentUser != null){
-      console.log("Joined as logged in user")
+    if (currentUser.data?.currentUser != null) {
+      console.log("Joined as logged in user");
       joinMatch({
         variables: {
           input: {
@@ -81,7 +81,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         },
       });
     } else {
-      console.log("Joined as anonymous user")
+      console.log("Joined as anonymous user");
       joinAnonymously({
         variables: {
           input: {
@@ -97,7 +97,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   const leaveGame = () => {
     console.log("you left the game");
     // NEEDS MUTATION WHICH ALLOWS YOU TO REMOVE PLAYERS FROM PARTICIPANTS LIST
-  }
+  };
 
   const deleteMatchById = () => {
     deleteMatch({
@@ -288,7 +288,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         {singleGameView && isJoined === false && (
           <JoinGameButton onClick={joinGame}>Liity Peliin</JoinGameButton>
         )}
-         {singleGameView && isJoined === true && (
+        {singleGameView && isJoined === true && (
           <LeaveGameButton onClick={leaveGame}>Poistu Pelistä</LeaveGameButton>
         )}
         {singleGameView && (
