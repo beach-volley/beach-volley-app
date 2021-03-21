@@ -71,6 +71,29 @@ end;
 $$;
 
 
+--
+-- Name: add_fcm_token(text); Type: FUNCTION; Schema: beachvolley_public; Owner: -
+--
+
+CREATE FUNCTION beachvolley_public.add_fcm_token(token text) RETURNS void
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+begin
+  update beachvolley_private.user
+    set fcm_tokens = array_append(fcm_tokens, token)
+    where user_id = beachvolley_private.current_user_id()
+      and not string_to_array(token, '') && fcm_tokens;
+end;
+$$;
+
+
+--
+-- Name: FUNCTION add_fcm_token(token text); Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON FUNCTION beachvolley_public.add_fcm_token(token text) IS 'Assign Firebase Cloud Messaging registration token to the current user.';
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -318,6 +341,7 @@ CREATE TABLE beachvolley_private."user" (
     email text NOT NULL,
     created_at timestamp without time zone DEFAULT now(),
     updated_at timestamp without time zone DEFAULT now(),
+    fcm_tokens text[] DEFAULT '{}'::text[] NOT NULL,
     CONSTRAINT user_email_check CHECK ((email ~* '^.+@.+\..+$'::text))
 );
 
@@ -774,6 +798,14 @@ GRANT ALL ON SCHEMA public TO beachvolley_db_owner;
 REVOKE ALL ON FUNCTION beachvolley_private.current_user_id() FROM PUBLIC;
 GRANT ALL ON FUNCTION beachvolley_private.current_user_id() TO beachvolley_graphile_authenticated;
 GRANT ALL ON FUNCTION beachvolley_private.current_user_id() TO beachvolley_graphile_anonymous;
+
+
+--
+-- Name: FUNCTION add_fcm_token(token text); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public.add_fcm_token(token text) FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public.add_fcm_token(token text) TO beachvolley_graphile_authenticated;
 
 
 --
