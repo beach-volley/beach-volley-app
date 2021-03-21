@@ -11,7 +11,11 @@ const SingleGame = () => {
   });
 
   if (matchById.loading) {
-    return <div>loading...</div>;
+    return (
+      <PageWrapper>
+        <GameInfoContainer title="Loading..."></GameInfoContainer>
+      </PageWrapper>
+    );
   }
 
   const asInclusive = (value, inclusive) => {
@@ -59,6 +63,7 @@ const PageWrapper = styled.div`
   display: grid;
   min-height: 100vh;
   grid-template-rows: 8vh auto;
+  ${(props) => props.theme.backGroundImage()}
 `;
 
 export default SingleGame;

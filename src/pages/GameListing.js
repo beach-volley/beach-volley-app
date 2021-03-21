@@ -8,11 +8,6 @@ const GameListing = () => {
       <Header />
       <TitleTextBox>
         <h1>Etsi pelejä, pelaajia tai joukkueita.</h1>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-          commodo porta ligula nec dignissim. Maecenas convallis purus mauris,
-          eget.
-        </p>
       </TitleTextBox>
       <GamesContainer />
     </PageWrapper>
@@ -23,6 +18,8 @@ const PageWrapper = styled.div`
   display: grid;
   height: 100vh;
   grid-template-rows: 8vh 15vh auto;
+  ${props => props.theme.backGroundImage()}
+  overflow-y:hidden; 
 `;
 
 const TitleTextBox = styled.div`
