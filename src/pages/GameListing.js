@@ -16,7 +16,7 @@ const GameListing = () => {
 
 const PageWrapper = styled.div`
   display: grid;
-  height: 100vh;
+  min-height: 100vh;
   grid-template-rows: 8vh 15vh auto;
   ${(props) => props.theme.backGroundImage()}
   overflow-y:hidden;

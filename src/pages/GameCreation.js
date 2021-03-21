@@ -8,7 +8,7 @@ const GameCreation = () => {
     <PageWrapper>
       <Header />
       <FormContainer title={"Luo peli"}>
-        <CreateGameForm disabled={false} />
+        <CreateGameForm />
       </FormContainer>
     </PageWrapper>
   );

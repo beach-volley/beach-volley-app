@@ -4,25 +4,16 @@ import styled from "styled-components";
 import SignOutButton from "../components/SignOutButton";
 import { StyledButton } from "../components/StyledButton";
 import { useQuery } from "@apollo/client";
-import { CURRENT_USER, CURRENT_USER_MATCHES_JOINS } from "../queries";
+import { CURRENT_USER } from "../queries";
 
 const Header = () => {
   const currentUser = useQuery(CURRENT_USER);
-  const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
-
-  const myMatches = () => {
-    console.log({ currentUserMatchesJoins });
-  };
 
   return (
     <Container>
       <Link to="/home">
         <h1>LOGO</h1>
       </Link>
-
-      <MatchesButton onClick={myMatches}>
-        Meitsin luodut ja liitytyt pelit
-      </MatchesButton>
 
       <Profile>
         {currentUser?.data?.currentUser && (
@@ -65,8 +56,3 @@ const CreateGameButton = styled(StyledButton)`
   margin-right: 0.5rem;
 `;
 
-const MatchesButton = styled(StyledButton)`
-  height: 3rem;
-  width: 8rem;
-  margin-right: 0.5rem;
-`;

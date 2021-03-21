@@ -2,12 +2,19 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { StyledButton } from "./StyledButton";
 import Dialog from "@material-ui/core/Dialog";
+import Snackbar from "@material-ui/core/Snackbar";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-export const AlertDialogButton = ({ buttonText, title, content, callBack }) => {
+export const AlertDialogButton = ({
+  ButtonStyle,
+  buttonText,
+  title,
+  content,
+  callBack,
+}) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -25,9 +32,9 @@ export const AlertDialogButton = ({ buttonText, title, content, callBack }) => {
 
   return (
     <div>
-      <Button id="dialog-button" onClick={handleClickOpen}>
+      <ButtonStyle id="dialog-button" onClick={handleClickOpen}>
         {buttonText}
-      </Button>
+      </ButtonStyle>
       <DialogWrapper
         open={open}
         onClose={handleClose}
@@ -41,9 +48,9 @@ export const AlertDialogButton = ({ buttonText, title, content, callBack }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleClose}>Peruuta</Button>
           <Button onClick={handleCloseAgree} autoFocus>
-            Agree
+            Vahvista
           </Button>
         </DialogActions>
       </DialogWrapper>
@@ -51,13 +58,36 @@ export const AlertDialogButton = ({ buttonText, title, content, callBack }) => {
   );
 };
 
+export const SnackBarTop = ({ message }) => {
+  const [open, setOpen] = useState(true);
+
+  return (
+    <SnackBarWrapper
+      open={open}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      autoHideDuration={1000}
+      message={message}
+      onClose={() => setOpen(false)}
+    />
+  );
+};
+
 const Button = styled(StyledButton)`
-  width: 6rem;
+  width: auto;
   height: 2rem;
 `;
 
 const DialogWrapper = styled(Dialog)`
   .MuiDialog-paperWidthSm {
-    width: 50rem;
+    width: 50%;
+  }
+`;
+
+const SnackBarWrapper = styled(Snackbar)`
+  .MuiSnackbarContent-root {
+    display: flex;
+    justify-content: center;
+    width: 35rem;
+    background: #4caf50;
   }
 `;

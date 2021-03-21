@@ -39,7 +39,7 @@ const theme = {
   },
   fontSizes: {
     small: "0.75em",
-    medium: "1.5em",
+    medium: "1.2em",
     large: "3em",
   },
 

@@ -31,9 +31,7 @@ const SingleGame = () => {
   };
 
   if (matchById.loading || playersByMatchId.loading) {
-    <PageWrapper>
-      <GameInfoContainer title="Loading..."></GameInfoContainer>
-    </PageWrapper>;
+    return <PageWrapper><GameInfoContainer title="Loading"/></PageWrapper>;
   }
 
   const asInclusive = (value, inclusive) => {
