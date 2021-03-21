@@ -3,14 +3,34 @@ import GameInfoContainer from "../containers/CenterContainer";
 import GameInfoForm from "../components/CreateGameForm";
 import Header from "../containers/Header";
 import { useQuery } from "@apollo/client";
-import { MATCH_BY_ID } from "../queries";
+import { MATCH_BY_ID, PLAYERS_BY_MATCH_ID } from "../queries";
 
 const SingleGame = () => {
   const matchById = useQuery(MATCH_BY_ID, {
     variables: { id: +window.location.pathname.slice(13) },
   });
 
-  if (matchById.loading) {
+  const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
+    variables: {
+      id: +window.location.pathname.slice(13),
+    },
+  });
+
+  const allPlayers = () => {
+    const players = [];
+    for (
+      let index = 0;
+      index < playersByMatchId.data?.match.joins.edges.length;
+      index++
+    ) {
+      players[index] =
+        playersByMatchId.data?.match.joins.edges[index]?.node.participant;
+    }
+
+    return players;
+  };
+
+  if (matchById.loading || playersByMatchId.loading) {
     return <div>loading...</div>;
   }
 
@@ -41,7 +61,7 @@ const SingleGame = () => {
     numPlayers: numPlayers,
     difficultyLevel: "easy",
     publicToggle: matchById.data?.match.public,
-    playerList: [{ name: "test" }],
+    playerList: allPlayers(),
     description: "test",
   };
 
