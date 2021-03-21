@@ -18,36 +18,43 @@ const Games = () => {
   };
 
   if (matches.loading) {
-    return <ContainerWrapper><p>Fetching games</p></ContainerWrapper>;
+    return (
+      <ContainerWrapper>
+        <p>Fetching games</p>
+      </ContainerWrapper>
+    );
   }
 
   return (
-
     <ContainerWrapper>
-    <GameTabRow>
-      <GameTab><p>Joined Games</p></GameTab>
-      <GameTab><p>Created Games</p></GameTab>
-    </GameTabRow>
-    <ListContainer>
-
-      {matches.data?.matches.edges
-        .map(({ node }) => (
-          <ListStyle key={node.nodeId}>
-            <CardWrapper>
-              <Row>
-                <GameItemInfo location={node.location} time={node.time} />
-              </Row>
-              <Row>
-                <GameItemInfo players={node.playerLimit} />
-              </Row>
-              <JoinGameButton onClick={() => joinMatchById(node.id)}>
-                Näytä
-              </JoinGameButton>
-            </CardWrapper>
-          </ListStyle>
-          //newest first
-        )).reverse()}
-    </ListContainer>
+      <GameTabRow>
+        <GameTab>
+          <p>Joined Games</p>
+        </GameTab>
+        <GameTab>
+          <p>Created Games</p>
+        </GameTab>
+      </GameTabRow>
+      <ListContainer>
+        {matches.data?.matches.edges
+          .map(({ node }) => (
+            <ListStyle key={node.nodeId}>
+              <CardWrapper>
+                <Row>
+                  <GameItemInfo location={node.location} time={node.time} />
+                </Row>
+                <Row>
+                  <GameItemInfo players={node.playerLimit} />
+                </Row>
+                <JoinGameButton onClick={() => joinMatchById(node.id)}>
+                  Näytä
+                </JoinGameButton>
+              </CardWrapper>
+            </ListStyle>
+            //newest first
+          ))
+          .reverse()}
+      </ListContainer>
     </ContainerWrapper>
   );
 };
@@ -60,7 +67,7 @@ const ContainerWrapper = styled.div`
   grid-row: 3;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-      width: 50%;
+    width: 50%;
   }
 `;
 
@@ -71,16 +78,13 @@ const GameTabRow = styled.div`
     background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
     border-style: solid;
     margin: 0 1rem 0.5rem 0;
-
   }
-
 `;
 
 const GameTab = styled.div`
   flex: 1;
   text-align: center;
 `;
-
 
 const ListContainer = styled.div`
   display: flex;
@@ -89,7 +93,6 @@ const ListContainer = styled.div`
   width: 100%;
   overflow-y: auto;
   height: 50vh;
-
 `;
 
 const ListStyle = styled.div`

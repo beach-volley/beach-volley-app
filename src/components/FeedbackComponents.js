@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import styled from "styled-components";
 import { StyledButton } from "./StyledButton";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
-export const AlertDialogButton = ({buttonText, title, content, callBack}) => {
+export const AlertDialogButton = ({ buttonText, title, content, callBack }) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -25,7 +25,9 @@ export const AlertDialogButton = ({buttonText, title, content, callBack}) => {
 
   return (
     <div>
-      <Button id="dialog-button" onClick={handleClickOpen}>{buttonText}</Button>
+      <Button id="dialog-button" onClick={handleClickOpen}>
+        {buttonText}
+      </Button>
       <DialogWrapper
         open={open}
         onClose={handleClose}
@@ -39,9 +41,7 @@ export const AlertDialogButton = ({buttonText, title, content, callBack}) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>
-            Disagree
-          </Button>
+          <Button onClick={handleClose}>Disagree</Button>
           <Button onClick={handleCloseAgree} autoFocus>
             Agree
           </Button>
@@ -49,7 +49,7 @@ export const AlertDialogButton = ({buttonText, title, content, callBack}) => {
       </DialogWrapper>
     </div>
   );
-}
+};
 
 const Button = styled(StyledButton)`
   width: 6rem;
@@ -57,7 +57,7 @@ const Button = styled(StyledButton)`
 `;
 
 const DialogWrapper = styled(Dialog)`
-     .MuiDialog-paperWidthSm {
-       width: 50rem;
-     }
+  .MuiDialog-paperWidthSm {
+    width: 50rem;
+  }
 `;

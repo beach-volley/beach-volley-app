@@ -54,7 +54,7 @@ const theme = {
   background-image: url(${background_image});
   background-repeat: no-repeat;
   background-position: center;
-  background-size: cover;`
+  background-size: cover;`,
 };
 
 const Theme = ({ children }) => (

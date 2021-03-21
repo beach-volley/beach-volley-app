@@ -42,7 +42,7 @@ const PageWrapper = styled.div`
   display: grid;
   min-height: 100vh;
   grid-template-rows: 8vh auto;
-  ${props => props.theme.backGroundImage()}
+  ${(props) => props.theme.backGroundImage()}
 `;
 
 export default LoginPage;
