@@ -5,8 +5,16 @@ import { StyledButton } from "./StyledButton";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { CREATE_MATCH, REFETCH_MATCHES, JOIN_MATCH, DELETE_MATCH } from "../queries";
-import { useMutation } from "@apollo/client";
+import {
+  CREATE_MATCH,
+  REFETCH_MATCHES,
+  JOIN_MATCH,
+  DELETE_MATCH,
+  PLAYERS_BY_MATCH_ID,
+  CURRENT_USER,
+  JOIN_ANONYMOUSLY,
+} from "../queries";
+import { useMutation, useQuery } from "@apollo/client";
 import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -23,12 +31,35 @@ import {
 
 const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
+  const [playerName, setPlayerName] = useState("");
+  const currentUser = useQuery(CURRENT_USER);
+  const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
+    variables: {
+      id: +window.location.pathname.slice(13),
+    },
+  });
   const [createMatch] = useMutation(CREATE_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
-  const [playerName, setPlayerName] = useState("");
   const [joinMatch] = useMutation(JOIN_MATCH);
-  const [ deleteMatch ] = useMutation( DELETE_MATCH );
+  const [joinAnonymously] = useMutation(JOIN_ANONYMOUSLY);
+  const [deleteMatch] = useMutation(DELETE_MATCH, {
+    refetchQueries: [{ query: REFETCH_MATCHES }],
+  });
+
+  let isJoined = false;
+  const players = [];
+  for (
+    let index = 0;
+    index < playersByMatchId.data?.match?.joins.edges.length;
+    index++
+  ) {
+    players[index] =
+      playersByMatchId.data?.match.joins?.edges[index]?.node.participant;
+    if (players[index]?.id === currentUser.data?.currentUser?.id) {
+      isJoined = true;
+    }
+  }
 
   const SendInvite = (list, name) => {
     if (name === "") {
@@ -39,26 +70,45 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     return tempList;
   };
 
-  const joinGame = () => {  
-    joinMatch({
-      variables: {
-        input: {
-          matchId: +window.location.pathname.slice(13),
-        }
-      }
-    })
+  const joinGame = () => {
+    if(currentUser.data?.currentUser != null){
+      console.log("Joined as logged in user")
+      joinMatch({
+        variables: {
+          input: {
+            matchId: +window.location.pathname.slice(13),
+          },
+        },
+      });
+    } else {
+      console.log("Joined as anonymous user")
+      joinAnonymously({
+        variables: {
+          input: {
+            matchId: +window.location.pathname.slice(13),
+            name: "anonyymi",
+          },
+        },
+      });
+    }
+    window.location.reload(); // THIS NEEDS TO BE REPLACED WITH REFETCH OR COMPONENT RELAOD
+  };
+
+  const leaveGame = () => {
+    console.log("you left the game");
+    // NEEDS MUTATION WHICH ALLOWS YOU TO REMOVE PLAYERS FROM PARTICIPANTS LIST
   }
 
-  const deleteMatchById = () => { 
+  const deleteMatchById = () => {
     deleteMatch({
       variables: {
         input: {
           id: +window.location.pathname.slice(13),
-        }
-      }
-    })
+        },
+      },
+    });
     history.push("/home");
-  }
+  };
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -88,7 +138,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
             "Invalid difficulty"
           ),
           publicToggle: Yup.boolean(),
-          //invitedPlayers: Yup.array(),
+          //invitedPlayers: Yup.array(), // NEEDS TO BE MODIFIED TO VALIDATE STRING ARRAY INSTEAD OF OBJECT ARRAY
           description: Yup.string(),
         })}
         onSubmit={(values) => {
@@ -235,10 +285,11 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         )}
       </Formik>
       <>
-        {singleGameView && (
-          <JoinGameButton onClick={joinGame}>
-            Liity Peliin
-          </JoinGameButton>
+        {singleGameView && isJoined === false && (
+          <JoinGameButton onClick={joinGame}>Liity Peliin</JoinGameButton>
+        )}
+         {singleGameView && isJoined === true && (
+          <LeaveGameButton onClick={leaveGame}>Poistu Pelistä</LeaveGameButton>
         )}
         {singleGameView && (
           <DeleteGameButton onClick={deleteMatchById}>
@@ -316,6 +367,15 @@ const ConfirmGameButton = styled(StyledButton)`
 `;
 
 const JoinGameButton = styled(StyledButton)`
+  height: 2rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-right: 2rem;
+  margin-bottom: 1rem;
+`;
+
+const LeaveGameButton = styled(StyledButton)`
   height: 2rem;
   position: absolute;
   bottom: 0;

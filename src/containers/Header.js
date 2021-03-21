@@ -8,11 +8,11 @@ import { CURRENT_USER, CURRENT_USER_MATCHES_JOINS } from "../queries";
 
 const Header = () => {
   const currentUser = useQuery(CURRENT_USER);
-  const currentUserMatchesJoins = useQuery( CURRENT_USER_MATCHES_JOINS );
+  const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
 
   const myMatches = () => {
-    console.log({currentUserMatchesJoins});
-  }
+    console.log({ currentUserMatchesJoins });
+  };
 
   return (
     <Container>
@@ -20,7 +20,9 @@ const Header = () => {
         <h1>LOGO</h1>
       </Link>
 
-      <MatchesButton onClick={myMatches}>Meitsin luodut ja liitytyt pelit</MatchesButton>
+      <MatchesButton onClick={myMatches}>
+        Meitsin luodut ja liitytyt pelit
+      </MatchesButton>
 
       <Profile>
         {currentUser?.data?.currentUser && (

@@ -13,17 +13,22 @@ const SingleGame = () => {
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
       id: +window.location.pathname.slice(13),
-    }
+    },
   });
 
   const allPlayers = () => {
-    const players = []
-    for (let index = 0; index < playersByMatchId.data?.match.joins.edges.length; index++) {
-      players[index] = playersByMatchId.data?.match.joins.edges[index]?.node.participant;
+    const players = [];
+    for (
+      let index = 0;
+      index < playersByMatchId.data?.match.joins.edges.length;
+      index++
+    ) {
+      players[index] =
+        playersByMatchId.data?.match.joins.edges[index]?.node.participant;
     }
 
     return players;
-  }
+  };
 
   if (matchById.loading || playersByMatchId.loading) {
     return <div>loading...</div>;

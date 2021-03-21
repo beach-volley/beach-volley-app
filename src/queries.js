@@ -152,7 +152,7 @@ export const MATCHES = gql`
 
 export const PLAYERS_BY_MATCH_ID = gql`
   query match($id: Int!) {
-    match(id: $id){
+    match(id: $id) {
       joins {
         edges {
           node {
@@ -182,8 +182,13 @@ export const REFETCH_MATCHES = gql`
 export const MATCH_BY_ID = gql`
   query match($id: Int!) {
     match(id: $id) {
+      description
+      nodeId
+      matchType
+      requiredSkillLevel
       id
       location
+      public
       playerLimit {
         end {
           inclusive
@@ -194,7 +199,6 @@ export const MATCH_BY_ID = gql`
           value
         }
       }
-      public
       time {
         end {
           inclusive
@@ -204,6 +208,10 @@ export const MATCH_BY_ID = gql`
           inclusive
           value
         }
+      }
+      host {
+        name
+        id
       }
     }
   }
@@ -247,6 +255,14 @@ export const JOIN_MATCH = gql`
       match {
         id
       }
+    }
+  }
+`;
+
+export const JOIN_ANONYMOUSLY = gql`
+  mutation joinAnonymously($input: JoinAnonymouslyInput!) {
+    joinAnonymously(input: $input) {
+      clientMutationId
     }
   }
 `;
