@@ -35,7 +35,6 @@ app.use(
       showErrorStack: "json",
       extendedErrors: ["hint", "detail", "errcode"],
       appendPlugins: [require("@graphile-contrib/pg-simplify-inflector")],
-      exportGqlSchemaPath: "data/schema.graphql",
       graphiql: true,
       graphiqlRoute: "/",
       enhanceGraphiql: true,
