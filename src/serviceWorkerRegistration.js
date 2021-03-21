@@ -21,6 +21,18 @@ const isLocalhost = Boolean(
 );
 
 export function register(config) {
+  // enable firebase cloud messaging
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("../firebase-messaging-sw.js")
+      .then(function (registration) {
+        console.log("Registration successful, scope is:", registration.scope);
+      })
+      .catch(function (err) {
+        console.log("Service worker registration failed, error:", err);
+      });
+  }
+
   if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);

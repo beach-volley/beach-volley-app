@@ -45,7 +45,7 @@
     "build:staging": "env-cmd -f .env.staging react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "node server.js",
+    "server": "node server/index.js",
     "migrations": "env-cmd graphile-migrate",
     "postinstall": "husky install",
     "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",

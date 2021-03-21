@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import SignOutButton from "../components/SignOutButton";
+import ShowNotifications from "../components/ShowNotifications";
 import { StyledButton } from "../components/StyledButton";
 import { useQuery } from "@apollo/client";
 import { CURRENT_USER } from "../queries";
@@ -21,6 +22,7 @@ const Header = () => {
           </Link>
         )}
         <SignOutButton />
+        <ShowNotifications />
       </Profile>
     </Container>
   );
