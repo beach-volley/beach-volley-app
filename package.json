@@ -47,7 +47,10 @@
     "server": "node server.js",
     "migrations": "env-cmd graphile-migrate",
     "postinstall": "husky install",
-    "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+    "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "generate:schema:graphql": "postgraphile --no-server --dynamic-json --no-setof-functions-contain-nulls --no-ignore-rbac --no-ignore-indexes --append-plugins @graphile-contrib/pg-simplify-inflector --export-schema-graphql data/schema.graphql --legacy-relations omit --connection \"postgres://beachvolley_graphile:dev_password@localhost:5432/beachvolley\" --default-role beachvolley_graphile_anonymous --schema beachvolley_public",
+    "generate:schema:sql": "pg_dump --no-sync --schema-only --no-owner --exclude-schema=graphile_migrate --exclude-schema=graphile_worker --file=./data/schema.sql \"postgres://beachvolley_db_owner:dev_password@localhost:5432/beachvolley\"",
+    "generate:schema": "npm run generate:schema:sql && npm run generate:schema:graphql"
   },
   "eslintConfig": {
     "extends": [

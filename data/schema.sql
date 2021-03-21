@@ -866,21 +866,21 @@ GRANT INSERT(public),UPDATE(public) ON TABLE beachvolley_public.match TO beachvo
 -- Name: COLUMN match.match_type; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
-GRANT UPDATE(match_type) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
+GRANT INSERT(match_type),UPDATE(match_type) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
 
 
 --
 -- Name: COLUMN match.required_skill_level; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
-GRANT UPDATE(required_skill_level) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
+GRANT INSERT(required_skill_level),UPDATE(required_skill_level) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
 
 
 --
 -- Name: COLUMN match.description; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
-GRANT UPDATE(description) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
+GRANT INSERT(description),UPDATE(description) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
 
 
 --

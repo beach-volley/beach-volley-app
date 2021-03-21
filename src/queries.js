@@ -10,6 +10,103 @@ export const CURRENT_USER = gql`
   }
 `;
 
+export const CURRENT_USER_MATCHES_JOINS = gql`
+  {
+    currentUser {
+      matchesByHostId {
+        edges {
+          node {
+            id
+            location
+            description
+            matchType
+            playerLimit {
+              end {
+                inclusive
+                value
+              }
+              start {
+                inclusive
+                value
+              }
+            }
+            public
+            requiredSkillLevel
+            time {
+              end {
+                inclusive
+                value
+              }
+              start {
+                inclusive
+                value
+              }
+            }
+            joins {
+              edges {
+                node {
+                  id
+                  name
+                  participant {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      joinsByParticipantId {
+        edges {
+          node {
+            match {
+              location
+              description
+              id
+              matchType
+              playerLimit {
+                end {
+                  inclusive
+                  value
+                }
+                start {
+                  inclusive
+                  value
+                }
+              }
+              public
+              requiredSkillLevel
+              time {
+                end {
+                  inclusive
+                  value
+                }
+                start {
+                  inclusive
+                  value
+                }
+              }
+              joins {
+                edges {
+                  node {
+                    name
+                    participant {
+                      name
+                      id
+                    }
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const MATCHES_TOTAL_COUNT = gql`
   {
     matches {
@@ -53,6 +150,23 @@ export const MATCHES = gql`
   }
 `;
 
+export const PLAYERS_BY_MATCH_ID = gql`
+  query match($id: Int!) {
+    match(id: $id) {
+      joins {
+        edges {
+          node {
+            participant {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const REFETCH_MATCHES = gql`
   {
     matches {
@@ -68,8 +182,13 @@ export const REFETCH_MATCHES = gql`
 export const MATCH_BY_ID = gql`
   query match($id: Int!) {
     match(id: $id) {
+      description
+      nodeId
+      matchType
+      requiredSkillLevel
       id
       location
+      public
       playerLimit {
         end {
           inclusive
@@ -80,7 +199,6 @@ export const MATCH_BY_ID = gql`
           value
         }
       }
-      public
       time {
         end {
           inclusive
@@ -90,6 +208,10 @@ export const MATCH_BY_ID = gql`
           inclusive
           value
         }
+      }
+      host {
+        name
+        id
       }
     }
   }
@@ -123,6 +245,24 @@ export const DELETE_MATCH = gql`
       match {
         id
       }
+    }
+  }
+`;
+
+export const JOIN_MATCH = gql`
+  mutation join($input: JoinInput!) {
+    join(input: $input) {
+      match {
+        id
+      }
+    }
+  }
+`;
+
+export const JOIN_ANONYMOUSLY = gql`
+  mutation joinAnonymously($input: JoinAnonymouslyInput!) {
+    joinAnonymously(input: $input) {
+      clientMutationId
     }
   }
 `;
