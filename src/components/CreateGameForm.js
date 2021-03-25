@@ -55,7 +55,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   ) {
     players[index] =
       playersByMatchId.data?.match.joins?.edges[index]?.node.participant;
-    if (players[index]?.id === currentUser.data?.currentUser?.id) {
+    if (players[index]?.id === currentUser.data?.currentUser?.id && currentUser.data?.currentUser?.id != null) {
       isJoined = true;
     }
   }
@@ -76,7 +76,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         variables: {
           input: {
             matchId: +window.location.pathname.slice(13),
-            name: "anonyymi",
+            name: document.getElementById("anonymousName").value,
           },
         },
       });
@@ -245,14 +245,19 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         )}
       </Formik>
       <>
-        {singleGameView && !isJoined && (
+        {singleGameView && !isJoined && currentUser.data?.currentUser != null && (
           <CornerButton onClick={joinGame}>Liity Peliin</CornerButton>
+        )}
+        {singleGameView && !matchData.publicToggle && currentUser.data?.currentUser === null && (
+          <>
+            <input type="text" id="anonymousName" maxLength="30" placeholder="Anna nimi" style={{"marginLeft": "7rem", "marginBottom": "1.15rem"}}/>
+            <CornerButton onClick={joinGame}>Liity Peliin</CornerButton>
+          </>
         )}
         {singleGameView && isJoined && (
           <CornerButton onClick={leaveGame}>Poistu Pelistä</CornerButton>
         )}
-        {singleGameView && (
-
+        {singleGameView && currentUser.data?.currentUser?.id === matchData.hostId && (
           <AlertDialogButton
           ButtonStyle={DeleteGameButton}
           buttonText={"Poista Peli"} 

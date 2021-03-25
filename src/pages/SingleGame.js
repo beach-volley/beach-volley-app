@@ -23,8 +23,13 @@ const SingleGame = () => {
       index < playersByMatchId.data?.match.joins.edges.length;
       index++
     ) {
-      players[index] =
-        playersByMatchId.data?.match.joins.edges[index]?.node.participant;
+      if (playersByMatchId.data?.match.joins.edges[index]?.node.participant === null) {
+        players[index] =
+          playersByMatchId.data?.match.joins.edges[index]?.node;
+      } else {
+        players[index] =
+          playersByMatchId.data?.match.joins.edges[index]?.node.participant;
+      }
     }
 
     return players;
@@ -63,6 +68,7 @@ const SingleGame = () => {
     publicToggle: matchById.data?.match.public,
     playerList: allPlayers(),
     description: "test",
+    hostId: matchById.data?.match.host.id,
   };
 
   return (
