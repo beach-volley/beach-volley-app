@@ -156,6 +156,8 @@ export const PLAYERS_BY_MATCH_ID = gql`
       joins {
         edges {
           node {
+            id
+            name
             participant {
               id
               name
@@ -254,6 +256,18 @@ export const JOIN_MATCH = gql`
     join(input: $input) {
       match {
         id
+        joins {
+          edges {
+            node {
+              name
+              id
+              participant {
+                id
+                name
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -263,6 +277,21 @@ export const JOIN_ANONYMOUSLY = gql`
   mutation joinAnonymously($input: JoinAnonymouslyInput!) {
     joinAnonymously(input: $input) {
       clientMutationId
+      match {
+        id
+        joins {
+          edges {
+            node {
+              name
+              id
+              participant {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
     }
   }
 `;

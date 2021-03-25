@@ -20,11 +20,14 @@ const Games = () => {
 
   const filterGameList = () => {
     if(gameFilter==='joined'){
+      console.log(currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges)
       return currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
     }
     if(gameFilter==='created'){
+      console.log(currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges)
       return currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
     }
+      console.log({currentUserMatchesJoins})
       return matches.data?.matches.edges;
   };
 
@@ -51,7 +54,7 @@ const Games = () => {
               <Row>
                 <GameItemInfo players={node.playerLimit || node.match.playerLimit} />
               </Row>
-              <JoinGameButton onClick={() => joinMatchById(node.id)}>
+              <JoinGameButton onClick={() => joinMatchById(node.id || node.match.id)}>
                 Näytä
               </JoinGameButton>
             </CardWrapper>
