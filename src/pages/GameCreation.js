@@ -8,7 +8,7 @@ const GameCreation = () => {
     <PageWrapper>
       <Header />
       <FormContainer title={"Luo peli"}>
-        <CreateGameForm disabled={false} />
+        <CreateGameForm />
       </FormContainer>
     </PageWrapper>
   );
@@ -16,8 +16,9 @@ const GameCreation = () => {
 
 const PageWrapper = styled.div`
   display: grid;
-  min-height: 98vh;
+  min-height: 100vh;
   grid-template-rows: 8vh auto;
+  ${(props) => props.theme.backGroundImage()}
 `;
 
 export default GameCreation;

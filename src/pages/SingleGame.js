@@ -31,7 +31,7 @@ const SingleGame = () => {
   };
 
   if (matchById.loading || playersByMatchId.loading) {
-    return <div>loading...</div>;
+    return <PageWrapper><GameInfoContainer title="Loading"/></PageWrapper>;
   }
 
   const asInclusive = (value, inclusive) => {
@@ -79,6 +79,7 @@ const PageWrapper = styled.div`
   display: grid;
   min-height: 100vh;
   grid-template-rows: 8vh auto;
+  ${(props) => props.theme.backGroundImage()}
 `;
 
 export default SingleGame;

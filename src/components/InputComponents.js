@@ -25,7 +25,7 @@ export const PickTime = ({ ...props }) => {
 export const PickDate = ({ ...props }) => {
   return (
     <InputRowMUI>
-      <Field component={DatePicker} {...props} />
+      <Field component={DatePicker} {...props} disablePast={true} />
     </InputRowMUI>
   );
 };
