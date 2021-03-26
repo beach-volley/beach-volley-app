@@ -23,9 +23,11 @@ const SingleGame = () => {
       index < playersByMatchId.data?.match.joins.edges.length;
       index++
     ) {
-      if (playersByMatchId.data?.match.joins.edges[index]?.node.participant === null) {
-        players[index] =
-          playersByMatchId.data?.match.joins.edges[index]?.node;
+      if (
+        playersByMatchId.data?.match.joins.edges[index]?.node.participant ===
+        null
+      ) {
+        players[index] = playersByMatchId.data?.match.joins.edges[index]?.node;
       } else {
         players[index] =
           playersByMatchId.data?.match.joins.edges[index]?.node.participant;
@@ -36,7 +38,11 @@ const SingleGame = () => {
   };
 
   if (matchById.loading || playersByMatchId.loading) {
-    return <PageWrapper><GameInfoContainer title="Loading"/></PageWrapper>;
+    return (
+      <PageWrapper>
+        <GameInfoContainer title="Loading" />
+      </PageWrapper>
+    );
   }
 
   const asInclusive = (value, inclusive) => {
