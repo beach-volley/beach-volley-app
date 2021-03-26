@@ -31,6 +31,13 @@ CREATE SCHEMA beachvolley_public;
 
 
 --
+-- Name: postgraphile_watch; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA postgraphile_watch;
+
+
+--
 -- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -333,6 +340,48 @@ COMMENT ON FUNCTION beachvolley_public.upsert_user() IS 'Create user or update i
 
 
 --
+-- Name: notify_watchers_ddl(); Type: FUNCTION; Schema: postgraphile_watch; Owner: -
+--
+
+CREATE FUNCTION postgraphile_watch.notify_watchers_ddl() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $$
+begin
+  perform pg_notify(
+    'postgraphile_watch',
+    json_build_object(
+      'type',
+      'ddl',
+      'payload',
+      (select json_agg(json_build_object('schema', schema_name, 'command', command_tag)) from pg_event_trigger_ddl_commands() as x)
+    )::text
+  );
+end;
+$$;
+
+
+--
+-- Name: notify_watchers_drop(); Type: FUNCTION; Schema: postgraphile_watch; Owner: -
+--
+
+CREATE FUNCTION postgraphile_watch.notify_watchers_drop() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $$
+begin
+  perform pg_notify(
+    'postgraphile_watch',
+    json_build_object(
+      'type',
+      'drop',
+      'payload',
+      (select json_agg(distinct x.schema_name) from pg_event_trigger_dropped_objects() as x)
+    )::text
+  );
+end;
+$$;
+
+
+--
 -- Name: user; Type: TABLE; Schema: beachvolley_private; Owner: -
 --
 
@@ -353,10 +402,61 @@ CREATE TABLE beachvolley_private."user" (
 CREATE TABLE beachvolley_public.invitation (
     id integer NOT NULL,
     match_id integer NOT NULL,
-    token text DEFAULT public.gen_random_uuid() NOT NULL,
     created_at timestamp without time zone DEFAULT now(),
-    updated_at timestamp without time zone DEFAULT now()
+    updated_at timestamp without time zone DEFAULT now(),
+    status text DEFAULT 'pending'::text NOT NULL,
+    user_id integer NOT NULL
 );
+
+
+--
+-- Name: TABLE invitation; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON TABLE beachvolley_public.invitation IS '@omit all
+Invitation to single match sent to single user.';
+
+
+--
+-- Name: COLUMN invitation.id; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.id IS 'Unique id of the invitation.';
+
+
+--
+-- Name: COLUMN invitation.match_id; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.match_id IS 'The match to which the user has been invited.';
+
+
+--
+-- Name: COLUMN invitation.created_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.created_at IS '@omit all,create,delete,many,read,update';
+
+
+--
+-- Name: COLUMN invitation.updated_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.updated_at IS '@omit all,create,delete,many,read,update';
+
+
+--
+-- Name: COLUMN invitation.status; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.status IS 'Status of the invitation. Default is PENDING.';
+
+
+--
+-- Name: COLUMN invitation.user_id; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.user_id IS 'Invited user.';
 
 
 --
@@ -371,6 +471,24 @@ ALTER TABLE beachvolley_public.invitation ALTER COLUMN id ADD GENERATED ALWAYS A
     NO MAXVALUE
     CACHE 1
 );
+
+
+--
+-- Name: invitation_status; Type: TABLE; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TABLE beachvolley_public.invitation_status (
+    type text NOT NULL,
+    description text
+);
+
+
+--
+-- Name: TABLE invitation_status; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON TABLE beachvolley_public.invitation_status IS '@enum
+Invitation status (pending, accepted, rejected, or cancelled).';
 
 
 --
@@ -580,11 +698,11 @@ ALTER TABLE ONLY beachvolley_public.invitation
 
 
 --
--- Name: invitation invitation_token_key; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
+-- Name: invitation_status invitation_status_pkey; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
 --
 
-ALTER TABLE ONLY beachvolley_public.invitation
-    ADD CONSTRAINT invitation_token_key UNIQUE (token);
+ALTER TABLE ONLY beachvolley_public.invitation_status
+    ADD CONSTRAINT invitation_status_pkey PRIMARY KEY (type);
 
 
 --
@@ -640,6 +758,20 @@ ALTER TABLE ONLY beachvolley_public."user"
 --
 
 CREATE INDEX invitation_match_id_idx ON beachvolley_public.invitation USING btree (match_id);
+
+
+--
+-- Name: invitation_status_idx; Type: INDEX; Schema: beachvolley_public; Owner: -
+--
+
+CREATE INDEX invitation_status_idx ON beachvolley_public.invitation USING btree (status);
+
+
+--
+-- Name: invitation_user_id_idx; Type: INDEX; Schema: beachvolley_public; Owner: -
+--
+
+CREATE INDEX invitation_user_id_idx ON beachvolley_public.invitation USING btree (user_id);
 
 
 --
@@ -733,6 +865,22 @@ ALTER TABLE ONLY beachvolley_private."user"
 
 ALTER TABLE ONLY beachvolley_public.invitation
     ADD CONSTRAINT invitation_match_id_fkey FOREIGN KEY (match_id) REFERENCES beachvolley_public.match(id) ON DELETE CASCADE;
+
+
+--
+-- Name: invitation invitation_status_fkey; Type: FK CONSTRAINT; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_public.invitation
+    ADD CONSTRAINT invitation_status_fkey FOREIGN KEY (status) REFERENCES beachvolley_public.invitation_status(type);
+
+
+--
+-- Name: invitation invitation_user_id_fkey; Type: FK CONSTRAINT; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_public.invitation
+    ADD CONSTRAINT invitation_user_id_fkey FOREIGN KEY (user_id) REFERENCES beachvolley_public."user"(id);
 
 
 --
@@ -859,6 +1007,44 @@ GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_a
 
 
 --
+-- Name: TABLE invitation; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT SELECT ON TABLE beachvolley_public.invitation TO beachvolley_graphile_anonymous;
+GRANT SELECT ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: COLUMN invitation.match_id; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT INSERT(match_id) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: COLUMN invitation.status; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT UPDATE(status) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_anonymous;
+GRANT UPDATE(status) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: COLUMN invitation.user_id; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT INSERT(user_id) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: TABLE invitation_status; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT SELECT ON TABLE beachvolley_public.invitation_status TO beachvolley_graphile_anonymous;
+GRANT SELECT ON TABLE beachvolley_public.invitation_status TO beachvolley_graphile_authenticated;
+
+
+--
 -- Name: TABLE match; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
@@ -936,6 +1122,23 @@ GRANT SELECT ON TABLE beachvolley_public.skill_level TO beachvolley_graphile_aut
 --
 
 ALTER DEFAULT PRIVILEGES FOR ROLE beachvolley_db_owner REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+
+
+--
+-- Name: postgraphile_watch_ddl; Type: EVENT TRIGGER; Schema: -; Owner: -
+--
+
+CREATE EVENT TRIGGER postgraphile_watch_ddl ON ddl_command_end
+         WHEN TAG IN ('ALTER AGGREGATE', 'ALTER DOMAIN', 'ALTER EXTENSION', 'ALTER FOREIGN TABLE', 'ALTER FUNCTION', 'ALTER POLICY', 'ALTER SCHEMA', 'ALTER TABLE', 'ALTER TYPE', 'ALTER VIEW', 'COMMENT', 'CREATE AGGREGATE', 'CREATE DOMAIN', 'CREATE EXTENSION', 'CREATE FOREIGN TABLE', 'CREATE FUNCTION', 'CREATE INDEX', 'CREATE POLICY', 'CREATE RULE', 'CREATE SCHEMA', 'CREATE TABLE', 'CREATE TABLE AS', 'CREATE VIEW', 'DROP AGGREGATE', 'DROP DOMAIN', 'DROP EXTENSION', 'DROP FOREIGN TABLE', 'DROP FUNCTION', 'DROP INDEX', 'DROP OWNED', 'DROP POLICY', 'DROP RULE', 'DROP SCHEMA', 'DROP TABLE', 'DROP TYPE', 'DROP VIEW', 'GRANT', 'REVOKE', 'SELECT INTO')
+   EXECUTE FUNCTION postgraphile_watch.notify_watchers_ddl();
+
+
+--
+-- Name: postgraphile_watch_drop; Type: EVENT TRIGGER; Schema: -; Owner: -
+--
+
+CREATE EVENT TRIGGER postgraphile_watch_drop ON sql_drop
+   EXECUTE FUNCTION postgraphile_watch.notify_watchers_drop();
 
 
 --
