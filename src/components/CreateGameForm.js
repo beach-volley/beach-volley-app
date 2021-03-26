@@ -1,12 +1,20 @@
 import React from "react";
-import { useState } from "react";
 import { Form, Formik } from "formik";
 import { StyledButton } from "./StyledButton";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { CREATE_MATCH, REFETCH_MATCHES } from "../queries";
-import { useMutation } from "@apollo/client";
+import {
+  CREATE_MATCH,
+  REFETCH_MATCHES,
+  JOIN_MATCH,
+  DELETE_MATCH,
+  PLAYERS_BY_MATCH_ID,
+  CURRENT_USER,
+  JOIN_ANONYMOUSLY,
+} from "../queries";
+import { AlertDialogButton } from "../components/FeedbackComponents";
+import { useMutation, useQuery } from "@apollo/client";
 import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -23,18 +31,73 @@ import {
 
 const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
+  const currentUser = useQuery(CURRENT_USER);
+  const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
+    variables: {
+      id: +window.location.pathname.slice(13),
+    },
+  });
   const [createMatch] = useMutation(CREATE_MATCH, {
+    refetchQueries: [{ query: REFETCH_MATCHES }]
+  });
+  const [joinMatch] = useMutation(JOIN_MATCH);
+  const [joinAnonymously] = useMutation(JOIN_ANONYMOUSLY);
+  const [deleteMatch] = useMutation(DELETE_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
-  const [playerName, setPlayerName] = useState("");
 
-  const SendInvite = (list, name) => {
-    if (name === "") {
-      return;
+  let isJoined = false;
+  const players = [];
+  for (
+    let index = 0;
+    index < playersByMatchId.data?.match?.joins.edges.length;
+    index++
+  ) {
+    players[index] =
+      playersByMatchId.data?.match.joins?.edges[index]?.node.participant;
+    if (players[index]?.id === currentUser.data?.currentUser?.id && currentUser.data?.currentUser?.id != null) {
+      isJoined = true;
     }
-    const tempList = [...list, { name: playerName }];
-    setPlayerName("");
-    return tempList;
+  }
+  
+  const joinGame = () => {
+    if (currentUser.data?.currentUser != null) {
+      console.log("Joined as logged in user");
+      joinMatch({
+        variables: {
+          input: {
+            matchId: +window.location.pathname.slice(13),
+          },
+        },
+      });
+    } else {
+      console.log("Joined as anonymous user");
+      joinAnonymously({
+        variables: {
+          input: {
+            matchId: +window.location.pathname.slice(13),
+            name: document.getElementById("anonymousName").value,
+          },
+        },
+      });
+    }
+    window.location.reload(); // THIS NEEDS TO BE REPLACED WITH REFETCH OR COMPONENT RELAOD
+  };
+
+  const leaveGame = () => {
+    console.log("you left the game");
+    // NEEDS MUTATION WHICH ALLOWS YOU TO REMOVE PLAYERS FROM PARTICIPANTS LIST
+  };
+
+  const deleteMatchById = () => {
+    deleteMatch({
+      variables: {
+        input: {
+          id: +window.location.pathname.slice(13),
+        },
+      },
+    });
+    history.push("/home");
   };
 
   return (
@@ -65,14 +128,10 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
             "Invalid difficulty"
           ),
           publicToggle: Yup.boolean(),
-          invitedPlayers: Yup.array(),
+          //invitedPlayers: Yup.array(), // NEEDS TO BE MODIFIED TO VALIDATE STRING ARRAY INSTEAD OF OBJECT ARRAY
           description: Yup.string(),
         })}
         onSubmit={(values) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-          }, 500);
-
           createMatch({
             variables: {
               input: {
@@ -163,31 +222,6 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 checked={props.values.publicToggle}
               />
 
-              {!singleGameView && (
-                <AddPlayerInput
-                  name="playerList"
-                  label="Lisää pelaajia"
-                  type="text"
-                  value={playerName}
-                  placeholder={"Enter Email"}
-                  onChange={(e) => setPlayerName(e.target.value)}
-                  extraComponent={
-                    <AddPlayerButton
-                      type="button"
-                      value="Add"
-                      onClick={() =>
-                        (props.values.playerList = SendInvite(
-                          props.values.playerList,
-                          playerName
-                        ))
-                      }
-                    >
-                      Lisää
-                    </AddPlayerButton>
-                  }
-                />
-              )}
-
               <TextAreaContainer>
                 <label htmlFor="playernames">Kutsutut pelaajat</label>
                 <InvitedPlayers>
@@ -201,49 +235,54 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   placeholder="Kirjoita pelin tiedot tänne"
                 />
               </TextAreaContainer>
-
               {!singleGameView && (
-                <ConfirmGameButton type="submit">
+                <CornerButton type="submit">
                   Julkaise peli
-                </ConfirmGameButton>
+                </CornerButton>
               )}
             </Form>
           </FieldSet>
         )}
       </Formik>
+      <>
+        {singleGameView && !isJoined && currentUser.data?.currentUser != null && (
+          <CornerButton onClick={joinGame}>Liity Peliin</CornerButton>
+        )}
+        {singleGameView && !matchData.publicToggle && currentUser.data?.currentUser === null && (
+          <>
+            <input type="text" id="anonymousName" maxLength="30" placeholder="Anna nimi" style={{"marginLeft": "7rem", "marginBottom": "1.15rem"}}/>
+            <CornerButton onClick={joinGame}>Liity Peliin</CornerButton>
+          </>
+        )}
+        {singleGameView && isJoined && (
+          <CornerButton onClick={leaveGame}>Poistu Pelistä</CornerButton>
+        )}
+        {singleGameView && currentUser.data?.currentUser?.id === matchData.hostId && (
+          <AlertDialogButton
+          ButtonStyle={DeleteGameButton}
+          buttonText={"Poista Peli"} 
+          title={"Haluatko poistaa pelin?"}
+          content={""}
+          callBack={deleteMatchById}
+          />
+        )}
+      </>
     </MuiPickersUtilsProvider>
   );
 };
 
 const FieldSet = styled.fieldset`
-  pointer-events: ${(props) => (props.singleGameView ? "none" : "all")};
   display: flex;
   flex-direction: column;
-  padding: 2rem;
+  padding: 1rem;
   border: none;
-  label {
-    color: white;
-  }
-
-  .MuiSvgIcon-root {
-    display: ${(props) => (props.singleGameView ? "none" : "initial")};
-  }
-`;
-
-const AddPlayerInput = styled(TextInput)`
-  .MuiInput-underline::before {
-    margin-left: 1.5rem;
-  }
-`;
-
-const AddPlayerButton = styled(StyledButton)`
-  width: 3rem;
-  padding: 0.1rem;
-  height: 80%;
-  margin-top: auto;
+  pointer-events: ${(props) => (props.singleGameView ? "none" : "all")};
 `;
 
 const TextAreaContainer = styled.div`
+  label {
+    color: white;
+  }
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     width: 50%;
@@ -254,7 +293,7 @@ const TextAreaContainer = styled.div`
 const GameDescription = styled(FormTextArea)`
   width: 100%;
   height: 5rem;
-  margin: 2rem 0;
+  margin: 2.5rem 0;
   overflow-y: scroll;
   resize: none;
 `;
@@ -271,13 +310,17 @@ const InvitedPlayers = styled.div`
   margin-left: auto;
 `;
 
-const ConfirmGameButton = styled(StyledButton)`
+const CornerButton = styled(StyledButton)`
   height: 2rem;
   position: absolute;
   bottom: 0;
   right: 0;
-  margin-right: 2rem;
-  margin-bottom: 1rem;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+`;
+
+const DeleteGameButton = styled(CornerButton)`
+  margin-right: 10rem;
 `;
 
 export default CreateFieldSet;

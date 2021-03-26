@@ -7,11 +7,6 @@ const GlobalStyle = createGlobalStyle`
     margin: 0; 
     padding: 0; 
     border: 0;
-    background-image: url(${background_image});
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    height: 100vh;
   }
 
   input, select {
@@ -44,7 +39,7 @@ const theme = {
   },
   fontSizes: {
     small: "0.75em",
-    medium: "1.5em",
+    medium: "1.2em",
     large: "3em",
   },
 
@@ -54,6 +49,12 @@ const theme = {
     smallDesktopWidth: "990px",
     desktopWidth: "1200px",
   },
+
+  backGroundImage: () => `
+  background-image: url(${background_image});
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;`,
 };
 
 const Theme = ({ children }) => (

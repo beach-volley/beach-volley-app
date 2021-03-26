@@ -1,61 +1,108 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import GameItemInfo from "../components/GameItemInfo";
 import { StyledButton } from "../components/StyledButton";
 import { useHistory } from "react-router";
 import { useQuery } from "@apollo/client";
-import { MATCHES } from "../queries";
+import { MATCHES, CURRENT_USER_MATCHES_JOINS } from "../queries";
 
 const Games = () => {
   const matches = useQuery(MATCHES);
-  let history = useHistory();
+  const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
+  const [gameFilter, setGameFilter] = useState('');
 
+  let history = useHistory();
   const joinMatchById = (id) => {
     history.push({
       pathname: "/single-game/" + id,
     });
   };
 
-  if (matches.loading) {
-    return <div>loading...</div>;
-  }
+  const filterGameList = () => {
+    if(gameFilter==='joined'){
+      console.log(currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges)
+      return currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
+    }
+    if(gameFilter==='created'){
+      console.log(currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges)
+      return currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
+    }
+      console.log({currentUserMatchesJoins})
+      return matches.data?.matches.edges;
+  };
 
+  if (matches.loading) {
+    return <ContainerWrapper><p>Loading</p></ContainerWrapper>;
+  }
+  
   return (
+
+    <ContainerWrapper>
+    <GameTabRow>
+      <GameTab onClick={() => setGameFilter('')}><p>All games</p></GameTab>
+      <GameTab onClick={() => setGameFilter('joined')}><p>Joined Games</p></GameTab>
+      <GameTab onClick={() => setGameFilter('created')}><p>Created Games</p></GameTab>
+    </GameTabRow>
     <ListContainer>
-      {matches.data?.matches.edges.map(({ node }) => (
-        <ListStyle key={node.nodeId}>
-          <CardWrapper>
-            <Row>
-              <GameItemInfo location={node.location} time={node.time} />
-            </Row>
-            <Row>
-              <GameItemInfo players={node.playerLimit} />
-            </Row>
-            <JoinGameButton onClick={() => joinMatchById(node.id)}>
-              View
-            </JoinGameButton>
-          </CardWrapper>
-        </ListStyle>
-      ))}
+
+      {filterGameList()?.map(({ node }) => (
+          <ListStyle key={node.id || node.match.id }>
+            <CardWrapper>
+              <Row>
+                <GameItemInfo location={node.location || node.match.location } time={node.time || node.match.time} />
+              </Row>
+              <Row>
+                <GameItemInfo players={node.playerLimit || node.match.playerLimit} />
+              </Row>
+              <JoinGameButton onClick={() => joinMatchById(node.id || node.match.id)}>
+                Näytä
+              </JoinGameButton>
+            </CardWrapper>
+          </ListStyle>
+          //newest first
+        )).reverse()}
     </ListContainer>
+    </ContainerWrapper>
   );
 };
+
+const ContainerWrapper = styled.div`
+  width: 95%;
+  margin: auto;
+  grid-row: 3;
+  p {
+    color: white;
+    font-size: ${(props) => props.theme.fontSizes.small};
+    font-weight: 900;
+  }
+  @media only screen and (min-width: ${(props) =>
+      props.theme.mediaQuery.tabletWidth}) {
+      width: 60%;
+  }
+`;
+
+const GameTabRow = styled.div`
+  display: flex;
+  div:nth-child(2) {
+  margin: 0 1rem;
+  }
+`;
+
+const GameTab = styled.div`
+  flex: 1;
+  text-align: center;
+  height: 100%;
+  background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
+  cursor: pointer;
+`;
 
 const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  grid-row: 3;
-  margin-top: 10rem;
-  width: 95%;
-  margin: auto;
-  margin-top: 10rem;
+  width: 100%;
   overflow-y: auto;
   height: 50vh;
-  @media only screen and (min-width: ${(props) =>
-      props.theme.mediaQuery.tabletWidth}) {
-    width: 50%;
-  }
 `;
 
 const ListStyle = styled.div`
@@ -69,19 +116,12 @@ const CardWrapper = styled.div`
   position: relative;
   height: 8rem;
   background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
-  @media only screen and (min-width: ${(props) =>
-      props.theme.mediaQuery.tabletWidth}) {
-  }
 `;
 
 const Row = styled.div`
   display: flex;
-
   p {
-    color: white;
-    font-size: ${(props) => props.theme.fontSizes.small};
-    margin-left: ${(props) => props.theme.margins.small};
-    font-weight: 900;
+    margin-left: 2rem;
   }
 `;
 
@@ -90,7 +130,7 @@ const JoinGameButton = styled(StyledButton)`
   right: 0;
   bottom: 1rem;
   margin-right: 1rem;
-  width: 3.5rem;
+  width: auto;
   height: 2rem;
 `;
 
