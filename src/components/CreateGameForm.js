@@ -19,8 +19,8 @@ import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import moment from "moment";
-import { useSnackbar } from 'notistack';
-import Slide from '@material-ui/core/Slide';
+import { useSnackbar } from "notistack";
+import Slide from "@material-ui/core/Slide";
 
 import {
   TextInput,
@@ -185,17 +185,20 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
               },
             },
           })
-          .then(() => {
-            history.push("/home");
-          }).then(enqueueSnackbar('Peli luotu', {
-            variant: 'success',
-            autoHideDuration: 1000,
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-          },
-          TransitionComponent: Slide,
-          }))
+            .then(() => {
+              history.push("/home");
+            })
+            .then(
+              enqueueSnackbar("Peli luotu", {
+                variant: "success",
+                autoHideDuration: 1000,
+                anchorOrigin: {
+                  vertical: "top",
+                  horizontal: "center",
+                },
+                TransitionComponent: Slide,
+              })
+            );
         }}
       >
         {(props) => (
