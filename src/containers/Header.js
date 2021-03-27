@@ -55,4 +55,3 @@ const CreateGameButton = styled(StyledButton)`
   width: 8rem;
   margin-right: 0.5rem;
 `;
-

@@ -38,7 +38,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     },
   });
   const [createMatch] = useMutation(CREATE_MATCH, {
-    refetchQueries: [{ query: REFETCH_MATCHES }]
+    refetchQueries: [{ query: REFETCH_MATCHES }],
   });
   const [joinMatch] = useMutation(JOIN_MATCH);
   const [joinAnonymously] = useMutation(JOIN_ANONYMOUSLY);
@@ -55,11 +55,14 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   ) {
     players[index] =
       playersByMatchId.data?.match.joins?.edges[index]?.node.participant;
-    if (players[index]?.id === currentUser.data?.currentUser?.id && currentUser.data?.currentUser?.id != null) {
+    if (
+      players[index]?.id === currentUser.data?.currentUser?.id &&
+      currentUser.data?.currentUser?.id != null
+    ) {
       isJoined = true;
     }
   }
-  
+
   const joinGame = () => {
     if (currentUser.data?.currentUser != null) {
       console.log("Joined as logged in user");
@@ -115,12 +118,23 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           description: singleGameView ? matchData.description : "",
         }}
         validationSchema={Yup.object({
-          location: Yup.string().min(2, "Täytyy olla vähintään 2 merkkiä pitkä").max(15, "Täytyy olla 15 merkkiä").matches(/^[aA-zZ\s]+$/, "Käytä vain kirjaimia! ").required("Pakollinen kenttä"),
+          location: Yup.string()
+            .min(2, "Täytyy olla vähintään 2 merkkiä pitkä")
+            .max(15, "Täytyy olla 15 merkkiä")
+            .matches(/^[aA-zZ\s]+$/, "Käytä vain kirjaimia! ")
+            .required("Pakollinen kenttä"),
           date: Yup.date().required("Et voi valita mennyttä päivää").nullable(),
           startTime: Yup.string().required("Pakollinen kenttä").nullable(),
-          endTime: Yup.string().required("Pakolinne kenttä").nullable().test("Eri aika", "Lopetusajan täytyy olla eri kuin aloitusajan!", function(value) {
-            return this.parent.startTime !== value;
-          }),
+          endTime: Yup.string()
+            .required("Pakolinne kenttä")
+            .nullable()
+            .test(
+              "Eri aika",
+              "Lopetusajan täytyy olla eri kuin aloitusajan!",
+              function (value) {
+                return this.parent.startTime !== value;
+              }
+            ),
           numPlayers: Yup.string().required("Valitse pelaajamäärä"),
           difficultyLevel: Yup.string().oneOf(
             ["easy", "medium", "hard"],
@@ -235,36 +249,45 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 />
               </TextAreaContainer>
               {!singleGameView && (
-                <CornerButton type="submit">
-                  Julkaise peli
-                </CornerButton>
+                <CornerButton type="submit">Julkaise peli</CornerButton>
               )}
             </Form>
           </FieldSet>
         )}
       </Formik>
       <>
-        {singleGameView && !isJoined && currentUser.data?.currentUser != null && (
-          <CornerButton onClick={joinGame}>Liity Peliin</CornerButton>
-        )}
-        {singleGameView && !matchData.publicToggle && currentUser.data?.currentUser === null && (
-          <>
-            <input type="text" id="anonymousName" maxLength="30" placeholder="Anna nimi" style={{"marginLeft": "7rem", "marginBottom": "1.15rem"}}/>
+        {singleGameView &&
+          !isJoined &&
+          currentUser.data?.currentUser != null && (
             <CornerButton onClick={joinGame}>Liity Peliin</CornerButton>
-          </>
-        )}
+          )}
+        {singleGameView &&
+          !matchData.publicToggle &&
+          currentUser.data?.currentUser === null && (
+            <>
+              <input
+                type="text"
+                id="anonymousName"
+                maxLength="30"
+                placeholder="Anna nimi"
+                style={{ marginLeft: "7rem", marginBottom: "1.15rem" }}
+              />
+              <CornerButton onClick={joinGame}>Liity Peliin</CornerButton>
+            </>
+          )}
         {singleGameView && isJoined && (
           <CornerButton onClick={leaveGame}>Poistu Pelistä</CornerButton>
         )}
-        {singleGameView && currentUser.data?.currentUser?.id === matchData.hostId && (
-          <AlertDialogButton
-          ButtonStyle={DeleteGameButton}
-          buttonText={"Poista Peli"} 
-          title={"Haluatko poistaa pelin?"}
-          content={""}
-          callBack={deleteMatchById}
-          />
-        )}
+        {singleGameView &&
+          currentUser.data?.currentUser?.id === matchData.hostId && (
+            <AlertDialogButton
+              ButtonStyle={DeleteGameButton}
+              buttonText={"Poista Peli"}
+              title={"Haluatko poistaa pelin?"}
+              content={""}
+              callBack={deleteMatchById}
+            />
+          )}
       </>
     </MuiPickersUtilsProvider>
   );
