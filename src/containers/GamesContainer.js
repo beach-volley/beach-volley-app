@@ -9,7 +9,7 @@ import { MATCHES, CURRENT_USER_MATCHES_JOINS } from "../queries";
 const Games = () => {
   const matches = useQuery(MATCHES);
   const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
-  const [gameFilter, setGameFilter] = useState('');
+  const [gameFilter, setGameFilter] = useState();
 
   let history = useHistory();
   const joinMatchById = (id) => {
@@ -20,15 +20,22 @@ const Games = () => {
 
   const filterGameList = () => {
     if(gameFilter==='joined'){
-      console.log(currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges)
       return currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
     }
     if(gameFilter==='created'){
-      console.log(currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges)
       return currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
     }
-      console.log({currentUserMatchesJoins})
       return matches.data?.matches.edges;
+  };
+
+  const whichTabPushed = () => {
+    if(gameFilter===''){
+      return 1;
+    }
+    if(gameFilter==='joined'){
+      return 2;
+    }
+      return 3;
   };
 
   if (matches.loading) {
@@ -38,7 +45,7 @@ const Games = () => {
   return (
 
     <ContainerWrapper>
-    <GameTabRow>
+    <GameTabRow whichTabPushed={whichTabPushed}>
       <GameTab onClick={() => setGameFilter('')}><p>All games</p></GameTab>
       <GameTab onClick={() => setGameFilter('joined')}><p>Joined Games</p></GameTab>
       <GameTab onClick={() => setGameFilter('created')}><p>Created Games</p></GameTab>
@@ -84,16 +91,23 @@ const ContainerWrapper = styled.div`
 const GameTabRow = styled.div`
   display: flex;
   div:nth-child(2) {
-  margin: 0 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
   }
+
+  div:nth-child(${(props) => props.whichTabPushed()}) {
+    border: 0.15rem;
+    border-color: black;
+    border-style: solid;
+  }
+  
 `;
 
 const GameTab = styled.div`
   flex: 1;
   text-align: center;
-  height: 100%;
   background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
-  cursor: pointer;
+  margin-bottom: 0.5rem;
 `;
 
 const ListContainer = styled.div`

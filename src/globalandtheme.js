@@ -9,7 +9,7 @@ const GlobalStyle = createGlobalStyle`
     border: 0;
   }
 
-  input, select {
+  input, select, div {
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
             box-sizing: border-box;
