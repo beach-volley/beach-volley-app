@@ -19,56 +19,74 @@ const Games = () => {
   };
 
   const filterGameList = () => {
-    if(gameFilter==='joined'){
-      return currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
+    if (gameFilter === "joined") {
+      return currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId
+        ?.edges;
     }
-    if(gameFilter==='created'){
+    if (gameFilter === "created") {
       return currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
     }
-      return matches.data?.matches.edges;
+    return matches.data?.matches.edges;
   };
 
   const whichTabPushed = () => {
-    if(gameFilter===''){
+    if (gameFilter === "") {
       return 1;
     }
-    if(gameFilter==='joined'){
+    if (gameFilter === "joined") {
       return 2;
     }
-      return 3;
+    return 3;
   };
 
   if (matches.loading) {
-    return <ContainerWrapper><p>Loading</p></ContainerWrapper>;
+    return (
+      <ContainerWrapper>
+        <p>Loading</p>
+      </ContainerWrapper>
+    );
   }
-  
+
   return (
-
     <ContainerWrapper>
-    <GameTabRow whichTabPushed={whichTabPushed}>
-      <GameTab onClick={() => setGameFilter('')}><p>All games</p></GameTab>
-      <GameTab onClick={() => setGameFilter('joined')}><p>Joined Games</p></GameTab>
-      <GameTab onClick={() => setGameFilter('created')}><p>Created Games</p></GameTab>
-    </GameTabRow>
-    <ListContainer>
-
-      {filterGameList()?.map(({ node }) => (
-          <ListStyle key={node.id || node.match.id }>
-            <CardWrapper>
-              <Row>
-                <GameItemInfo location={node.location || node.match.location } time={node.time || node.match.time} />
-              </Row>
-              <Row>
-                <GameItemInfo players={node.playerLimit || node.match.playerLimit} />
-              </Row>
-              <JoinGameButton onClick={() => joinMatchById(node.id || node.match.id)}>
-                Näytä
-              </JoinGameButton>
-            </CardWrapper>
-          </ListStyle>
-          //newest first
-        )).reverse()}
-    </ListContainer>
+      <GameTabRow whichTabPushed={whichTabPushed}>
+        <GameTab onClick={() => setGameFilter("")}>
+          <p>All games</p>
+        </GameTab>
+        <GameTab onClick={() => setGameFilter("joined")}>
+          <p>Joined Games</p>
+        </GameTab>
+        <GameTab onClick={() => setGameFilter("created")}>
+          <p>Created Games</p>
+        </GameTab>
+      </GameTabRow>
+      <ListContainer>
+        {filterGameList()
+          ?.map(({ node }) => (
+            <ListStyle key={node.id || node.match.id}>
+              <CardWrapper>
+                <Row>
+                  <GameItemInfo
+                    location={node.location || node.match.location}
+                    time={node.time || node.match.time}
+                  />
+                </Row>
+                <Row>
+                  <GameItemInfo
+                    players={node.playerLimit || node.match.playerLimit}
+                  />
+                </Row>
+                <JoinGameButton
+                  onClick={() => joinMatchById(node.id || node.match.id)}
+                >
+                  Näytä
+                </JoinGameButton>
+              </CardWrapper>
+            </ListStyle>
+            //newest first
+          ))
+          .reverse()}
+      </ListContainer>
     </ContainerWrapper>
   );
 };
@@ -84,15 +102,15 @@ const ContainerWrapper = styled.div`
   }
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-      width: 60%;
+    width: 60%;
   }
 `;
 
 const GameTabRow = styled.div`
   display: flex;
   div:nth-child(2) {
-  margin-left: 1rem;
-  margin-right: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
   }
 
   div:nth-child(${(props) => props.whichTabPushed()}) {
@@ -100,7 +118,6 @@ const GameTabRow = styled.div`
     border-color: black;
     border-style: solid;
   }
-  
 `;
 
 const GameTab = styled.div`
