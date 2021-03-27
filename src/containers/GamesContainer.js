@@ -9,7 +9,7 @@ import { MATCHES, CURRENT_USER_MATCHES_JOINS } from "../queries";
 const Games = () => {
   const matches = useQuery(MATCHES);
   const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
-  const [gameFilter, setGameFilter] = useState('');
+  const [gameFilter, setGameFilter] = useState("");
 
   let history = useHistory();
   const joinMatchById = (id) => {
@@ -19,49 +19,71 @@ const Games = () => {
   };
 
   const filterGameList = () => {
-    if(gameFilter==='joined'){
-      console.log(currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges)
-      return currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
+    if (gameFilter === "joined") {
+      console.log(
+        currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges
+      );
+      return currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId
+        ?.edges;
     }
-    if(gameFilter==='created'){
-      console.log(currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges)
+    if (gameFilter === "created") {
+      console.log(
+        currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges
+      );
       return currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
     }
-      console.log({currentUserMatchesJoins})
-      return matches.data?.matches.edges;
+    console.log({ currentUserMatchesJoins });
+    return matches.data?.matches.edges;
   };
 
   if (matches.loading) {
-    return <ContainerWrapper><p>Loading</p></ContainerWrapper>;
+    return (
+      <ContainerWrapper>
+        <p>Loading</p>
+      </ContainerWrapper>
+    );
   }
-  
+
   return (
-
     <ContainerWrapper>
-    <GameTabRow>
-      <GameTab onClick={() => setGameFilter('')}><p>All games</p></GameTab>
-      <GameTab onClick={() => setGameFilter('joined')}><p>Joined Games</p></GameTab>
-      <GameTab onClick={() => setGameFilter('created')}><p>Created Games</p></GameTab>
-    </GameTabRow>
-    <ListContainer>
-
-      {filterGameList()?.map(({ node }) => (
-          <ListStyle key={node.id || node.match.id }>
-            <CardWrapper>
-              <Row>
-                <GameItemInfo location={node.location || node.match.location } time={node.time || node.match.time} />
-              </Row>
-              <Row>
-                <GameItemInfo players={node.playerLimit || node.match.playerLimit} />
-              </Row>
-              <JoinGameButton onClick={() => joinMatchById(node.id || node.match.id)}>
-                Näytä
-              </JoinGameButton>
-            </CardWrapper>
-          </ListStyle>
-          //newest first
-        )).reverse()}
-    </ListContainer>
+      <GameTabRow>
+        <GameTab onClick={() => setGameFilter("")}>
+          <p>All games</p>
+        </GameTab>
+        <GameTab onClick={() => setGameFilter("joined")}>
+          <p>Joined Games</p>
+        </GameTab>
+        <GameTab onClick={() => setGameFilter("created")}>
+          <p>Created Games</p>
+        </GameTab>
+      </GameTabRow>
+      <ListContainer>
+        {filterGameList()
+          ?.map(({ node }) => (
+            <ListStyle key={node.id || node.match.id}>
+              <CardWrapper>
+                <Row>
+                  <GameItemInfo
+                    location={node.location || node.match.location}
+                    time={node.time || node.match.time}
+                  />
+                </Row>
+                <Row>
+                  <GameItemInfo
+                    players={node.playerLimit || node.match.playerLimit}
+                  />
+                </Row>
+                <JoinGameButton
+                  onClick={() => joinMatchById(node.id || node.match.id)}
+                >
+                  Näytä
+                </JoinGameButton>
+              </CardWrapper>
+            </ListStyle>
+            //newest first
+          ))
+          .reverse()}
+      </ListContainer>
     </ContainerWrapper>
   );
 };
@@ -77,14 +99,14 @@ const ContainerWrapper = styled.div`
   }
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-      width: 60%;
+    width: 60%;
   }
 `;
 
 const GameTabRow = styled.div`
   display: flex;
   div:nth-child(2) {
-  margin: 0 1rem;
+    margin: 0 1rem;
   }
 `;
 
