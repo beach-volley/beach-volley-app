@@ -520,7 +520,8 @@ CREATE TABLE beachvolley_public.match (
     host_id integer DEFAULT beachvolley_private.current_user_id() NOT NULL,
     match_type text DEFAULT 'mixed'::text NOT NULL,
     required_skill_level text DEFAULT 'easy-hard'::text NOT NULL,
-    description text
+    description text,
+    status text DEFAULT 'default'::text NOT NULL
 );
 
 
@@ -610,6 +611,13 @@ COMMENT ON COLUMN beachvolley_public.match.description IS 'Optional description 
 
 
 --
+-- Name: COLUMN match.status; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.status IS 'Status of the match. Default is UNCONFIRMED.';
+
+
+--
 -- Name: match_id_seq; Type: SEQUENCE; Schema: beachvolley_public; Owner: -
 --
 
@@ -621,6 +629,24 @@ ALTER TABLE beachvolley_public.match ALTER COLUMN id ADD GENERATED ALWAYS AS IDE
     NO MAXVALUE
     CACHE 1
 );
+
+
+--
+-- Name: match_status; Type: TABLE; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TABLE beachvolley_public.match_status (
+    type text NOT NULL,
+    description text
+);
+
+
+--
+-- Name: TABLE match_status; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON TABLE beachvolley_public.match_status IS '@enum
+Match status (unconfirmed, confirmed, or cancelled).';
 
 
 --
@@ -719,6 +745,14 @@ ALTER TABLE ONLY beachvolley_public."join"
 
 ALTER TABLE ONLY beachvolley_public.match
     ADD CONSTRAINT match_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: match_status match_status_pkey; Type: CONSTRAINT; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_public.match_status
+    ADD CONSTRAINT match_status_pkey PRIMARY KEY (type);
 
 
 --
@@ -824,6 +858,13 @@ CREATE INDEX match_required_skill_level_idx ON beachvolley_public.match USING bt
 
 
 --
+-- Name: match_status_idx; Type: INDEX; Schema: beachvolley_public; Owner: -
+--
+
+CREATE INDEX match_status_idx ON beachvolley_public.match USING btree (status);
+
+
+--
 -- Name: user user_private_updated_at; Type: TRIGGER; Schema: beachvolley_private; Owner: -
 --
 
@@ -924,6 +965,14 @@ ALTER TABLE ONLY beachvolley_public.match
 
 
 --
+-- Name: match match_status_fkey; Type: FK CONSTRAINT; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE ONLY beachvolley_public.match
+    ADD CONSTRAINT match_status_fkey FOREIGN KEY (status) REFERENCES beachvolley_public.match_status(type);
+
+
+--
 -- Name: SCHEMA beachvolley_public; Type: ACL; Schema: -; Owner: -
 --
 
@@ -978,7 +1027,7 @@ GRANT ALL ON FUNCTION beachvolley_public."current_user"() TO beachvolley_graphil
 --
 
 GRANT SELECT ON TABLE beachvolley_public."join" TO beachvolley_graphile_anonymous;
-GRANT SELECT ON TABLE beachvolley_public."join" TO beachvolley_graphile_authenticated;
+GRANT SELECT,DELETE ON TABLE beachvolley_public."join" TO beachvolley_graphile_authenticated;
 
 
 --
@@ -1099,6 +1148,21 @@ GRANT INSERT(required_skill_level),UPDATE(required_skill_level) ON TABLE beachvo
 --
 
 GRANT INSERT(description),UPDATE(description) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: COLUMN match.status; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT UPDATE(status) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: TABLE match_status; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT SELECT ON TABLE beachvolley_public.match_status TO beachvolley_graphile_anonymous;
+GRANT SELECT ON TABLE beachvolley_public.match_status TO beachvolley_graphile_authenticated;
 
 
 --
