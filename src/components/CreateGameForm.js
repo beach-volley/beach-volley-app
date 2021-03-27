@@ -19,6 +19,8 @@ import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import moment from "moment";
+import { useSnackbar } from 'notistack';
+import Slide from '@material-ui/core/Slide';
 
 import {
   TextInput,
@@ -45,6 +47,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   const [deleteMatch] = useMutation(DELETE_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   let isJoined = false;
   const players = [];
@@ -118,14 +122,24 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           description: singleGameView ? matchData.description : "",
         }}
         validationSchema={Yup.object({
-          location: Yup.string().required("Pakollinen kenttä"),
-          date: Yup.date().required("Required").nullable(),
-          startTime: Yup.string().required("Required").nullable(),
-          endTime: Yup.string().required("Required").nullable(),
-          numPlayers: Yup.string().oneOf(
-            ["1-2", "2-4", "4-6"],
-            "Invalid number of players"
-          ),
+          location: Yup.string()
+            .min(2, "Täytyy olla vähintään 2 merkkiä pitkä")
+            .max(15, "Täytyy olla 15 merkkiä")
+            .matches(/^[aA-zZ\s]+$/, "Käytä vain kirjaimia! ")
+            .required("Pakollinen kenttä"),
+          date: Yup.date().required("Et voi valita mennyttä päivää").nullable(),
+          startTime: Yup.string().required("Pakollinen kenttä").nullable(),
+          endTime: Yup.string()
+            .required("Pakollinen kenttä")
+            .nullable()
+            .test(
+              "Eri aika",
+              "Lopetusajan täytyy olla eri kuin aloitusajan!",
+              function (value) {
+                return this.parent.startTime !== value;
+              }
+            ),
+          numPlayers: Yup.string().required("Valitse pelaajamäärä"),
           difficultyLevel: Yup.string().oneOf(
             ["easy", "medium", "hard"],
             "Invalid difficulty"
@@ -170,9 +184,18 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 },
               },
             },
-          }).then(() => {
+          })
+          .then(() => {
             history.push("/home");
-          });
+          }).then(enqueueSnackbar('Peli luotu', {
+            variant: 'success',
+            autoHideDuration: 1000,
+            anchorOrigin: {
+              vertical: 'top',
+              horizontal: 'center',
+          },
+          TransitionComponent: Slide,
+          }))
         }}
       >
         {(props) => (

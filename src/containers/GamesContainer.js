@@ -9,7 +9,7 @@ import { MATCHES, CURRENT_USER_MATCHES_JOINS } from "../queries";
 const Games = () => {
   const matches = useQuery(MATCHES);
   const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
-  const [gameFilter, setGameFilter] = useState();
+  const [gameFilter, setGameFilter] = useState("");
 
   let history = useHistory();
   const joinMatchById = (id) => {

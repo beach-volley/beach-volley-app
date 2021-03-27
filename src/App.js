@@ -5,6 +5,7 @@ import PageRoutes from "./PageRoutes";
 import firebase from "firebase/app";
 import "firebase/auth";
 import ApolloWrapper from "./containers/ApolloWrapper";
+import { SnackbarProvider } from "notistack";
 
 firebase.initializeApp({
   apiKey: "AIzaSyBRelhF9kWyV9cI4kvFiQYBDu7HNBR-5_U",
@@ -18,12 +19,14 @@ firebase.initializeApp({
 const App = () => {
   return (
     <ApolloWrapper>
-      <Router>
-        <GlobalStyle />
-        <Theme>
-          <PageRoutes />
-        </Theme>
-      </Router>
+      <SnackbarProvider maxSnack={3}>
+        <Router>
+          <GlobalStyle />
+          <Theme>
+            <PageRoutes />
+          </Theme>
+        </Router>
+      </SnackbarProvider>
     </ApolloWrapper>
   );
 };
