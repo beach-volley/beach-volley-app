@@ -27,7 +27,6 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: "beach-volley-app-dev"
           heroku_email: "jukka@jukkahyytiala.fi"
-          procfile: "web: node server.js"
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
