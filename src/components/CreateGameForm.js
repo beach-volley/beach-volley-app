@@ -119,8 +119,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         }}
         validationSchema={Yup.object({
           location: Yup.string()
-            .min(2, "Täytyy olla vähintään 2 merkkiä pitkä")
-            .max(15, "Täytyy olla 15 merkkiä")
+            .min(2, "Täytyy olla vähintään 2 merkkiä pitkä!")
+            .max(20, "Täytyy olla 20 merkkiä tai vähemmän!")
             .matches(/^[aA-zZ\s]+$/, "Käytä vain kirjaimia! ")
             .required("Pakollinen kenttä"),
           date: Yup.date().required("Et voi valita mennyttä päivää").nullable(),
@@ -137,7 +137,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
             ),
           numPlayers: Yup.string().required("Valitse pelaajamäärä"),
           difficultyLevel: Yup.string().oneOf(
-            ["easy", "medium", "hard"],
+            ["easy", "medium", "hard", "easyhard"],
             "Invalid difficulty"
           ),
           publicToggle: Yup.boolean(),
@@ -224,6 +224,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   { value: "easy", label: "Aloittelija" },
                   { value: "medium", label: "Keskitaso" },
                   { value: "hard", label: "Pro" },
+                  { value: "easyhard", label: "Kaikki" },
                 ]}
               />
 

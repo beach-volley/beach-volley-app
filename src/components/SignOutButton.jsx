@@ -11,12 +11,12 @@ const SignOutButton = () => {
   const onSignOut = useCallback(() => firebase.auth().signOut(), []);
 
   if (currentUser?.data?.currentUser) {
-    return <Button onClick={onSignOut}>Sign Out</Button>;
+    return <Button onClick={onSignOut}>Kirjaudu ulos</Button>;
   }
 
   return (
     <Link to="/login">
-      <Button>Sign Up</Button>
+      <Button>Kirjaudu sisään</Button>
     </Link>
   );
 };
