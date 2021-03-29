@@ -1,5 +1,5 @@
 --! Previous: sha1:c7043ce76776bbea8f8d8237bea986ed95476c89
---! Hash: sha1:e29ff54952460822e7705042120f2757e172f0b7
+--! Hash: sha1:8fa284cc37fda7a0d9af98ff5c0a78364c81e0f5
 
 -- Enter migration here
 
@@ -21,7 +21,7 @@ grant select on table beachvolley_public.match_status to beachvolley_graphile_an
 insert into beachvolley_public.match_status (type) values ('unconfirmed'), ('confirmed'), ('cancelled');
 
 -- add status to match
-alter table beachvolley_public.match add column status text not null default 'default' references beachvolley_public.match_status;
+alter table beachvolley_public.match add column status text not null default 'unconfirmed' references beachvolley_public.match_status;
 comment on column beachvolley_public.match.status is 'Status of the match. Default is UNCONFIRMED.';
 create index on beachvolley_public.match(status);
 
