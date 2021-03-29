@@ -1,5 +1,5 @@
 const admin = require('../server/firebase-admin');
-module.exports = async ({ tokens, name, link }, helpers) => {
+module.exports = async ({ tokens, name, link }) => {
     await admin.messaging().sendAll(tokens.map(token => ({
       token, notification: {
         title: `Pelaaja ${name} liittyi mukaan peliisi.`,
@@ -11,5 +11,4 @@ module.exports = async ({ tokens, name, link }, helpers) => {
         }
       }
     })));
-    helpers.logger.info(`Hello, ${name}`);  // testihommia
   };
