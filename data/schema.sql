@@ -58,6 +58,58 @@ $$;
 
 
 --
+-- Name: notify_host_about_join(); Type: FUNCTION; Schema: beachvolley_private; Owner: -
+--
+
+CREATE FUNCTION beachvolley_private.notify_host_about_join() RETURNS trigger
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+begin
+  perform graphile_worker.add_job(
+    'send-notification-to-joined-players',
+    json_build_object(
+      'tokens', fcm_tokens,
+      'name', coalesce(new.name, participant.name),
+      'link', concat('/single-game/', match.id)
+    )
+  )
+  from beachvolley_public.match
+  left join beachvolley_private.user host on host.user_id = match.host_id
+  left join beachvolley_public.user participant on participant.id = new.participant_id
+  where match.id = new.match_id;
+
+  return null;
+end;
+$$;
+
+
+--
+-- Name: send_invitation(); Type: FUNCTION; Schema: beachvolley_private; Owner: -
+--
+
+CREATE FUNCTION beachvolley_private.send_invitation() RETURNS trigger
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+begin
+  perform graphile_worker.add_job(
+    'send-invitation-to-user',
+    json_build_object(
+      'tokens', fcm_tokens,
+      'name', host.name,
+      'link', concat('/invitations/', new.id)
+    )
+  )
+  from beachvolley_public.match
+  left join beachvolley_public.user host on host.id = match.host_id
+  left join beachvolley_private.user invited on invited.user_id = new.user_id
+  where match.id = new.match_id;
+
+  return null;
+end;
+$$;
+
+
+--
 -- Name: set_updated_at(); Type: FUNCTION; Schema: beachvolley_private; Owner: -
 --
 
@@ -767,6 +819,13 @@ CREATE TRIGGER user_private_updated_at BEFORE UPDATE ON beachvolley_private."use
 
 
 --
+-- Name: invitation invitation_updated_at; Type: TRIGGER; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TRIGGER invitation_updated_at BEFORE UPDATE ON beachvolley_public.invitation FOR EACH ROW EXECUTE FUNCTION beachvolley_private.set_updated_at();
+
+
+--
 -- Name: join join_updated_at; Type: TRIGGER; Schema: beachvolley_public; Owner: -
 --
 
@@ -778,6 +837,20 @@ CREATE TRIGGER join_updated_at BEFORE UPDATE ON beachvolley_public."join" FOR EA
 --
 
 CREATE TRIGGER match_updated_at BEFORE UPDATE ON beachvolley_public.match FOR EACH ROW EXECUTE FUNCTION beachvolley_private.set_updated_at();
+
+
+--
+-- Name: join notify_host_about_join; Type: TRIGGER; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TRIGGER notify_host_about_join AFTER INSERT ON beachvolley_public."join" FOR EACH ROW EXECUTE FUNCTION beachvolley_private.notify_host_about_join();
+
+
+--
+-- Name: invitation send_invitation; Type: TRIGGER; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TRIGGER send_invitation AFTER INSERT ON beachvolley_public.invitation FOR EACH ROW EXECUTE FUNCTION beachvolley_private.send_invitation();
 
 
 --
@@ -890,6 +963,20 @@ GRANT ALL ON SCHEMA public TO beachvolley_db_owner;
 REVOKE ALL ON FUNCTION beachvolley_private.current_user_id() FROM PUBLIC;
 GRANT ALL ON FUNCTION beachvolley_private.current_user_id() TO beachvolley_graphile_anonymous;
 GRANT ALL ON FUNCTION beachvolley_private.current_user_id() TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: FUNCTION notify_host_about_join(); Type: ACL; Schema: beachvolley_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_private.notify_host_about_join() FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION send_invitation(); Type: ACL; Schema: beachvolley_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_private.send_invitation() FROM PUBLIC;
 
 
 --
