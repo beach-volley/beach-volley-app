@@ -34,7 +34,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   const currentUser = useQuery(CURRENT_USER);
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
-      id: +window.location.pathname.slice(13),
+      id: window.location.pathname.slice(13),
     },
   });
   const [createMatch] = useMutation(CREATE_MATCH, {
@@ -69,7 +69,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
       joinMatch({
         variables: {
           input: {
-            matchId: +window.location.pathname.slice(13),
+            matchId: window.location.pathname.slice(13),
           },
         },
       });
@@ -78,7 +78,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
       joinAnonymously({
         variables: {
           input: {
-            matchId: +window.location.pathname.slice(13),
+            matchId: window.location.pathname.slice(13),
             name: document.getElementById("anonymousName").value,
           },
         },
@@ -96,7 +96,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     deleteMatch({
       variables: {
         input: {
-          id: +window.location.pathname.slice(13),
+          id: window.location.pathname.slice(13),
         },
       },
     });

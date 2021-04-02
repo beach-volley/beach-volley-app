@@ -7,12 +7,12 @@ import { MATCH_BY_ID, PLAYERS_BY_MATCH_ID } from "../queries";
 
 const SingleGame = () => {
   const matchById = useQuery(MATCH_BY_ID, {
-    variables: { id: +window.location.pathname.slice(13) },
+    variables: { id: window.location.pathname.slice(13) },
   });
 
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
-      id: +window.location.pathname.slice(13),
+      id: window.location.pathname.slice(13),
     },
   });
 

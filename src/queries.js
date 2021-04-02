@@ -151,7 +151,7 @@ export const MATCHES = gql`
 `;
 
 export const PLAYERS_BY_MATCH_ID = gql`
-  query match($id: Int!) {
+  query match($id: UUID!) {
     match(id: $id) {
       joins {
         edges {
@@ -182,7 +182,7 @@ export const REFETCH_MATCHES = gql`
 `;
 
 export const MATCH_BY_ID = gql`
-  query match($id: Int!) {
+  query match($id: UUID!) {
     match(id: $id) {
       description
       nodeId
