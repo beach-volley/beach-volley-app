@@ -1,16 +1,15 @@
 import React, { useCallback } from "react";
 import firebase from "firebase";
-import { useQuery } from "@apollo/client";
-import { CURRENT_USER } from "../queries";
 import { StyledButton } from "./StyledButton";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import useCurrentUser from "../hooks/useCurrentUser";
 
 const SignOutButton = () => {
-  const currentUser = useQuery(CURRENT_USER);
+  const currentUser = useCurrentUser();
   const onSignOut = useCallback(() => firebase.auth().signOut(), []);
 
-  if (currentUser?.data?.currentUser) {
+  if (currentUser) {
     return <Button onClick={onSignOut}>Kirjaudu ulos</Button>;
   }
 

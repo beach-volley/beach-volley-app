@@ -153,16 +153,14 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   time: {
                     start: {
                       value:
-                        moment(values.date).format("YYYY-MM-DD") +
-                        " " +
-                        values.startTime.toString().split(" ")[4],
+                        moment(values.date).format("YYYY-MM-DDT") +
+                        moment(values.startTime).format("HH:mm:00Z"),
                       inclusive: true,
                     },
                     end: {
                       value:
-                        moment(values.date).format("YYYY-MM-DD") +
-                        " " +
-                        values.endTime.toString().split(" ")[4],
+                        moment(values.date).format("YYYY-MM-DDT") +
+                        moment(values.endTime).format("HH:mm:00Z"),
                       inclusive: true,
                     },
                   },
