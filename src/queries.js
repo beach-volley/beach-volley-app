@@ -295,3 +295,11 @@ export const JOIN_ANONYMOUSLY = gql`
     }
   }
 `;
+
+export const ADD_FCM_TOKEN = gql`
+  mutation addFcmToken($token: String!) {
+    addFcmToken(input: { token: $token }) {
+      clientMutationId
+    }
+  }
+`;
