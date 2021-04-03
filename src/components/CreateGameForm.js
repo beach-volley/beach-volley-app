@@ -8,10 +8,10 @@ import {
   CREATE_MATCH,
   REFETCH_MATCHES,
   JOIN_MATCH,
-  DELETE_MATCH,
   PLAYERS_BY_MATCH_ID,
   CURRENT_USER,
   JOIN_ANONYMOUSLY,
+  CANCEL_MATCH,
 } from "../queries";
 import { AlertDialogButton } from "../components/FeedbackComponents";
 import { useMutation, useQuery } from "@apollo/client";
@@ -36,13 +36,15 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     variables: {
       id: window.location.pathname.slice(13),
     },
+    // skip in create mode
+    skip: !window.location.pathname.slice(13),
   });
   const [createMatch] = useMutation(CREATE_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
   const [joinMatch] = useMutation(JOIN_MATCH);
   const [joinAnonymously] = useMutation(JOIN_ANONYMOUSLY);
-  const [deleteMatch] = useMutation(DELETE_MATCH, {
+  const [cancelMatch] = useMutation(CANCEL_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
 
@@ -92,12 +94,10 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     // NEEDS MUTATION WHICH ALLOWS YOU TO REMOVE PLAYERS FROM PARTICIPANTS LIST
   };
 
-  const deleteMatchById = () => {
-    deleteMatch({
+  const cancelMatchById = () => {
+    cancelMatch({
       variables: {
-        input: {
-          id: window.location.pathname.slice(13),
-        },
+        id: window.location.pathname.slice(13),
       },
     });
     history.push("/home");
@@ -281,10 +281,10 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           currentUser.data?.currentUser?.id === matchData.hostId && (
             <AlertDialogButton
               ButtonStyle={DeleteGameButton}
-              buttonText={"Poista Peli"}
-              title={"Haluatko poistaa pelin?"}
+              buttonText={"Peru peli"}
+              title={"Haluatko perua pelin?"}
               content={""}
-              callBack={deleteMatchById}
+              callBack={cancelMatchById}
             />
           )}
       </>

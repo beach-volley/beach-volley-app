@@ -941,6 +941,151 @@ ALTER TABLE ONLY beachvolley_public.match
 
 
 --
+-- Name: join anyone_can_select_joins_of_public_not_cancelled_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY anyone_can_select_joins_of_public_not_cancelled_matches ON beachvolley_public."join" FOR SELECT USING ((EXISTS ( SELECT 1
+   FROM beachvolley_public.match
+  WHERE ((match.id = "join".match_id) AND (match.public = true) AND (match.status <> 'cancelled'::text)))));
+
+
+--
+-- Name: match anyone_can_select_public_not_cancelled_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY anyone_can_select_public_not_cancelled_matches ON beachvolley_public.match FOR SELECT USING (((public = true) AND (status <> 'cancelled'::text)));
+
+
+--
+-- Name: user anyone_can_select_users; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY anyone_can_select_users ON beachvolley_public."user" FOR SELECT USING (true);
+
+
+--
+-- Name: match authenticated_user_can_insert_match; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY authenticated_user_can_insert_match ON beachvolley_public.match FOR INSERT TO beachvolley_graphile_authenticated WITH CHECK (true);
+
+
+--
+-- Name: invitation host_can_delete_invitations_from_their_unconfirmed_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY host_can_delete_invitations_from_their_unconfirmed_matches ON beachvolley_public.invitation FOR DELETE TO beachvolley_graphile_authenticated USING ((EXISTS ( SELECT 1
+   FROM beachvolley_public.match
+  WHERE ((match.id = invitation.match_id) AND (match.host_id = beachvolley_private.current_user_id()) AND (match.status = 'unconfirmed'::text)))));
+
+
+--
+-- Name: join host_can_delete_join_from_their_unconfirmed_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY host_can_delete_join_from_their_unconfirmed_matches ON beachvolley_public."join" FOR DELETE TO beachvolley_graphile_authenticated USING ((EXISTS ( SELECT 1
+   FROM beachvolley_public.match
+  WHERE ((match.id = "join".match_id) AND (match.host_id = beachvolley_private.current_user_id()) AND (match.status = 'unconfirmed'::text)))));
+
+
+--
+-- Name: invitation host_can_select_invitations_of_their_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY host_can_select_invitations_of_their_matches ON beachvolley_public.invitation FOR SELECT TO beachvolley_graphile_authenticated USING ((EXISTS ( SELECT 1
+   FROM beachvolley_public.match
+  WHERE ((match.id = invitation.match_id) AND (match.host_id = beachvolley_private.current_user_id())))));
+
+
+--
+-- Name: join host_can_select_joins_of_their_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY host_can_select_joins_of_their_matches ON beachvolley_public."join" FOR SELECT TO beachvolley_graphile_authenticated USING ((EXISTS ( SELECT 1
+   FROM beachvolley_public.match
+  WHERE ((match.id = "join".match_id) AND (match.host_id = beachvolley_private.current_user_id())))));
+
+
+--
+-- Name: match host_can_select_their_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY host_can_select_their_matches ON beachvolley_public.match FOR SELECT TO beachvolley_graphile_authenticated USING ((host_id = beachvolley_private.current_user_id()));
+
+
+--
+-- Name: match host_can_update_their_unconfirmed_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY host_can_update_their_unconfirmed_matches ON beachvolley_public.match FOR UPDATE TO beachvolley_graphile_authenticated USING (((host_id = beachvolley_private.current_user_id()) AND (status = 'unconfirmed'::text))) WITH CHECK (true);
+
+
+--
+-- Name: invitation; Type: ROW SECURITY; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE beachvolley_public.invitation ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: invitation invited_user_can_select_their_invitations; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY invited_user_can_select_their_invitations ON beachvolley_public.invitation FOR SELECT TO beachvolley_graphile_authenticated USING ((user_id = beachvolley_private.current_user_id()));
+
+
+--
+-- Name: invitation invited_user_can_update_their_invitations_to_unconfirmed_matche; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY invited_user_can_update_their_invitations_to_unconfirmed_matche ON beachvolley_public.invitation FOR UPDATE TO beachvolley_graphile_authenticated USING (((user_id = beachvolley_private.current_user_id()) AND (EXISTS ( SELECT 1
+   FROM beachvolley_public.match
+  WHERE ((match.id = invitation.match_id) AND (match.status = 'unconfirmed'::text)))))) WITH CHECK (true);
+
+
+--
+-- Name: join; Type: ROW SECURITY; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE beachvolley_public."join" ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: match; Type: ROW SECURITY; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE beachvolley_public.match ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: invitation matches_host_can_insert_invitations_to_anyone; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY matches_host_can_insert_invitations_to_anyone ON beachvolley_public.invitation FOR INSERT TO beachvolley_graphile_authenticated WITH CHECK ((EXISTS ( SELECT 1
+   FROM beachvolley_public.match
+  WHERE ((match.id = invitation.match_id) AND (match.host_id = beachvolley_private.current_user_id()) AND (invitation.user_id <> beachvolley_private.current_user_id())))));
+
+
+--
+-- Name: join participant_can_delete_their_joins_from_unconfirmed_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY participant_can_delete_their_joins_from_unconfirmed_matches ON beachvolley_public."join" FOR DELETE TO beachvolley_graphile_authenticated USING (((participant_id = beachvolley_private.current_user_id()) AND (EXISTS ( SELECT 1
+   FROM beachvolley_public.match
+  WHERE ((match.id = "join".match_id) AND (match.status = 'unconfirmed'::text))))));
+
+
+--
+-- Name: join participant_can_select_their_joins; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY participant_can_select_their_joins ON beachvolley_public."join" FOR SELECT TO beachvolley_graphile_authenticated USING ((participant_id = beachvolley_private.current_user_id()));
+
+
+--
+-- Name: user; Type: ROW SECURITY; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE beachvolley_public."user" ENABLE ROW LEVEL SECURITY;
+
+--
 -- Name: SCHEMA beachvolley_public; Type: ACL; Schema: -; Owner: -
 --
 

@@ -241,9 +241,9 @@ export const UPSERT_USER = gql`
   }
 `;
 
-export const DELETE_MATCH = gql`
-  mutation deleteMatch($input: DeleteMatchInput!) {
-    deleteMatch(input: $input) {
+export const CANCEL_MATCH = gql`
+  mutation cancelMatch($id: UUID!) {
+    updateMatch(input: { id: $id, patch: { status: CANCELLED } }) {
       match {
         id
       }
