@@ -941,6 +941,13 @@ ALTER TABLE ONLY beachvolley_public.match
 
 
 --
+-- Name: invitation_status anyone_can_select_invitation_statuses; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY anyone_can_select_invitation_statuses ON beachvolley_public.invitation_status FOR SELECT USING (true);
+
+
+--
 -- Name: join anyone_can_select_joins_of_public_not_cancelled_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
 --
 
@@ -950,10 +957,31 @@ CREATE POLICY anyone_can_select_joins_of_public_not_cancelled_matches ON beachvo
 
 
 --
+-- Name: match_status anyone_can_select_match_statuses; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY anyone_can_select_match_statuses ON beachvolley_public.match_status FOR SELECT USING (true);
+
+
+--
+-- Name: match_type anyone_can_select_match_types; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY anyone_can_select_match_types ON beachvolley_public.match_type FOR SELECT USING (true);
+
+
+--
 -- Name: match anyone_can_select_public_not_cancelled_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
 --
 
 CREATE POLICY anyone_can_select_public_not_cancelled_matches ON beachvolley_public.match FOR SELECT USING (((public = true) AND (status <> 'cancelled'::text)));
+
+
+--
+-- Name: skill_level anyone_can_select_skill_levels; Type: POLICY; Schema: beachvolley_public; Owner: -
+--
+
+CREATE POLICY anyone_can_select_skill_levels ON beachvolley_public.skill_level FOR SELECT USING (true);
 
 
 --
@@ -1027,6 +1055,12 @@ CREATE POLICY host_can_update_their_unconfirmed_matches ON beachvolley_public.ma
 ALTER TABLE beachvolley_public.invitation ENABLE ROW LEVEL SECURITY;
 
 --
+-- Name: invitation_status; Type: ROW SECURITY; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE beachvolley_public.invitation_status ENABLE ROW LEVEL SECURITY;
+
+--
 -- Name: invitation invited_user_can_select_their_invitations; Type: POLICY; Schema: beachvolley_public; Owner: -
 --
 
@@ -1055,6 +1089,18 @@ ALTER TABLE beachvolley_public."join" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE beachvolley_public.match ENABLE ROW LEVEL SECURITY;
 
 --
+-- Name: match_status; Type: ROW SECURITY; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE beachvolley_public.match_status ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: match_type; Type: ROW SECURITY; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE beachvolley_public.match_type ENABLE ROW LEVEL SECURITY;
+
+--
 -- Name: invitation matches_host_can_insert_invitations_to_anyone; Type: POLICY; Schema: beachvolley_public; Owner: -
 --
 
@@ -1078,6 +1124,12 @@ CREATE POLICY participant_can_delete_their_joins_from_unconfirmed_matches ON bea
 
 CREATE POLICY participant_can_select_their_joins ON beachvolley_public."join" FOR SELECT TO beachvolley_graphile_authenticated USING ((participant_id = beachvolley_private.current_user_id()));
 
+
+--
+-- Name: skill_level; Type: ROW SECURITY; Schema: beachvolley_public; Owner: -
+--
+
+ALTER TABLE beachvolley_public.skill_level ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: user; Type: ROW SECURITY; Schema: beachvolley_public; Owner: -
