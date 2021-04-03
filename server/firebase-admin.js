@@ -6,7 +6,7 @@ const getFirebaseAdminPrivateKey = () => {
   }
 
   return require("../firebase-admin-private-key.json");
-}
+};
 
 admin.initializeApp({
   credential: admin.credential.cert(getFirebaseAdminPrivateKey()),

@@ -151,7 +151,7 @@ export const MATCHES = gql`
 `;
 
 export const PLAYERS_BY_MATCH_ID = gql`
-  query match($id: Int!) {
+  query match($id: UUID!) {
     match(id: $id) {
       joins {
         edges {
@@ -182,7 +182,7 @@ export const REFETCH_MATCHES = gql`
 `;
 
 export const MATCH_BY_ID = gql`
-  query match($id: Int!) {
+  query match($id: UUID!) {
     match(id: $id) {
       description
       nodeId
@@ -241,9 +241,9 @@ export const UPSERT_USER = gql`
   }
 `;
 
-export const DELETE_MATCH = gql`
-  mutation deleteMatch($input: DeleteMatchInput!) {
-    deleteMatch(input: $input) {
+export const CANCEL_MATCH = gql`
+  mutation cancelMatch($id: UUID!) {
+    updateMatch(input: { id: $id, patch: { status: CANCELLED } }) {
       match {
         id
       }
@@ -292,6 +292,14 @@ export const JOIN_ANONYMOUSLY = gql`
           }
         }
       }
+    }
+  }
+`;
+
+export const ADD_FCM_TOKEN = gql`
+  mutation addFcmToken($token: String!) {
+    addFcmToken(input: { token: $token }) {
+      clientMutationId
     }
   }
 `;
