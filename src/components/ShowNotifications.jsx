@@ -1,10 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import firebase from "firebase";
+import { useMutation, useQuery } from "@apollo/client";
+import { ADD_FCM_TOKEN, CURRENT_USER } from "../queries";
 
 const ShowNotifications = () => {
   const [permission, setPermission] = useState(
     Notification?.permission ?? "denied"
   );
+  const [addFcmToken] = useMutation(ADD_FCM_TOKEN);
+  const currentUser = useQuery(CURRENT_USER);
 
   const messaging = firebase.messaging();
   messaging.onMessage((payload) => {
@@ -13,18 +17,15 @@ const ShowNotifications = () => {
   });
 
   useEffect(() => {
-    if (permission === "granted") {
+    if (permission === "granted" && currentUser.data?.currentUser) {
       messaging
         .getToken({ vapidKey: process.env.VAPID_KEY })
-        .then((currentToken) => {
-          // todo: send token to server
-          console.log("token", currentToken);
-        })
+        .then((token) => addFcmToken({ variables: { token } }))
         .catch((err) => {
           console.log("Error", err);
         });
     }
-  }, [permission, messaging]);
+  }, [permission, messaging, addFcmToken, currentUser]);
 
   const askPermission = useCallback(async () => {
     setPermission(await Notification.requestPermission());
