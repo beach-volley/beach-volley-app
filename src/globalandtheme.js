@@ -7,6 +7,9 @@ const GlobalStyle = createGlobalStyle`
     margin: 0; 
     padding: 0; 
     border: 0;
+    #g_a11y_announcement {
+      height: 0;
+    }
   }
 
   input, select, div {

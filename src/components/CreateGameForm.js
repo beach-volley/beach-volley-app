@@ -31,6 +31,36 @@ import {
   FormTextArea,
 } from "./InputComponents";
 
+const GameSchema = Yup.object({
+  location: Yup.string()
+    .min(2, "Täytyy olla vähintään 2 merkkiä pitkä")
+    .max(15, "Täytyy olla 15 merkkiä")
+    .matches(/^[aA-zZ\s]+$/, "Käytä vain kirjaimia! ")
+    .required("Pakollinen kenttä"),
+  date: Yup.date().required("Et voi valita mennyttä päivää"),
+  startTime: Yup.string().required("Pakollinen kenttä"),
+  endTime: Yup.string()
+    .required("Pakollinen kenttä")
+    .test(
+      "Eri aika",
+      "Alotusaika täytyy olla ennen lopetus aikaa",
+      function (value) {
+        return this.parent.startTime < value;
+      }
+    )
+    .test(
+      "Eri aika",
+      "Lopetusajan täytyy olla eri kuin aloitusajan!",
+      function (value) {
+        return this.parent.startTime !== value;
+      }
+    ),
+  numPlayers: Yup.string().required("Valitse pelaajamäärä"),
+  difficultyLevel: Yup.string().required("Valitse taso"),
+  publicToggle: Yup.boolean(),
+  description: Yup.string(),
+});
+
 const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
   const currentUser = useQuery(CURRENT_USER);
@@ -121,33 +151,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           playerList: singleGameView ? matchData.playerList : [],
           description: singleGameView ? matchData.description : "",
         }}
-        validationSchema={Yup.object({
-          location: Yup.string()
-            .min(2, "Täytyy olla vähintään 2 merkkiä pitkä")
-            .max(15, "Täytyy olla 15 merkkiä")
-            .matches(/^[aA-zZ\s]+$/, "Käytä vain kirjaimia! ")
-            .required("Pakollinen kenttä"),
-          date: Yup.date().required("Et voi valita mennyttä päivää").nullable(),
-          startTime: Yup.string().required("Pakollinen kenttä").nullable(),
-          endTime: Yup.string()
-            .required("Pakollinen kenttä")
-            .nullable()
-            .test(
-              "Eri aika",
-              "Lopetusajan täytyy olla eri kuin aloitusajan!",
-              function (value) {
-                return this.parent.startTime !== value;
-              }
-            ),
-          numPlayers: Yup.string().required("Valitse pelaajamäärä"),
-          difficultyLevel: Yup.string().oneOf(
-            ["easy", "medium", "hard"],
-            "Invalid difficulty"
-          ),
-          publicToggle: Yup.boolean(),
-          //invitedPlayers: Yup.array(), // NEEDS TO BE MODIFIED TO VALIDATE STRING ARRAY INSTEAD OF OBJECT ARRAY
-          description: Yup.string(),
-        })}
+        validationSchema={GameSchema}
         onSubmit={(values) => {
           createMatch({
             variables: {
