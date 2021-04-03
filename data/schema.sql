@@ -31,6 +31,20 @@ CREATE SCHEMA beachvolley_public;
 
 
 --
+-- Name: citext; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION citext; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION citext IS 'data type for case-insensitive character strings';
+
+
+--
 -- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -389,12 +403,12 @@ COMMENT ON FUNCTION beachvolley_public.upsert_user() IS 'Create user or update i
 --
 
 CREATE TABLE beachvolley_private."user" (
-    email text NOT NULL,
+    email public.citext NOT NULL,
     created_at timestamp without time zone DEFAULT now(),
     updated_at timestamp without time zone DEFAULT now(),
     fcm_tokens text[] DEFAULT '{}'::text[] NOT NULL,
     user_id uuid NOT NULL,
-    CONSTRAINT user_email_check CHECK ((email ~* '^.+@.+\..+$'::text))
+    CONSTRAINT user_email_check CHECK ((email OPERATOR(public.~*) '^.+@.+\..+$'::text))
 );
 
 

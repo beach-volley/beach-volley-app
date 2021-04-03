@@ -1,5 +1,5 @@
 --! Previous: sha1:3e75fffc08dd7f73b20c7088310c277bff246303
---! Hash: sha1:59db85d5ed55879dda2b58e9ac7b60a3ffc43a6f
+--! Hash: sha1:0a4ce15aaba7bebb6c86458971a8f3680dad5862
 
 -- Enter migration here
 
@@ -27,3 +27,5 @@ drop policy if exists anyone_can_select_skill_levels on beachvolley_public.skill
 create policy anyone_can_select_skill_levels on beachvolley_public.skill_level
   for select
   using (true);
+
+ALTER TABLE beachvolley_private."user" ALTER COLUMN email TYPE citext;
