@@ -2,12 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import SignOutButton from "../components/SignOutButton";
+import ShowNotifications from "../components/ShowNotifications";
 import { StyledButton } from "../components/StyledButton";
-import { useQuery } from "@apollo/client";
-import { CURRENT_USER } from "../queries";
+import useCurrentUser from "../hooks/useCurrentUser";
 
 const Header = () => {
-  const currentUser = useQuery(CURRENT_USER);
+  const currentUser = useCurrentUser();
 
   return (
     <Container>
@@ -16,12 +16,13 @@ const Header = () => {
       </Link>
 
       <Profile>
-        {currentUser?.data?.currentUser && (
+        {currentUser && (
           <Link to="/create-game">
             <CreateGameButton>Luo Peli</CreateGameButton>
           </Link>
         )}
         <SignOutButton />
+        <ShowNotifications />
       </Profile>
     </Container>
   );

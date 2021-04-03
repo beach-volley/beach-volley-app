@@ -151,7 +151,37 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           playerList: singleGameView ? matchData.playerList : [],
           description: singleGameView ? matchData.description : "",
         }}
+<<<<<<< HEAD
         validationSchema={GameSchema}
+=======
+        validationSchema={Yup.object({
+          location: Yup.string()
+            .min(2, "Täytyy olla vähintään 2 merkkiä pitkä!")
+            .max(20, "Täytyy olla 20 merkkiä tai vähemmän!")
+            .matches(/^[aA-zZ\s]+$/, "Käytä vain kirjaimia! ")
+            .required("Pakollinen kenttä"),
+          date: Yup.date().required("Et voi valita mennyttä päivää").nullable(),
+          startTime: Yup.string().required("Pakollinen kenttä").nullable(),
+          endTime: Yup.string()
+            .required("Pakolinne kenttä")
+            .nullable()
+            .test(
+              "Eri aika",
+              "Lopetusajan täytyy olla eri kuin aloitusajan!",
+              function (value) {
+                return this.parent.startTime !== value;
+              }
+            ),
+          numPlayers: Yup.string().required("Valitse pelaajamäärä"),
+          difficultyLevel: Yup.string().oneOf(
+            ["easy", "medium", "hard", "easyhard"],
+            "Invalid difficulty"
+          ),
+          publicToggle: Yup.boolean(),
+          //invitedPlayers: Yup.array(), // NEEDS TO BE MODIFIED TO VALIDATE STRING ARRAY INSTEAD OF OBJECT ARRAY
+          description: Yup.string(),
+        })}
+>>>>>>> 840a6831a7f5e8acdbcd5c0f718099e5846a461b
         onSubmit={(values) => {
           createMatch({
             variables: {
@@ -161,16 +191,14 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   time: {
                     start: {
                       value:
-                        moment(values.date).format("YYYY-MM-DD") +
-                        " " +
-                        values.startTime.toString().split(" ")[4],
+                        moment(values.date).format("YYYY-MM-DDT") +
+                        moment(values.startTime).format("HH:mm:00Z"),
                       inclusive: true,
                     },
                     end: {
                       value:
-                        moment(values.date).format("YYYY-MM-DD") +
-                        " " +
-                        values.endTime.toString().split(" ")[4],
+                        moment(values.date).format("YYYY-MM-DDT") +
+                        moment(values.endTime).format("HH:mm:00Z"),
                       inclusive: true,
                     },
                   },
@@ -244,6 +272,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   { value: "easy", label: "Aloittelija" },
                   { value: "medium", label: "Keskitaso" },
                   { value: "hard", label: "Pro" },
+                  { value: "easyhard", label: "Kaikki" },
                 ]}
               />
 

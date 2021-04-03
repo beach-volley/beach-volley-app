@@ -31,8 +31,11 @@ const client = new ApolloClient({
 
 const ApolloWrapper = ({ children }) => {
   useEffect(() =>
-    firebase.auth().onAuthStateChanged(async () => {
-      await client.mutate({ mutation: UPSERT_USER });
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        await client.mutate({ mutation: UPSERT_USER });
+      }
+
       await client.resetStore();
     })
   );

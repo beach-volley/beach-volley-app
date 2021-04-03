@@ -11,7 +11,8 @@ GraphiQL is available at https://beach-volley-app-dev.herokuapp.com.
 
 # Full set-up
 
-When you need to work with back-end or Heroku is too slow for you, setup your back-end with these instructions.
+When you need to work with back-end or Heroku is too slow for you, setup your
+back-end with these instructions.
 
 ## Setup database
 
@@ -19,7 +20,7 @@ Install PostgreSQL (v12.5). In linux run `sudo apt-get install postgresql` and
 in Windows download installer from
 [the Official site](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads).
 
-Create needed users and databases. Open psql as an superuser. In Linux run
+Create needed users and databases. Open psql as a superuser. In Linux run
 `sudo -u postgres psql` and in Windows open "SQL Shell (psql)" from Windows
 menu. Then in the shell run following commands.
 
@@ -76,3 +77,22 @@ Please don't make changes to `migrations/current.sql` and commit them to git,
 or at least your pull request will not be accepted. That's because everyone
 uses the same file and you too want to start from an empty file and not by
 reverting some scrap left behind by someone.
+
+### Development with workers
+
+First, start worker `npm run worker`. Remember to kill and restart the worker
+every time you make changes to tasks. Add tasks to `tasks` directory.
+
+If you want to test executing these tasks, open psql with following command:
+
+    $ psql postgres://beachvolley_db_owner:dev_password@localhost:5432/beachvolley
+
+In psql execute the following command:
+
+    # SELECT graphile_worker.add_job('task-name', '{"key": "value"}'::json);
+
+Task name is same as task's filename but without `.js`. And the JSON object is
+a regular JSON object that will be passed as the first argument to the task.
+
+More about worker and tasks in
+[Graphile Worker's documentation](https://github.com/graphile/worker).

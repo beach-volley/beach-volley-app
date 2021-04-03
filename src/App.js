@@ -16,6 +16,9 @@ firebase.initializeApp({
   appId: "1:758236414363:web:ec60a0c0299c837704213e",
 });
 
+// start loading firebase auth and current user as early
+firebase.auth();
+
 const App = () => {
   return (
     <ApolloWrapper>

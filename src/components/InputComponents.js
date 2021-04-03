@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Field, useField } from "formik";
 import { TextField } from "formik-material-ui";
-import MenuItem from '@material-ui/core/MenuItem';
+import MenuItem from "@material-ui/core/MenuItem";
 import { TimePicker, DatePicker } from "formik-material-ui-pickers";
 
 export const TextInput = ({ ...props }) => {
@@ -29,23 +29,16 @@ export const PickDate = ({ ...props }) => {
 };
 
 export const DropDown = ({ name, options, ...props }) => {
-
   return (
     <InputRowMUI>
-      <Field
-        name={name}
-        {...props}
-        component={TextField}
-        type="text"
-        select
-      >
-      {options.map((option) => {
-        return (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        )
-      })}
+      <Field name={name} {...props} component={TextField} type="text" select>
+        {options.map((option) => {
+          return (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          );
+        })}
       </Field>
     </InputRowMUI>
   );
