@@ -33,7 +33,7 @@ export const Menu = ({ open }) => {
           &#x1f4e9;
         </span>
         Contact
-    </ShowNotifications>
+      </ShowNotifications>
     </StyledMenu>
   );
 };

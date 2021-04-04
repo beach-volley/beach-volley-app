@@ -210,17 +210,9 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
               <TextInput name="location" label="Sijainti" />
               <PickDate name="date" label="Päivämäärä" />
 
-              <PickTime
-                name="startTime"
-                label="Aloitusaika"
-                ampm={false}
-              />
+              <PickTime name="startTime" label="Aloitusaika" ampm={false} />
 
-              <PickTime
-                name="endTime"
-                label="Lopetusaika"
-                ampm={false}
-              />
+              <PickTime name="endTime" label="Lopetusaika" ampm={false} />
 
               <DropDown
                 name="numPlayers"
