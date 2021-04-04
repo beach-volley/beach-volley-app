@@ -8,10 +8,10 @@ import {
   CREATE_MATCH,
   REFETCH_MATCHES,
   JOIN_MATCH,
-  DELETE_MATCH,
   PLAYERS_BY_MATCH_ID,
   CURRENT_USER,
   JOIN_ANONYMOUSLY,
+  CANCEL_MATCH,
 } from "../queries";
 import { AlertDialogButton } from "../components/FeedbackComponents";
 import { useMutation, useQuery } from "@apollo/client";
@@ -34,15 +34,17 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   const currentUser = useQuery(CURRENT_USER);
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
-      id: +window.location.pathname.slice(13),
+      id: window.location.pathname.slice(13),
     },
+    // skip in create mode
+    skip: !window.location.pathname.slice(13),
   });
   const [createMatch] = useMutation(CREATE_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
   const [joinMatch] = useMutation(JOIN_MATCH);
   const [joinAnonymously] = useMutation(JOIN_ANONYMOUSLY);
-  const [deleteMatch] = useMutation(DELETE_MATCH, {
+  const [cancelMatch] = useMutation(CANCEL_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
 
@@ -69,7 +71,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
       joinMatch({
         variables: {
           input: {
-            matchId: +window.location.pathname.slice(13),
+            matchId: window.location.pathname.slice(13),
           },
         },
       });
@@ -78,7 +80,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
       joinAnonymously({
         variables: {
           input: {
-            matchId: +window.location.pathname.slice(13),
+            matchId: window.location.pathname.slice(13),
             name: document.getElementById("anonymousName").value,
           },
         },
@@ -92,12 +94,10 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     // NEEDS MUTATION WHICH ALLOWS YOU TO REMOVE PLAYERS FROM PARTICIPANTS LIST
   };
 
-  const deleteMatchById = () => {
-    deleteMatch({
+  const cancelMatchById = () => {
+    cancelMatch({
       variables: {
-        input: {
-          id: +window.location.pathname.slice(13),
-        },
+        id: window.location.pathname.slice(13),
       },
     });
     history.push("/home");
@@ -121,8 +121,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         }}
         validationSchema={Yup.object({
           location: Yup.string()
-            .min(2, "Täytyy olla vähintään 2 merkkiä pitkä")
-            .max(15, "Täytyy olla 15 merkkiä")
+            .min(2, "Täytyy olla vähintään 2 merkkiä pitkä!")
+            .max(20, "Täytyy olla 20 merkkiä tai vähemmän!")
             .matches(/^[aA-zZ\s]+$/, "Käytä vain kirjaimia! ")
             .required("Pakollinen kenttä"),
           date: Yup.date().required("Et voi valita mennyttä päivää").nullable(),
@@ -141,7 +141,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           maxPlayers: Yup.string().required("Pakollinen kenttä!"),
           numPlayers: Yup.string().required("Valitse pelaajamäärä"),
           difficultyLevel: Yup.string().oneOf(
-            ["easy", "medium", "hard"],
+            ["easy", "medium", "hard", "easyhard"],
             "Invalid difficulty"
           ),
           publicToggle: Yup.boolean(),
@@ -241,6 +241,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   { value: "easy", label: "Aloittelija" },
                   { value: "medium", label: "Keskitaso" },
                   { value: "hard", label: "Pro" },
+                  { value: "easyhard", label: "Kaikki" },
                 ]}
               />
 
@@ -299,10 +300,10 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           currentUser.data?.currentUser?.id === matchData.hostId && (
             <AlertDialogButton
               ButtonStyle={DeleteGameButton}
-              buttonText={"Poista Peli"}
-              title={"Haluatko poistaa pelin?"}
+              buttonText={"Peru peli"}
+              title={"Haluatko perua pelin?"}
               content={""}
-              callBack={deleteMatchById}
+              callBack={cancelMatchById}
             />
           )}
       </>
