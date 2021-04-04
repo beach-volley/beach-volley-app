@@ -138,8 +138,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
               }
             ),
           minPlayers: Yup.string().required("Pakollinen kenttä!"),
-          maxPlayers: Yup.string()
-            .required("Pakollinen kenttä!"),
+          maxPlayers: Yup.string().required("Pakollinen kenttä!"),
           numPlayers: Yup.string().required("Valitse pelaajamäärä"),
           difficultyLevel: Yup.string().oneOf(
             ["easy", "medium", "hard"],
@@ -208,9 +207,21 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 required
               />
 
-              <TextInput name="minPlayers" label="Pelaajien minimimäärä" required type="number" InputProps={{inputProps: {min: 4, max: 12, step: "2"} }} />
-              <TextInput name="maxPlayers" label="Pelaajien maksimimäärä" required type="number" InputProps={{inputProps: {min: 6, max: 20, step: "2"} }} />
-                
+              <TextInput
+                name="minPlayers"
+                label="Pelaajien minimimäärä"
+                required
+                type="number"
+                InputProps={{ inputProps: { min: 4, max: 12, step: "2" } }}
+              />
+              <TextInput
+                name="maxPlayers"
+                label="Pelaajien maksimimäärä"
+                required
+                type="number"
+                InputProps={{ inputProps: { min: 6, max: 20, step: "2" } }}
+              />
+
               <DropDown
                 name="numPlayers"
                 label="Pelaajamäärä"
