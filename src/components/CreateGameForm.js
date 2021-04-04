@@ -8,11 +8,12 @@ import {
   CREATE_MATCH,
   REFETCH_MATCHES,
   JOIN_MATCH,
+  // DELETE_MATCH,
   PLAYERS_BY_MATCH_ID,
   CURRENT_USER,
   JOIN_ANONYMOUSLY,
-  CANCEL_MATCH,
 } from "../queries";
+
 import { AlertDialogButton } from "../components/FeedbackComponents";
 import { useMutation, useQuery } from "@apollo/client";
 import { useHistory } from "react-router";
@@ -66,19 +67,17 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   const currentUser = useQuery(CURRENT_USER);
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
-      id: window.location.pathname.slice(13),
+      id: +window.location.pathname.slice(13),
     },
-    // skip in create mode
-    skip: !window.location.pathname.slice(13),
   });
   const [createMatch] = useMutation(CREATE_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
   const [joinMatch] = useMutation(JOIN_MATCH);
   const [joinAnonymously] = useMutation(JOIN_ANONYMOUSLY);
-  const [cancelMatch] = useMutation(CANCEL_MATCH, {
-    refetchQueries: [{ query: REFETCH_MATCHES }],
-  });
+  // const [deleteMatch] = useMutation(DELETE_MATCH, {
+  //   refetchQueries: [{ query: REFETCH_MATCHES }],
+  // });
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -105,7 +104,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
       joinMatch({
         variables: {
           input: {
-            matchId: window.location.pathname.slice(13),
+            matchId: +window.location.pathname.slice(13),
           },
         },
       });
@@ -114,7 +113,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
       joinAnonymously({
         variables: {
           input: {
-            matchId: window.location.pathname.slice(13),
+            matchId: +window.location.pathname.slice(13),
             name: document.getElementById("anonymousName").value,
           },
         },
@@ -128,14 +127,16 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     // NEEDS MUTATION WHICH ALLOWS YOU TO REMOVE PLAYERS FROM PARTICIPANTS LIST
   };
 
-  const cancelMatchById = () => {
-    cancelMatch({
-      variables: {
-        id: window.location.pathname.slice(13),
-      },
-    });
-    history.push("/home");
-  };
+  // const deleteMatchById = () => {
+  //   deleteMatch({
+  //     variables: {
+  //       input: {
+  //         id: +window.location.pathname.slice(13),
+  //       },
+  //     },
+  //   });
+  //   history.push("/home");
+  // };
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -206,27 +207,24 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         {(props) => (
           <FieldSet singleGameView={singleGameView}>
             <Form>
-              <TextInput name="location" label="Sijainti" required />
-              <PickDate name="date" label="Päivämäärä" required />
+              <TextInput name="location" label="Sijainti" />
+              <PickDate name="date" label="Päivämäärä" />
 
               <PickTime
                 name="startTime"
                 label="Aloitusaika"
                 ampm={false}
-                required
               />
 
               <PickTime
                 name="endTime"
                 label="Lopetusaika"
                 ampm={false}
-                required
               />
 
               <DropDown
                 name="numPlayers"
                 label="Pelaajamäärä"
-                required
                 options={[
                   { value: "1-2", label: "1-2" },
                   { value: "2-4", label: "2-4" },
@@ -237,7 +235,6 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
               <DropDown
                 name="difficultyLevel"
                 label="Taso"
-                required
                 options={[
                   { value: "easy", label: "Aloittelija" },
                   { value: "medium", label: "Keskitaso" },
@@ -301,10 +298,10 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           currentUser.data?.currentUser?.id === matchData.hostId && (
             <AlertDialogButton
               ButtonStyle={DeleteGameButton}
-              buttonText={"Peru peli"}
-              title={"Haluatko perua pelin?"}
+              buttonText={"Poista Peli"}
+              title={"Haluatko poistaa pelin?"}
               content={""}
-              callBack={cancelMatchById}
+              // callBack={deleteMatchById}
             />
           )}
       </>

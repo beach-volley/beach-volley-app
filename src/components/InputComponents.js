@@ -175,9 +175,9 @@ const InputRowMUI = styled.div`
     font-family: inherit;
   }
 
-  .MuiSelect-nativeInput {
+  /* .MuiSelect-nativeInput {
     display: none;
-  }
+  } */
 
   .MuiSelect-select.MuiSelect-select {
     padding-right: 0;

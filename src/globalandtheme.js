@@ -12,6 +12,10 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
+  *, *::after, *::before {
+    box-sizing: border-box;
+  }
+  
   input, select, div {
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
@@ -57,7 +61,8 @@ const theme = {
   background-image: url(${background_image});
   background-repeat: no-repeat;
   background-position: center;
-  background-size: cover;`,
+  background-size: cover;
+  overflow-x: hidden;`,
 };
 
 const Theme = ({ children }) => (

@@ -19,7 +19,6 @@ const PageWrapper = styled.div`
   min-height: 100vh;
   grid-template-rows: 8vh 15vh auto;
   ${(props) => props.theme.backGroundImage()}
-  overflow-y:hidden;
 `;
 
 const TitleTextBox = styled.div`
