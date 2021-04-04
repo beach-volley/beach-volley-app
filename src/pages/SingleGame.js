@@ -64,6 +64,7 @@ const SingleGame = () => {
       matchById.data?.match.playerLimit.end.inclusive
     );
 
+
   const matchData = {
     location: matchById.data?.match.location,
     date: matchById.data?.match.time.start.value.slice(0, 10),
