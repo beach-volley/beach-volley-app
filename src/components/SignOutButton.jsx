@@ -1,13 +1,13 @@
 import React, { useCallback } from "react";
-import firebase from "firebase";
 import { StyledButton } from "./StyledButton";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import useCurrentUser from "../hooks/useCurrentUser";
+import { auth } from "../utils/firebase";
 
 const SignOutButton = () => {
   const currentUser = useCurrentUser();
-  const onSignOut = useCallback(() => firebase.auth().signOut(), []);
+  const onSignOut = useCallback(() => auth.signOut(), []);
 
   if (currentUser) {
     return <button onClick={onSignOut}>Kirjaudu ulos</button>;
