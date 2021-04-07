@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import firebase from "firebase";
+import { messaging } from "../utils/firebase";
 import { useMutation, useQuery } from "@apollo/client";
 import { ADD_FCM_TOKEN, CURRENT_USER } from "../queries";
 
@@ -10,7 +10,6 @@ const ShowNotifications = () => {
   const [addFcmToken] = useMutation(ADD_FCM_TOKEN);
   const currentUser = useQuery(CURRENT_USER);
 
-  const messaging = firebase.messaging();
   messaging.onMessage((payload) => {
     // todo: show notification somehow in the UI
     console.log("message received", payload);
@@ -25,7 +24,7 @@ const ShowNotifications = () => {
           console.log("Error", err);
         });
     }
-  }, [permission, messaging, addFcmToken, currentUser]);
+  }, [permission, addFcmToken, currentUser]);
 
   const askPermission = useCallback(async () => {
     setPermission(await Notification.requestPermission());

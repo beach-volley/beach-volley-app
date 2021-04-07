@@ -6,11 +6,11 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import firebase from "firebase/app";
 import { UPSERT_USER } from "../queries";
+import { auth } from "../utils/firebase";
 
 const authLink = setContext(async (_, { headers }) => {
-  const token = await firebase.auth().currentUser?.getIdToken();
+  const token = await auth.currentUser?.getIdToken();
 
   return {
     headers: {
@@ -31,7 +31,7 @@ const client = new ApolloClient({
 
 const ApolloWrapper = ({ children }) => {
   useEffect(() =>
-    firebase.auth().onAuthStateChanged(async (user) => {
+    auth.onAuthStateChanged(async (user) => {
       if (user) {
         await client.mutate({ mutation: UPSERT_USER });
       }

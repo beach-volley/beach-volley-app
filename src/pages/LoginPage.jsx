@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import firebase from "firebase";
 import * as firebaseui from "firebaseui";
 import { StyledFirebaseAuth } from "react-firebaseui";
 import Header from "../containers/Header";
 import { useHistory } from "react-router-dom";
+import { auth, app as firebase } from "../utils/firebase";
 
 const LoginPage = () => {
   const history = useHistory();
@@ -32,7 +32,7 @@ const LoginPage = () => {
           ],
           credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
         }}
-        firebaseAuth={firebase.auth()}
+        firebaseAuth={auth}
       />
     </PageWrapper>
   );
