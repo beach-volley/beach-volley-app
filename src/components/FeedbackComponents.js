@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { StyledButton } from "./StyledButton";
 import Dialog from "@material-ui/core/Dialog";
-import Snackbar from "@material-ui/core/Snackbar";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
@@ -58,20 +57,6 @@ export const AlertDialogButton = ({
   );
 };
 
-export const SnackBarTop = ({ message }) => {
-  const [open, setOpen] = useState(true);
-
-  return (
-    <SnackBarWrapper
-      open={open}
-      anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      autoHideDuration={1000}
-      message={message}
-      onClose={() => setOpen(false)}
-    />
-  );
-};
-
 const Button = styled(StyledButton)`
   width: auto;
   height: 2rem;
@@ -80,14 +65,5 @@ const Button = styled(StyledButton)`
 const DialogWrapper = styled(Dialog)`
   .MuiDialog-paperWidthSm {
     width: 50%;
-  }
-`;
-
-const SnackBarWrapper = styled(Snackbar)`
-  .MuiSnackbarContent-root {
-    display: flex;
-    justify-content: center;
-    width: 35rem;
-    background: #4caf50;
   }
 `;

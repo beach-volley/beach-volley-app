@@ -13,12 +13,15 @@ import {
   JOIN_ANONYMOUSLY,
   CANCEL_MATCH,
 } from "../queries";
+
 import { AlertDialogButton } from "../components/FeedbackComponents";
 import { useMutation, useQuery } from "@apollo/client";
 import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import moment from "moment";
+import { useSnackbar } from "notistack";
+import Slide from "@material-ui/core/Slide";
 
 import {
   TextInput,
@@ -28,6 +31,35 @@ import {
   ToggleInput,
   FormTextArea,
 } from "./InputComponents";
+
+const GameSchema = Yup.object({
+  location: Yup.string()
+    .min(2, "Täytyy olla vähintään 2 merkkiä pitkä")
+    .max(15, "Täytyy olla 15 merkkiä")
+    .matches(/^[aA-zZ\s]+$/, "Käytä vain kirjaimia! ")
+    .required("Pakollinen kenttä"),
+  date: Yup.date().required("Et voi valita mennyttä päivää"),
+  startTime: Yup.string().required("Pakollinen kenttä"),
+  endTime: Yup.string()
+    .required("Pakollinen kenttä")
+    .test(
+      "Eri aika",
+      "Alotusaika täytyy olla ennen lopetus aikaa",
+      function (value) {
+        return this.parent.startTime < value;
+      }
+    )
+    .test(
+      "Eri aika",
+      "Lopetusajan täytyy olla eri kuin aloitusajan!",
+      function (value) {
+        return this.parent.startTime !== value;
+      }
+    ),
+  difficultyLevel: Yup.string().required("Valitse taso"),
+  publicToggle: Yup.boolean(),
+  description: Yup.string(),
+});
 
 const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
@@ -47,6 +79,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   const [cancelMatch] = useMutation(CANCEL_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   let isJoined = false;
   const players = [];
@@ -118,34 +152,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           playerList: singleGameView ? matchData.playerList : [],
           description: singleGameView ? matchData.description : "",
         }}
-        validationSchema={Yup.object({
-          location: Yup.string()
-            .min(2, "Täytyy olla vähintään 2 merkkiä pitkä!")
-            .max(20, "Täytyy olla 20 merkkiä tai vähemmän!")
-            .matches(/^[aA-zZ\s]+$/, "Käytä vain kirjaimia! ")
-            .required("Pakollinen kenttä"),
-          date: Yup.date().required("Et voi valita mennyttä päivää").nullable(),
-          startTime: Yup.string().required("Pakollinen kenttä").nullable(),
-          endTime: Yup.string()
-            .required("Pakolinne kenttä")
-            .nullable()
-            .test(
-              "Eri aika",
-              "Lopetusajan täytyy olla eri kuin aloitusajan!",
-              function (value) {
-                return this.parent.startTime !== value;
-              }
-            ),
-          minPlayers: Yup.string().required("Pakollinen kenttä!"),
-          maxPlayers: Yup.string().required("Pakollinen kenttä!"),
-          difficultyLevel: Yup.string().oneOf(
-            ["easy", "medium", "hard", "easyhard"],
-            "Invalid difficulty"
-          ),
-          publicToggle: Yup.boolean(),
-          //invitedPlayers: Yup.array(), // NEEDS TO BE MODIFIED TO VALIDATE STRING ARRAY INSTEAD OF OBJECT ARRAY
-          description: Yup.string(),
-        })}
+        validationSchema={GameSchema}
         onSubmit={(values) => {
           createMatch({
             variables: {
@@ -180,50 +187,50 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 },
               },
             },
-          }).then(() => {
-            history.push("/home");
-          });
+          })
+            .then(() => {
+              history.push("/home");
+            })
+            .then(
+              enqueueSnackbar("Peli luotu", {
+                variant: "success",
+                autoHideDuration: 1000,
+                anchorOrigin: {
+                  vertical: "top",
+                  horizontal: "center",
+                },
+                TransitionComponent: Slide,
+              })
+            );
         }}
       >
         {(props) => (
           <FieldSet singleGameView={singleGameView}>
             <Form>
-              <TextInput name="location" label="Sijainti" required />
-              <PickDate name="date" label="Päivämäärä" required />
+              <TextInput name="location" label="Sijainti" />
 
-              <PickTime
-                name="startTime"
-                label="Aloitusaika"
-                ampm={false}
-                required
-              />
+              <PickDate name="date" label="Päivämäärä" />
 
-              <PickTime
-                name="endTime"
-                label="Lopetusaika"
-                ampm={false}
-                required
-              />
+              <PickTime name="startTime" label="Aloitusaika" ampm={false} />
+
+              <PickTime name="endTime" label="Lopetusaika" ampm={false} />
 
               <TextInput
                 name="minPlayers"
-                label="Pelaajien minimimäärä"
-                required
+                label="Pelaajat min"
                 type="number"
-                InputProps={{ inputProps: { min: 4, max: 12, step: "2" } }}
+                InputProps={{ inputProps: { min: 4, max: 12, step: "1" } }}
               />
               <TextInput
                 name="maxPlayers"
-                label="Pelaajien maksimimäärä"
-                required
+                label="Pelaajat max"
                 type="number"
-                InputProps={{ inputProps: { min: 6, max: 20, step: "2" } }}
+                InputProps={{ inputProps: { min: 6, max: 20, step: "1" } }}
               />
 
               <DropDown
                 name="difficultyLevel"
                 label="Taso"
-                required
                 options={[
                   { value: "easy", label: "Aloittelija" },
                   { value: "medium", label: "Keskitaso" },
@@ -321,7 +328,8 @@ const GameDescription = styled(FormTextArea)`
   width: 100%;
   height: 5rem;
   margin: 2.5rem 0;
-  overflow-y: scroll;
+  overflow-y: scroll !important;
+  pointer-events: all !important;
   resize: none;
 `;
 
@@ -331,7 +339,8 @@ const InvitedPlayers = styled.div`
   border-width: 0.1rem;
   height: 5rem;
   background-color: white;
-  overflow-y: scroll;
+  overflow-y: scroll !important;
+  pointer-events: all !important;
   width: 100%;
   padding: 0;
   margin-left: auto;

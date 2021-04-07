@@ -1,29 +1,24 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import SignOutButton from "../components/SignOutButton";
-import ShowNotifications from "../components/ShowNotifications";
-import { StyledButton } from "../components/StyledButton";
-import useCurrentUser from "../hooks/useCurrentUser";
+import { Burger, Menu } from "../components/BurgerMenu";
+import { useOnClickOutside } from "../hooks/useOnClickOutside";
+import AppLogo from "../assets/logo.png";
 
 const Header = () => {
-  const currentUser = useCurrentUser();
+  const [open, setOpen] = useState(false);
+  const node = useRef();
+  useOnClickOutside(node, () => setOpen(false));
 
   return (
     <Container>
       <Link to="/home">
-        <h1>LOGO</h1>
+        <Logo src={AppLogo} alt="Logo" />
       </Link>
-
-      <Profile>
-        {currentUser && (
-          <Link to="/create-game">
-            <CreateGameButton>Luo Peli</CreateGameButton>
-          </Link>
-        )}
-        <SignOutButton />
-        <ShowNotifications />
-      </Profile>
+      <div ref={node}>
+        <Burger open={open} setOpen={setOpen} />
+        <Menu open={open} setOpen={setOpen} />
+      </div>
     </Container>
   );
 };
@@ -32,27 +27,19 @@ export default Header;
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  position: relative;
   grid-row: 1;
+  margin-left: ${(props) => props.theme.margins.small};
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    justify-content: space-between;
     margin-right: ${(props) => props.theme.margins.large};
     margin-left: ${(props) => props.theme.margins.large};
   }
-  h1 {
-    margin-left: 1rem;
-  }
-`;
-const Profile = styled.div`
-  display: flex;
-  margin-right: 0.5rem;
-  margin-left: 0.5rem;
 `;
 
-const CreateGameButton = styled(StyledButton)`
-  height: 2rem;
-  width: 8rem;
-  margin-right: 0.5rem;
+const Logo = styled.img`
+  height: 3.5rem;
+  width: 100%;
 `;

@@ -7,9 +7,16 @@ const GlobalStyle = createGlobalStyle`
     margin: 0; 
     padding: 0; 
     border: 0;
+    #g_a11y_announcement {
+      height: 0;
+    }
   }
 
-  input, select {
+  *, *::after, *::before {
+    box-sizing: border-box;
+  }
+  
+  input, select, div {
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
             box-sizing: border-box;
@@ -54,7 +61,8 @@ const theme = {
   background-image: url(${background_image});
   background-repeat: no-repeat;
   background-position: center;
-  background-size: cover;`,
+  background-size: cover;
+  overflow-x: hidden;`,
 };
 
 const Theme = ({ children }) => (

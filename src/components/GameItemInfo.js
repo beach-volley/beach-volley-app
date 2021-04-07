@@ -1,6 +1,6 @@
 import React from "react";
 
-const ProjectItem = ({ id, location, time, players }) => {
+const ProjectItem = ({ location, time, players }) => {
   let formatted_time = time?.start.value
     ? new Date(time?.start.value).toLocaleString("fi-FI", {
         dateStyle: "short",
@@ -10,8 +10,8 @@ const ProjectItem = ({ id, location, time, players }) => {
 
   return (
     <>
-      {location ? <p>Location: {location}</p> : null}
-      {formatted_time ? <p> Time: {formatted_time}</p> : null}
+      {location ? <p>Paikka: {location}</p> : null}
+      {formatted_time ? <p>{formatted_time}</p> : null}
       {players ? (
         <p>
           Players: {asInclusive(players?.start.value, players?.start.inclusive)}{" "}
