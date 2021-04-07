@@ -111,7 +111,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           date: singleGameView ? matchData.date : new Date(),
           startTime: singleGameView ? matchData.startTime : new Date(),
           endTime: singleGameView ? matchData.endTime : new Date(),
-          numPlayers: singleGameView ? matchData.numPlayers : "",
+          minPlayers: singleGameView ? matchData.minPlayers : 4,
+          maxPlayers: singleGameView ? matchData.maxPlayers : 6,
           difficultyLevel: singleGameView ? matchData.difficultyLevel : "",
           publicToggle: singleGameView ? matchData.publicToggle : "true",
           playerList: singleGameView ? matchData.playerList : [],
@@ -135,7 +136,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 return this.parent.startTime !== value;
               }
             ),
-          numPlayers: Yup.string().required("Valitse pelaajamäärä"),
+          minPlayers: Yup.string().required("Pakollinen kenttä!"),
+          maxPlayers: Yup.string().required("Pakollinen kenttä!"),
           difficultyLevel: Yup.string().oneOf(
             ["easy", "medium", "hard", "easyhard"],
             "Invalid difficulty"
@@ -166,11 +168,11 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   },
                   playerLimit: {
                     start: {
-                      value: +values.numPlayers.split("-")[0],
+                      value: +values.minPlayers,
                       inclusive: true,
                     },
                     end: {
-                      value: +values.numPlayers.split("-")[1],
+                      value: +values.maxPlayers,
                       inclusive: true,
                     },
                   },
@@ -203,15 +205,19 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 required
               />
 
-              <DropDown
-                name="numPlayers"
-                label="Pelaajamäärä"
+              <TextInput
+                name="minPlayers"
+                label="Pelaajien minimimäärä"
                 required
-                options={[
-                  { value: "1-2", label: "1-2" },
-                  { value: "2-4", label: "2-4" },
-                  { value: "4-6", label: "4-6" },
-                ]}
+                type="number"
+                InputProps={{ inputProps: { min: 4, max: 12, step: "2" } }}
+              />
+              <TextInput
+                name="maxPlayers"
+                label="Pelaajien maksimimäärä"
+                required
+                type="number"
+                InputProps={{ inputProps: { min: 6, max: 20, step: "2" } }}
               />
 
               <DropDown
