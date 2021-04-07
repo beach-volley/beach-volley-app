@@ -30,7 +30,6 @@ import {
   DropDown,
   ToggleInput,
   FormTextArea,
-  
 } from "./InputComponents";
 
 const GameSchema = Yup.object({
