@@ -1,33 +1,38 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import SignOutButton from "../components/SignOutButton";
 import ShowNotifications from "../components/ShowNotifications";
+import useCurrentUser from "../hooks/useCurrentUser";
 
 export const Burger = ({ open, setOpen }) => {
   return (
-    <StyledBurger open={open} onClick={() => setOpen(!open)}>
-      <div />
-      <div />
-      <div />
-    </StyledBurger>
+    <BurgerContainer>
+      <StyledBurger open={open} onClick={() => setOpen(!open)}>
+        <div />
+        <div />
+        <div />
+      </StyledBurger>
+      <p>MENU</p>
+    </BurgerContainer>
   );
 };
 
 export const Menu = ({ open }) => {
+  const currentUser = useCurrentUser();
   return (
     <StyledMenu open={open}>
       <Link to="/create-game">
-        <span role="img" aria-label="about us">
-          &#x1f481;&#x1f3fb;&#x200d;&#x2642;&#xfe0f;
-        </span>
         Luo peli
       </Link>
-      <Link to="/login">
-        <span role="img" aria-label="price">
-          &#x1f4b8;
-        </span>
-        Kirjaudu
-      </Link>
+      {currentUser ? (
+        <SignOutButton />
+      ) : (
+        <Link to="/login">
+          Kirjaudu
+        </Link>
+      )}
+
       <ShowNotifications>
         <span role="img" aria-label="contact">
           &#x1f4e9;
@@ -38,10 +43,27 @@ export const Menu = ({ open }) => {
   );
 };
 
-const StyledBurger = styled.button`
+
+const BurgerContainer = styled.nav`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: fixed;
-  top: 2.5rem;
-  right: 1rem;
+  background-color: transparent;
+  top: 1.5rem;
+  right: 0.5rem;
+  width: 3.5rem;
+  height: 7rem;
+  z-index: 10;
+  @media only screen and (min-width: ${(props) =>
+      props.theme.mediaQuery.tabletWidth}) {
+    background: lightgrey;
+  }
+`;
+
+
+const StyledBurger = styled.button`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -51,7 +73,7 @@ const StyledBurger = styled.button`
   border: none;
   cursor: pointer;
   padding: 0;
-  z-index: 10;
+
 
   &:focus {
     outline: none;
@@ -99,18 +121,27 @@ const StyledMenu = styled.nav`
   width: 100vw;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    width: 80%;
-    transform: ${({ open }) => (open ? "translateX(30%)" : "translateX(150%)")};
+    width: 40vw;
+    transform: ${({ open }) => (open ? "translateX(40%)" : "translateX(150%)")};
   }
 
-  a {
+  a,
+  button {
     font-size: 2rem;
     text-transform: uppercase;
     padding: 2rem 0;
     font-weight: bold;
     letter-spacing: 0.5rem;
-    color: ${({ theme }) => theme.primaryDark};
+    color: black;
     text-decoration: none;
     transition: color 0.3s linear;
+  }
+
+  button {
+    padding: 0;
+    border: none;
+    background: none;
+    margin-bottom: 2rem;
+    cursor: pointer;
   }
 `;

@@ -10,7 +10,7 @@ const SignOutButton = () => {
   const onSignOut = useCallback(() => firebase.auth().signOut(), []);
 
   if (currentUser) {
-    return <Button onClick={onSignOut}>Kirjaudu ulos</Button>;
+    return <button onClick={onSignOut}>Kirjaudu ulos</button>;
   }
 
   return (
@@ -22,7 +22,7 @@ const SignOutButton = () => {
 
 const Button = styled(StyledButton)`
   height: 2rem;
-  width: 7rem;
+  width: 100%;
 `;
 
 export default SignOutButton;
