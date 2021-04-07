@@ -8,10 +8,10 @@ import {
   CREATE_MATCH,
   REFETCH_MATCHES,
   JOIN_MATCH,
-  // DELETE_MATCH,
   PLAYERS_BY_MATCH_ID,
   CURRENT_USER,
   JOIN_ANONYMOUSLY,
+  CANCEL_MATCH,
 } from "../queries";
 
 import { AlertDialogButton } from "../components/FeedbackComponents";
@@ -30,6 +30,7 @@ import {
   DropDown,
   ToggleInput,
   FormTextArea,
+  
 } from "./InputComponents";
 
 const GameSchema = Yup.object({
@@ -66,17 +67,19 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   const currentUser = useQuery(CURRENT_USER);
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
-      id: +window.location.pathname.slice(13),
+      id: window.location.pathname.slice(13),
     },
+    // skip in create mode
+    skip: !window.location.pathname.slice(13),
   });
   const [createMatch] = useMutation(CREATE_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
   const [joinMatch] = useMutation(JOIN_MATCH);
   const [joinAnonymously] = useMutation(JOIN_ANONYMOUSLY);
-  // const [deleteMatch] = useMutation(DELETE_MATCH, {
-  //   refetchQueries: [{ query: REFETCH_MATCHES }],
-  // });
+  const [cancelMatch] = useMutation(CANCEL_MATCH, {
+    refetchQueries: [{ query: REFETCH_MATCHES }],
+  });
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -126,16 +129,14 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     // NEEDS MUTATION WHICH ALLOWS YOU TO REMOVE PLAYERS FROM PARTICIPANTS LIST
   };
 
-  // const deleteMatchById = () => {
-  //   deleteMatch({
-  //     variables: {
-  //       input: {
-  //         id: +window.location.pathname.slice(13),
-  //       },
-  //     },
-  //   });
-  //   history.push("/home");
-  // };
+  const cancelMatchById = () => {
+    cancelMatch({
+      variables: {
+        id: window.location.pathname.slice(13),
+      },
+    });
+    history.push("/home");
+  };
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -297,7 +298,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
               buttonText={"Poista Peli"}
               title={"Haluatko poistaa pelin?"}
               content={""}
-              // callBack={deleteMatchById}
+              callBack={cancelMatchById}
             />
           )}
       </>
