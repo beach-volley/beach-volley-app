@@ -175,11 +175,11 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   },
                   playerLimit: {
                     start: {
-                      value: values.minPlayers,
+                      value: +values.minPlayers,
                       inclusive: true,
                     },
                     end: {
-                      value: values.maxPlayers,
+                      value: +values.maxPlayers,
                       inclusive: true,
                     },
                   },
