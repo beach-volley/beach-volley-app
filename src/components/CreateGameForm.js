@@ -56,7 +56,6 @@ const GameSchema = Yup.object({
         return this.parent.startTime !== value;
       }
     ),
-  numPlayers: Yup.string().required("Valitse pelaajamäärä"),
   difficultyLevel: Yup.string().required("Valitse taso"),
   publicToggle: Yup.boolean(),
   description: Yup.string(),
@@ -146,7 +145,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           date: singleGameView ? matchData.date : new Date(),
           startTime: singleGameView ? matchData.startTime : new Date(),
           endTime: singleGameView ? matchData.endTime : new Date(),
-          numPlayers: singleGameView ? matchData.numPlayers : "",
+          minPlayers: singleGameView ? matchData.minPlayers : 4,
+          maxPlayers: singleGameView ? matchData.maxPlayers : 6,
           difficultyLevel: singleGameView ? matchData.difficultyLevel : "",
           publicToggle: singleGameView ? matchData.publicToggle : "true",
           playerList: singleGameView ? matchData.playerList : [],
@@ -154,6 +154,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         }}
         validationSchema={GameSchema}
         onSubmit={(values) => {
+
           createMatch({
             variables: {
               input: {
@@ -175,11 +176,11 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   },
                   playerLimit: {
                     start: {
-                      value: +values.numPlayers.split("-")[0],
+                      value: values.minPlayers,
                       inclusive: true,
                     },
                     end: {
-                      value: +values.numPlayers.split("-")[1],
+                      value: values.maxPlayers,
                       inclusive: true,
                     },
                   },
@@ -208,20 +209,24 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           <FieldSet singleGameView={singleGameView}>
             <Form>
               <TextInput name="location" label="Sijainti" />
+              
               <PickDate name="date" label="Päivämäärä" />
 
               <PickTime name="startTime" label="Aloitusaika" ampm={false} />
 
               <PickTime name="endTime" label="Lopetusaika" ampm={false} />
 
-              <DropDown
-                name="numPlayers"
-                label="Pelaajamäärä"
-                options={[
-                  { value: "1-2", label: "1-2" },
-                  { value: "2-4", label: "2-4" },
-                  { value: "4-6", label: "4-6" },
-                ]}
+              <TextInput
+                name="minPlayers"
+                label="Pelaajat min"
+                type="number"
+                InputProps={{ inputProps: { min: 4, max: 12, step: "1" } }}
+              />
+              <TextInput
+                name="maxPlayers"
+                label="Pelaajat max"
+                type="number"
+                InputProps={{ inputProps: { min: 6, max: 20, step: "1" } }}
               />
 
               <DropDown
@@ -324,7 +329,7 @@ const GameDescription = styled(FormTextArea)`
   width: 100%;
   height: 5rem;
   margin: 2.5rem 0;
-  overflow-y: scroll;
+  overflow-y: scroll !important;
   resize: none;
 `;
 
@@ -334,7 +339,7 @@ const InvitedPlayers = styled.div`
   border-width: 0.1rem;
   height: 5rem;
   background-color: white;
-  overflow-y: scroll;
+  overflow-y: scroll !important;
   width: 100%;
   padding: 0;
   margin-left: auto;

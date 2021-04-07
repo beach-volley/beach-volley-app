@@ -42,14 +42,16 @@ const BurgerContainer = styled.nav`
   justify-content: center;
   position: fixed;
   background-color: transparent;
-  top: 1.5rem;
-  right: 0.5rem;
-  width: 3.5rem;
-  height: 7rem;
   z-index: 10;
+  top: 2.5rem;
+  right: 0.5rem;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     background: lightgrey;
+    width: 5rem;
+    height: 7.5rem;
+    top: 2rem;
+    right: 3rem;
   }
 `;
 
