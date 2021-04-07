@@ -154,7 +154,6 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         }}
         validationSchema={GameSchema}
         onSubmit={(values) => {
-
           createMatch({
             variables: {
               input: {
@@ -209,7 +208,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           <FieldSet singleGameView={singleGameView}>
             <Form>
               <TextInput name="location" label="Sijainti" />
-              
+
               <PickDate name="date" label="Päivämäärä" />
 
               <PickTime name="startTime" label="Aloitusaika" ampm={false} />
