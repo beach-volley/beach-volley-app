@@ -22,16 +22,8 @@ export const Menu = ({ open }) => {
   const currentUser = useCurrentUser();
   return (
     <StyledMenu open={open}>
-      <Link to="/create-game">
-        Luo peli
-      </Link>
-      {currentUser ? (
-        <SignOutButton />
-      ) : (
-        <Link to="/login">
-          Kirjaudu
-        </Link>
-      )}
+      <Link to="/create-game">Luo peli</Link>
+      {currentUser ? <SignOutButton /> : <Link to="/login">Kirjaudu</Link>}
 
       <ShowNotifications>
         <span role="img" aria-label="contact">
@@ -42,7 +34,6 @@ export const Menu = ({ open }) => {
     </StyledMenu>
   );
 };
-
 
 const BurgerContainer = styled.nav`
   display: flex;
@@ -62,7 +53,6 @@ const BurgerContainer = styled.nav`
   }
 `;
 
-
 const StyledBurger = styled.button`
   display: flex;
   flex-direction: column;
@@ -73,7 +63,6 @@ const StyledBurger = styled.button`
   border: none;
   cursor: pointer;
   padding: 0;
-
 
   &:focus {
     outline: none;
