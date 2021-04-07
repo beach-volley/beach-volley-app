@@ -111,9 +111,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           date: singleGameView ? matchData.date : new Date(),
           startTime: singleGameView ? matchData.startTime : new Date(),
           endTime: singleGameView ? matchData.endTime : new Date(),
-          numPlayers: singleGameView ? matchData.numPlayers : "",
-          minPlayers: singleGameView ? matchData.minPlayers : "4",
-          maxPlayers: singleGameView ? matchData.maxPlayers : "",
+          minPlayers: singleGameView ? matchData.minPlayers : 4,
+          maxPlayers: singleGameView ? matchData.maxPlayers : 6,
           difficultyLevel: singleGameView ? matchData.difficultyLevel : "",
           publicToggle: singleGameView ? matchData.publicToggle : "true",
           playerList: singleGameView ? matchData.playerList : [],
@@ -139,7 +138,6 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
             ),
           minPlayers: Yup.string().required("Pakollinen kenttä!"),
           maxPlayers: Yup.string().required("Pakollinen kenttä!"),
-          numPlayers: Yup.string().required("Valitse pelaajamäärä"),
           difficultyLevel: Yup.string().oneOf(
             ["easy", "medium", "hard", "easyhard"],
             "Invalid difficulty"
@@ -222,16 +220,6 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 InputProps={{ inputProps: { min: 6, max: 20, step: "2" } }}
               />
 
-              <DropDown
-                name="numPlayers"
-                label="Pelaajamäärä"
-                required
-                options={[
-                  { value: "1-2", label: "1-2" },
-                  { value: "2-4", label: "2-4" },
-                  { value: "4-6", label: "4-6" },
-                ]}
-              />
 
               <DropDown
                 name="difficultyLevel"

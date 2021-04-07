@@ -53,12 +53,13 @@ const SingleGame = () => {
     }
   };
 
-  const numPlayers =
+  const minPlayers = 
     asInclusive(
-      matchById.data?.match.playerLimit.start.value,
-      matchById.data?.match.playerLimit.start.inclusive
-    ) +
-    "-" +
+       matchById.data?.match.playerLimit.start.value,
+       matchById.data?.match.playerLimit.start.inclusive
+    );
+
+  const maxPlayers =
     asInclusive(
       matchById.data?.match.playerLimit.end.value,
       matchById.data?.match.playerLimit.end.inclusive
@@ -69,7 +70,8 @@ const SingleGame = () => {
     date: matchById.data?.match.time.start.value.slice(0, 10),
     startTime: matchById.data?.match.time.start.value,
     endTime: matchById.data?.match.time.end.value,
-    numPlayers: numPlayers,
+    minPlayers: minPlayers,
+    maxPlayers: maxPlayers,
     difficultyLevel: "easy",
     publicToggle: matchById.data?.match.public,
     playerList: allPlayers(),
