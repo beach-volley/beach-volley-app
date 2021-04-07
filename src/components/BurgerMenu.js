@@ -24,11 +24,7 @@ export const Menu = ({ open }) => {
     <StyledMenu open={open}>
       <Link to="/create-game">Luo peli</Link>
       {currentUser ? <SignOutButton /> : <Link to="/login">Kirjaudu</Link>}
-
       <ShowNotifications>
-        <span role="img" aria-label="contact">
-          &#x1f4e9;
-        </span>
         Contact
       </ShowNotifications>
     </StyledMenu>

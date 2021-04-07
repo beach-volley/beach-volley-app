@@ -105,7 +105,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
       joinMatch({
         variables: {
           input: {
-            matchId: +window.location.pathname.slice(13),
+            matchId: window.location.pathname.slice(13),
           },
         },
       });
@@ -114,7 +114,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
       joinAnonymously({
         variables: {
           input: {
-            matchId: +window.location.pathname.slice(13),
+            matchId: window.location.pathname.slice(13),
             name: document.getElementById("anonymousName").value,
           },
         },
@@ -294,8 +294,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           currentUser.data?.currentUser?.id === matchData.hostId && (
             <AlertDialogButton
               ButtonStyle={DeleteGameButton}
-              buttonText={"Poista Peli"}
-              title={"Haluatko poistaa pelin?"}
+              buttonText={"Peru peli"}
+              title={"Haluatko perua pelin?"}
               content={""}
               callBack={cancelMatchById}
             />
@@ -329,6 +329,7 @@ const GameDescription = styled(FormTextArea)`
   height: 5rem;
   margin: 2.5rem 0;
   overflow-y: scroll !important;
+  pointer-events: all !important;
   resize: none;
 `;
 
@@ -339,6 +340,7 @@ const InvitedPlayers = styled.div`
   height: 5rem;
   background-color: white;
   overflow-y: scroll !important;
+  pointer-events: all !important;
   width: 100%;
   padding: 0;
   margin-left: auto;
