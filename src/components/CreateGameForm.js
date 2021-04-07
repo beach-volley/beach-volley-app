@@ -220,7 +220,6 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 InputProps={{ inputProps: { min: 6, max: 20, step: "2" } }}
               />
 
-
               <DropDown
                 name="difficultyLevel"
                 label="Taso"

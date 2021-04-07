@@ -53,17 +53,15 @@ const SingleGame = () => {
     }
   };
 
-  const minPlayers = 
-    asInclusive(
-       matchById.data?.match.playerLimit.start.value,
-       matchById.data?.match.playerLimit.start.inclusive
-    );
+  const minPlayers = asInclusive(
+    matchById.data?.match.playerLimit.start.value,
+    matchById.data?.match.playerLimit.start.inclusive
+  );
 
-  const maxPlayers =
-    asInclusive(
-      matchById.data?.match.playerLimit.end.value,
-      matchById.data?.match.playerLimit.end.inclusive
-    );
+  const maxPlayers = asInclusive(
+    matchById.data?.match.playerLimit.end.value,
+    matchById.data?.match.playerLimit.end.inclusive
+  );
 
   const matchData = {
     location: matchById.data?.match.location,
