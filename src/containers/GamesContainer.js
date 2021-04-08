@@ -5,10 +5,9 @@ import { StyledButton } from "../components/StyledButton";
 import { useHistory } from "react-router";
 import { useQuery } from "@apollo/client";
 import { MATCHES, CURRENT_USER_MATCHES_JOINS } from "../queries";
-import { NoDeprecatedCustomRule } from "graphql";
 
 const Games = () => {
-  let matches = useQuery(MATCHES);
+  const matches = useQuery(MATCHES);
   const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
   const [gameFilter, setGameFilter] = useState("");
 

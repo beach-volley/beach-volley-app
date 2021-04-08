@@ -68,7 +68,10 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   let history = useHistory();
   const currentUser = useQuery(CURRENT_USER);
 
-  if(singleGameView && currentUser.data?.currentUser?.id === matchData.hostId){
+  if (
+    singleGameView &&
+    currentUser.data?.currentUser?.id === matchData.hostId
+  ) {
     singleGameView = false;
     editMode = true;
   }
@@ -135,18 +138,23 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   };
 
   const leaveGame = () => {
-    for ( 
+    for (
       let index = 0;
       index < currentUser.data.currentUser.joinsByParticipantId.edges.length;
       index++
     ) {
-      if(currentUser.data.currentUser.joinsByParticipantId.edges[index].node.matchId === window.location.pathname.slice(13)){
-        deleteJoin ({
+      if (
+        currentUser.data.currentUser.joinsByParticipantId.edges[index].node
+          .matchId === window.location.pathname.slice(13)
+      ) {
+        deleteJoin({
           variables: {
             input: {
-              id: currentUser.data.currentUser.joinsByParticipantId.edges[index].node.id
-            }
-          }
+              id:
+                currentUser.data.currentUser.joinsByParticipantId.edges[index]
+                  .node.id,
+            },
+          },
         });
         window.location.reload();
       }
@@ -160,8 +168,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           id: window.location.pathname.slice(13),
           patch: {
             status: "CANCELLED",
-          }
-        }
+          },
+        },
       },
     });
     history.push("/home");
@@ -173,18 +181,21 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         initialValues={{
           location: singleGameView || editMode ? matchData.location : "",
           date: singleGameView || editMode ? matchData.date : new Date(),
-          startTime: singleGameView || editMode ? matchData.startTime : new Date(),
+          startTime:
+            singleGameView || editMode ? matchData.startTime : new Date(),
           endTime: singleGameView || editMode ? matchData.endTime : new Date(),
           minPlayers: singleGameView || editMode ? matchData.minPlayers : 4,
           maxPlayers: singleGameView || editMode ? matchData.maxPlayers : 6,
-          difficultyLevel: singleGameView || editMode ? matchData.difficultyLevel : "",
-          publicToggle: singleGameView || editMode ? matchData.publicToggle : "true",
+          difficultyLevel:
+            singleGameView || editMode ? matchData.difficultyLevel : "",
+          publicToggle:
+            singleGameView || editMode ? matchData.publicToggle : "true",
           playerList: singleGameView || editMode ? matchData.playerList : [],
           description: singleGameView || editMode ? matchData.description : "",
         }}
         validationSchema={GameSchema}
         onSubmit={(values) => {
-          if(editMode){
+          if (editMode) {
             updateMatch({
               variables: {
                 input: {
@@ -219,7 +230,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                     requiredSkillLevel: values.difficultyLevel,
                   },
                   id: window.location.pathname.slice(13),
-                }
+                },
               },
             }).then(() => {
               history.push("/home");
@@ -260,19 +271,21 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   },
                 },
               },
-            }).then(() => {
-              history.push("/home");
-            }).then(
-              enqueueSnackbar("Peli luotu", {
-                variant: "success",
-                autoHideDuration: 1000,
-                anchorOrigin: {
-                  vertical: "top",
-                  horizontal: "center",
-                },
-                TransitionComponent: Slide,
+            })
+              .then(() => {
+                history.push("/home");
               })
-            );
+              .then(
+                enqueueSnackbar("Peli luotu", {
+                  variant: "success",
+                  autoHideDuration: 1000,
+                  anchorOrigin: {
+                    vertical: "top",
+                    horizontal: "center",
+                  },
+                  TransitionComponent: Slide,
+                })
+              );
           }
         }}
       >
