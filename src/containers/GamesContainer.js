@@ -5,9 +5,10 @@ import { StyledButton } from "../components/StyledButton";
 import { useHistory } from "react-router";
 import { useQuery } from "@apollo/client";
 import { MATCHES, CURRENT_USER_MATCHES_JOINS } from "../queries";
+import { NoDeprecatedCustomRule } from "graphql";
 
 const Games = () => {
-  const matches = useQuery(MATCHES);
+  let matches = useQuery(MATCHES);
   const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
   const [gameFilter, setGameFilter] = useState("");
 
@@ -63,21 +64,22 @@ const Games = () => {
       <ListContainer>
         {filterGameList()
           ?.map(({ node }) => (
-            <ListStyle key={node.id || node.match.id}>
+            <ListStyle key={node.id || node.match?.id}>
               <CardWrapper>
                 <Row>
                   <GameItemInfo
-                    location={node.location || node.match.location}
-                    time={node.time || node.match.time}
+                    status={node.status || node.match?.status}
+                    location={node.location || node.match?.location}
+                    time={node.time || node.match?.time}
                   />
                 </Row>
                 <Row>
                   <GameItemInfo
-                    players={node.playerLimit || node.match.playerLimit}
+                    players={node.playerLimit || node.match?.playerLimit}
                   />
                 </Row>
                 <JoinGameButton
-                  onClick={() => joinMatchById(node.id || node.match.id)}
+                  onClick={() => joinMatchById(node.id || node.match?.id)}
                 >
                   Näytä
                 </JoinGameButton>

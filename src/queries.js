@@ -6,6 +6,22 @@ export const CURRENT_USER = gql`
   {
     currentUser {
       id
+      nodeId
+      joinsByParticipantId {
+        edges {
+          node {
+            id
+            matchId
+          }
+        }
+      }
+      matchesByHostId {
+        edges {
+          node {
+            id
+          }
+        }
+      }
     }
   }
 `;
@@ -144,6 +160,7 @@ export const MATCHES = gql`
             }
           }
           nodeId
+          status
         }
       }
     }
@@ -231,6 +248,16 @@ export const CREATE_MATCH = gql`
   }
 `;
 
+export const UPDATE_MATCH = gql`
+  mutation updateMatch($input: UpdateMatchInput!) {
+    updateMatch(input: $input) {
+      match {
+        id
+      }
+    }
+  }
+`;
+
 export const UPSERT_USER = gql`
   mutation {
     upsertUser(input: {}) {
@@ -242,8 +269,8 @@ export const UPSERT_USER = gql`
 `;
 
 export const CANCEL_MATCH = gql`
-  mutation cancelMatch($id: UUID!) {
-    updateMatch(input: { id: $id, patch: { status: CANCELLED } }) {
+  mutation cancelMatch($input: UpdateMatchInput!) {
+    updateMatch(input: $input) {
       match {
         id
       }
@@ -291,6 +318,16 @@ export const JOIN_ANONYMOUSLY = gql`
             }
           }
         }
+      }
+    }
+  }
+`;
+
+export const DELETE_JOIN = gql`
+  mutation deleteJoin($input: DeleteJoinInput!) {
+    deleteJoin(input: $input) {
+      join {
+        nodeId
       }
     }
   }
