@@ -12,6 +12,8 @@ import {
   CURRENT_USER,
   JOIN_ANONYMOUSLY,
   CANCEL_MATCH,
+  UPDATE_MATCH,
+  DELETE_JOIN,
 } from "../queries";
 
 import { AlertDialogButton } from "../components/FeedbackComponents";
@@ -62,8 +64,18 @@ const GameSchema = Yup.object({
 });
 
 const CreateFieldSet = ({ matchData, singleGameView }) => {
+  let editMode = false;
   let history = useHistory();
   const currentUser = useQuery(CURRENT_USER);
+
+  if (
+    singleGameView &&
+    currentUser.data?.currentUser?.id === matchData.hostId
+  ) {
+    singleGameView = false;
+    editMode = true;
+  }
+
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
       id: window.location.pathname.slice(13),
@@ -79,6 +91,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   const [cancelMatch] = useMutation(CANCEL_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
+  const [updateMatch] = useMutation(UPDATE_MATCH);
+  const [deleteJoin] = useMutation(DELETE_JOIN);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -124,14 +138,38 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   };
 
   const leaveGame = () => {
-    console.log("you left the game");
-    // NEEDS MUTATION WHICH ALLOWS YOU TO REMOVE PLAYERS FROM PARTICIPANTS LIST
+    for (
+      let index = 0;
+      index < currentUser.data.currentUser.joinsByParticipantId.edges.length;
+      index++
+    ) {
+      if (
+        currentUser.data.currentUser.joinsByParticipantId.edges[index].node
+          .matchId === window.location.pathname.slice(13)
+      ) {
+        deleteJoin({
+          variables: {
+            input: {
+              id:
+                currentUser.data.currentUser.joinsByParticipantId.edges[index]
+                  .node.id,
+            },
+          },
+        });
+        window.location.reload();
+      }
+    }
   };
 
   const cancelMatchById = () => {
     cancelMatch({
       variables: {
-        id: window.location.pathname.slice(13),
+        input: {
+          id: window.location.pathname.slice(13),
+          patch: {
+            status: "CANCELLED",
+          },
+        },
       },
     });
     history.push("/home");
@@ -141,67 +179,114 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Formik
         initialValues={{
-          location: singleGameView ? matchData.location : "",
-          date: singleGameView ? matchData.date : new Date(),
-          startTime: singleGameView ? matchData.startTime : new Date(),
-          endTime: singleGameView ? matchData.endTime : new Date(),
-          minPlayers: singleGameView ? matchData.minPlayers : 4,
-          maxPlayers: singleGameView ? matchData.maxPlayers : 6,
-          difficultyLevel: singleGameView ? matchData.difficultyLevel : "",
-          publicToggle: singleGameView ? matchData.publicToggle : "true",
-          playerList: singleGameView ? matchData.playerList : [],
-          description: singleGameView ? matchData.description : "",
+          location: singleGameView || editMode ? matchData.location : "",
+          date: singleGameView || editMode ? matchData.date : new Date(),
+          startTime:
+            singleGameView || editMode ? matchData.startTime : new Date(),
+          endTime: singleGameView || editMode ? matchData.endTime : new Date(),
+          minPlayers: singleGameView || editMode ? matchData.minPlayers : 4,
+          maxPlayers: singleGameView || editMode ? matchData.maxPlayers : 6,
+          difficultyLevel:
+            singleGameView || editMode ? matchData.difficultyLevel : "",
+          publicToggle:
+            singleGameView || editMode ? matchData.publicToggle : "true",
+          playerList: singleGameView || editMode ? matchData.playerList : [],
+          description: singleGameView || editMode ? matchData.description : "",
         }}
         validationSchema={GameSchema}
         onSubmit={(values) => {
-          createMatch({
-            variables: {
-              input: {
-                match: {
-                  location: values.location,
-                  time: {
-                    start: {
-                      value:
-                        moment(values.date).format("YYYY-MM-DDT") +
-                        moment(values.startTime).format("HH:mm:00Z"),
-                      inclusive: true,
+          if (editMode) {
+            updateMatch({
+              variables: {
+                input: {
+                  patch: {
+                    location: values.location,
+                    time: {
+                      start: {
+                        value:
+                          moment(values.date).format("YYYY-MM-DDT") +
+                          moment(values.startTime).format("HH:mm:00Z"),
+                        inclusive: true,
+                      },
+                      end: {
+                        value:
+                          moment(values.date).format("YYYY-MM-DDT") +
+                          moment(values.endTime).format("HH:mm:00Z"),
+                        inclusive: true,
+                      },
                     },
-                    end: {
-                      value:
-                        moment(values.date).format("YYYY-MM-DDT") +
-                        moment(values.endTime).format("HH:mm:00Z"),
-                      inclusive: true,
+                    playerLimit: {
+                      start: {
+                        value: +values.minPlayers,
+                        inclusive: true,
+                      },
+                      end: {
+                        value: +values.maxPlayers,
+                        inclusive: true,
+                      },
                     },
+                    public: values.publicToggle === "true",
+                    description: values.description,
+                    requiredSkillLevel: values.difficultyLevel,
                   },
-                  playerLimit: {
-                    start: {
-                      value: +values.minPlayers,
-                      inclusive: true,
-                    },
-                    end: {
-                      value: +values.maxPlayers,
-                      inclusive: true,
-                    },
-                  },
-                  public: values.publicToggle === "true",
+                  id: window.location.pathname.slice(13),
                 },
               },
-            },
-          })
-            .then(() => {
+            }).then(() => {
               history.push("/home");
-            })
-            .then(
-              enqueueSnackbar("Peli luotu", {
-                variant: "success",
-                autoHideDuration: 1000,
-                anchorOrigin: {
-                  vertical: "top",
-                  horizontal: "center",
+            });
+          } else {
+            createMatch({
+              variables: {
+                input: {
+                  match: {
+                    location: values.location,
+                    time: {
+                      start: {
+                        value:
+                          moment(values.date).format("YYYY-MM-DDT") +
+                          moment(values.startTime).format("HH:mm:00Z"),
+                        inclusive: true,
+                      },
+                      end: {
+                        value:
+                          moment(values.date).format("YYYY-MM-DDT") +
+                          moment(values.endTime).format("HH:mm:00Z"),
+                        inclusive: true,
+                      },
+                    },
+                    playerLimit: {
+                      start: {
+                        value: +values.minPlayers,
+                        inclusive: true,
+                      },
+                      end: {
+                        value: +values.maxPlayers,
+                        inclusive: true,
+                      },
+                    },
+                    public: values.publicToggle === "true",
+                    description: values.description,
+                    requiredSkillLevel: values.difficultyLevel,
+                  },
                 },
-                TransitionComponent: Slide,
+              },
+            })
+              .then(() => {
+                history.push("/home");
               })
-            );
+              .then(
+                enqueueSnackbar("Peli luotu", {
+                  variant: "success",
+                  autoHideDuration: 1000,
+                  anchorOrigin: {
+                    vertical: "top",
+                    horizontal: "center",
+                  },
+                  TransitionComponent: Slide,
+                })
+              );
+          }
         }}
       >
         {(props) => (
@@ -232,10 +317,12 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 name="difficultyLevel"
                 label="Taso"
                 options={[
-                  { value: "easy", label: "Aloittelija" },
-                  { value: "medium", label: "Keskitaso" },
-                  { value: "hard", label: "Pro" },
-                  { value: "easyhard", label: "Kaikki" },
+                  { value: "EASY", label: "Aloittelija" },
+                  { value: "MEDIUM", label: "Keskitaso" },
+                  { value: "HARD", label: "Pro" },
+                  { value: "EASY_MEDIUM", label: "Aloittelija-Keskitaso" },
+                  { value: "MEDIUM_HARD", label: "Keskitaso-Pro" },
+                  { value: "EASY_HARD", label: "Kaikki" },
                 ]}
               />
 
@@ -260,15 +347,18 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   placeholder="Kirjoita pelin tiedot tänne"
                 />
               </TextAreaContainer>
-              {!singleGameView && (
+              {!singleGameView && !editMode && (
                 <CornerButton type="submit">Julkaise peli</CornerButton>
+              )}
+              {!singleGameView && editMode && (
+                <SaveEditButton type="submit">Tallenna</SaveEditButton>
               )}
             </Form>
           </FieldSet>
         )}
       </Formik>
       <>
-        {singleGameView &&
+        {(singleGameView || editMode) &&
           !isJoined &&
           currentUser.data?.currentUser != null && (
             <CornerButton onClick={joinGame}>Liity Peliin</CornerButton>
@@ -287,19 +377,18 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
               <CornerButton onClick={joinGame}>Liity Peliin</CornerButton>
             </>
           )}
-        {singleGameView && isJoined && (
+        {(singleGameView || editMode) && isJoined && (
           <CornerButton onClick={leaveGame}>Poistu Pelistä</CornerButton>
         )}
-        {singleGameView &&
-          currentUser.data?.currentUser?.id === matchData.hostId && (
-            <AlertDialogButton
-              ButtonStyle={DeleteGameButton}
-              buttonText={"Peru peli"}
-              title={"Haluatko perua pelin?"}
-              content={""}
-              callBack={cancelMatchById}
-            />
-          )}
+        {editMode && (
+          <AlertDialogButton
+            ButtonStyle={DeleteGameButton}
+            buttonText={"Peru peli"}
+            title={"Haluatko perua pelin?"}
+            content={""}
+            callBack={cancelMatchById}
+          />
+        )}
       </>
     </MuiPickersUtilsProvider>
   );
@@ -355,8 +444,17 @@ const CornerButton = styled(StyledButton)`
   margin-bottom: 0.5rem;
 `;
 
+const SaveEditButton = styled(StyledButton)`
+  height: 2rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-right: 8rem;
+  margin-bottom: 0.5rem;
+`;
+
 const DeleteGameButton = styled(CornerButton)`
-  margin-right: 10rem;
+  margin-right: 14rem;
 `;
 
 export default CreateFieldSet;

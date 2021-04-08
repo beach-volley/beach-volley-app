@@ -20,17 +20,17 @@ const SingleGame = () => {
     const players = [];
     for (
       let index = 0;
-      index < playersByMatchId.data?.match.joins.edges.length;
+      index < playersByMatchId.data?.match?.joins.edges.length;
       index++
     ) {
       if (
-        playersByMatchId.data?.match.joins.edges[index]?.node.participant ===
+        playersByMatchId.data?.match?.joins.edges[index]?.node.participant ===
         null
       ) {
-        players[index] = playersByMatchId.data?.match.joins.edges[index]?.node;
+        players[index] = playersByMatchId.data?.match?.joins.edges[index]?.node;
       } else {
         players[index] =
-          playersByMatchId.data?.match.joins.edges[index]?.node.participant;
+          playersByMatchId.data?.match?.joins.edges[index]?.node.participant;
       }
     }
 
@@ -54,27 +54,27 @@ const SingleGame = () => {
   };
 
   const minPlayers = asInclusive(
-    matchById.data?.match.playerLimit.start.value,
-    matchById.data?.match.playerLimit.start.inclusive
+    matchById?.data?.match?.playerLimit?.start.value,
+    matchById?.data?.match?.playerLimit?.start.inclusive
   );
 
   const maxPlayers = asInclusive(
-    matchById.data?.match.playerLimit.end.value,
-    matchById.data?.match.playerLimit.end.inclusive
+    matchById?.data?.match?.playerLimit?.end.value,
+    matchById?.data?.match?.playerLimit?.end.inclusive
   );
 
   const matchData = {
-    location: matchById.data?.match.location,
-    date: matchById.data?.match.time.start.value.slice(0, 10),
-    startTime: matchById.data?.match.time.start.value,
-    endTime: matchById.data?.match.time.end.value,
+    location: matchById.data?.match?.location,
+    date: matchById.data?.match?.time.start.value.slice(0, 10),
+    startTime: matchById.data?.match?.time.start.value,
+    endTime: matchById.data?.match?.time.end.value,
     minPlayers: minPlayers,
     maxPlayers: maxPlayers,
-    difficultyLevel: "easy",
-    publicToggle: matchById.data?.match.public,
+    difficultyLevel: matchById.data?.match?.requiredSkillLevel,
+    publicToggle: matchById.data?.match?.public,
     playerList: allPlayers(),
-    description: "test",
-    hostId: matchById.data?.match.host.id,
+    description: matchById.data?.match?.description,
+    hostId: matchById.data?.match?.host.id,
   };
 
   return (

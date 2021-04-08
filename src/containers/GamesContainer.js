@@ -63,21 +63,22 @@ const Games = () => {
       <ListContainer>
         {filterGameList()
           ?.map(({ node }) => (
-            <ListStyle key={node.id || node.match.id}>
+            <ListStyle key={node.id || node.match?.id}>
               <CardWrapper>
                 <Row>
                   <GameItemInfo
-                    location={node.location || node.match.location}
-                    time={node.time || node.match.time}
+                    status={node.status || node.match?.status}
+                    location={node.location || node.match?.location}
+                    time={node.time || node.match?.time}
                   />
                 </Row>
                 <Row>
                   <GameItemInfo
-                    players={node.playerLimit || node.match.playerLimit}
+                    players={node.playerLimit || node.match?.playerLimit}
                   />
                 </Row>
                 <JoinGameButton
-                  onClick={() => joinMatchById(node.id || node.match.id)}
+                  onClick={() => joinMatchById(node.id || node.match?.id)}
                 >
                   Näytä
                 </JoinGameButton>

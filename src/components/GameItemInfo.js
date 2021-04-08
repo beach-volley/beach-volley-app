@@ -1,6 +1,6 @@
 import React from "react";
 
-const ProjectItem = ({ location, time, players }) => {
+const ProjectItem = ({ location, time, players, status }) => {
   let formatted_time = time?.start.value
     ? new Date(time?.start.value).toLocaleString("fi-FI", {
         dateStyle: "short",
@@ -10,6 +10,7 @@ const ProjectItem = ({ location, time, players }) => {
 
   return (
     <>
+      {status === "CANCELLED" ? <p>Status: {status}</p> : null}
       {location ? <p>Paikka: {location}</p> : null}
       {formatted_time ? <p>{formatted_time}</p> : null}
       {players ? (
