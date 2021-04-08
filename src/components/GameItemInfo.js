@@ -10,7 +10,7 @@ const ProjectItem = ({ location, time, players, status }) => {
 
   return (
     <>
-      {status == "CANCELLED" ? <p>Status: {status}</p> : null}
+      {status === "CANCELLED" ? <p>Status: {status}</p> : null}
       {location ? <p>Paikka: {location}</p> : null}
       {formatted_time ? <p>{formatted_time}</p> : null}
       {players ? (
