@@ -14,3 +14,5 @@ export const app = firebase.initializeApp({
 export const auth = app.auth();
 
 export const messaging = app.messaging();
+
+export const GoogleID = firebase.auth.GoogleAuthProvider.PROVIDER_ID;

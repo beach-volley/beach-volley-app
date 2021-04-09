@@ -4,7 +4,7 @@ import * as firebaseui from "firebaseui";
 import { StyledFirebaseAuth } from "react-firebaseui";
 import Header from "../containers/Header";
 import { useHistory } from "react-router-dom";
-import { auth, app as firebase } from "../utils/firebase";
+import { auth, GoogleID } from "../utils/firebase";
 
 const LoginPage = () => {
   const history = useHistory();
@@ -25,7 +25,7 @@ const LoginPage = () => {
           },
           signInOptions: [
             {
-              provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+              provider: GoogleID,
               clientId:
                 "758236414363-fnh0cqp982cp59pg8duuhrbaprq49g99.apps.googleusercontent.com",
             },
