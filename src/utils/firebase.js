@@ -13,6 +13,14 @@ export const app = firebase.initializeApp({
 
 export const auth = app.auth();
 
-export const messaging = app.messaging();
+export const messaging = (() => {
+  // ignore error if browser does not support messaging
+  try {
+    return app.messaging();
+  } catch (e) {
+    console.error(e);
+    return undefined;
+  }
+})();
 
 export const GoogleID = firebase.auth.GoogleAuthProvider.PROVIDER_ID;

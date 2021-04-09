@@ -26,7 +26,7 @@ const Games = () => {
     if (gameFilter === "created") {
       return currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
     }
-    return matches.data?.matches.edges;
+    return matches.data?.publicMatches.edges;
   };
 
   const whichTabPushed = () => {

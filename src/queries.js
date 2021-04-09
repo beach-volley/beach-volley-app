@@ -12,6 +12,7 @@ export const CURRENT_USER = gql`
           node {
             id
             matchId
+            nodeId
           }
         }
       }
@@ -19,6 +20,7 @@ export const CURRENT_USER = gql`
         edges {
           node {
             id
+            nodeId
           }
         }
       }
@@ -33,6 +35,7 @@ export const CURRENT_USER_MATCHES_JOINS = gql`
         edges {
           node {
             id
+            nodeId
             location
             description
             matchType
@@ -62,9 +65,11 @@ export const CURRENT_USER_MATCHES_JOINS = gql`
               edges {
                 node {
                   id
+                  nodeId
                   name
                   participant {
                     id
+                    nodeId
                     name
                   }
                 }
@@ -80,6 +85,7 @@ export const CURRENT_USER_MATCHES_JOINS = gql`
               location
               description
               id
+              nodeId
               matchType
               playerLimit {
                 end {
@@ -110,8 +116,10 @@ export const CURRENT_USER_MATCHES_JOINS = gql`
                     participant {
                       name
                       id
+                      nodeId
                     }
                     id
+                    nodeId
                   }
                 }
               }
@@ -125,7 +133,7 @@ export const CURRENT_USER_MATCHES_JOINS = gql`
 
 export const MATCHES_TOTAL_COUNT = gql`
   {
-    matches {
+    publicMatches {
       totalCount
     }
   }
@@ -133,7 +141,7 @@ export const MATCHES_TOTAL_COUNT = gql`
 
 export const MATCHES = gql`
   {
-    matches {
+    publicMatches {
       edges {
         node {
           id
@@ -174,9 +182,11 @@ export const PLAYERS_BY_MATCH_ID = gql`
         edges {
           node {
             id
+            nodeId
             name
             participant {
               id
+              nodeId
               name
             }
           }
@@ -188,10 +198,29 @@ export const PLAYERS_BY_MATCH_ID = gql`
 
 export const REFETCH_MATCHES = gql`
   {
-    matches {
+    publicMatches {
       edges {
         node {
           id
+          nodeId
+        }
+      }
+    }
+    currentUser {
+      matchesByHostId {
+        edges {
+          node {
+            nodeId
+          }
+        }
+      }
+      joinsByParticipantId {
+        edges {
+          node {
+            match {
+              nodeId
+            }
+          }
         }
       }
     }
@@ -231,6 +260,7 @@ export const MATCH_BY_ID = gql`
       host {
         name
         id
+        nodeId
       }
     }
   }
@@ -243,6 +273,7 @@ export const CREATE_MATCH = gql`
     createMatch(input: $input) {
       match {
         id
+        nodeId
       }
     }
   }
@@ -253,6 +284,7 @@ export const UPDATE_MATCH = gql`
     updateMatch(input: $input) {
       match {
         id
+        nodeId
       }
     }
   }
@@ -263,6 +295,7 @@ export const UPSERT_USER = gql`
     upsertUser(input: {}) {
       user {
         id
+        nodeId
       }
     }
   }
@@ -273,6 +306,7 @@ export const CANCEL_MATCH = gql`
     updateMatch(input: $input) {
       match {
         id
+        nodeId
       }
     }
   }
@@ -283,13 +317,16 @@ export const JOIN_MATCH = gql`
     join(input: $input) {
       match {
         id
+        nodeId
         joins {
           edges {
             node {
               name
               id
+              nodeId
               participant {
                 id
+                nodeId
                 name
               }
             }
@@ -306,13 +343,16 @@ export const JOIN_ANONYMOUSLY = gql`
       clientMutationId
       match {
         id
+        nodeId
         joins {
           edges {
             node {
               name
               id
+              nodeId
               participant {
                 id
+                nodeId
                 name
               }
             }
