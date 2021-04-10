@@ -41,5 +41,5 @@ const Container = styled.div`
 
 const Logo = styled.img`
   height: 3.5rem;
-  width: 100%;
+  max-width: 100%;
 `;

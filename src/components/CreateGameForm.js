@@ -37,8 +37,8 @@ import {
 const GameSchema = Yup.object({
   location: Yup.string()
     .min(2, "Täytyy olla vähintään 2 merkkiä pitkä")
-    .max(15, "Täytyy olla 15 merkkiä")
-    .matches(/^[aA-zZ\s]+$/, "Käytä vain kirjaimia! ")
+    .max(100, "Täytyy olla 100 merkkiä tai vähemmän!")
+    .matches(/^[aA-zZ0-9 _-öÖäÄåÅ]+$/, "Käytä vain kirjaimia tai numeroita! ")
     .required("Pakollinen kenttä"),
   date: Yup.date().required("Et voi valita mennyttä päivää"),
   startTime: Yup.string().required("Pakollinen kenttä"),
