@@ -24,7 +24,7 @@ export const Menu = ({ open }) => {
     <StyledMenu open={open}>
       {currentUser && <Link to="/create-game">Luo peli</Link>}
       {currentUser ? <SignOutButton /> : <Link to="/login">Kirjaudu</Link>}
-      {currentUser &&<ShowNotifications>Contact</ShowNotifications>}
+      {currentUser && <ShowNotifications>Contact</ShowNotifications>}
     </StyledMenu>
   );
 };
@@ -113,7 +113,6 @@ const StyledMenu = styled.nav`
 
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.desktopWidth}) {
-
     transform: ${({ open }) => (open ? "translateX(10%)" : "translateX(150%)")};
   }
 

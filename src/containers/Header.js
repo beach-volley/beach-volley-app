@@ -12,7 +12,6 @@ const Header = () => {
 
   return (
     <Container>
-
       <Link to="/home">
         <Logo src={AppLogo} alt="Logo" />
       </Link>
