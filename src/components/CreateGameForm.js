@@ -25,6 +25,8 @@ import moment from "moment";
 import { useSnackbar } from "notistack";
 import Slide from "@material-ui/core/Slide";
 
+import SendInviteField from "./SendInvite";
+
 import {
   TextInput,
   PickTime,
@@ -48,7 +50,10 @@ const GameSchema = Yup.object({
       "Eri aika",
       "Alotusaika täytyy olla ennen lopetus aikaa",
       function (value) {
-        return this.parent.startTime < value;
+        return (
+          moment(this.parent.startTime).format("HH:mm:00Z") <
+          moment(value).format("HH:mm:00Z")
+        );
       }
     )
     .test(
@@ -91,7 +96,9 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   const [cancelMatch] = useMutation(CANCEL_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
-  const [updateMatch] = useMutation(UPDATE_MATCH);
+  const [updateMatch] = useMutation(UPDATE_MATCH, {
+    refetchQueries: [{ query: REFETCH_MATCHES }],
+  });
   const [deleteJoin] = useMutation(DELETE_JOIN);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -228,16 +235,30 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                         inclusive: true,
                       },
                     },
-                    public: values.publicToggle === "true",
+                    public:
+                      values.publicToggle === "true" ||
+                      values.publicToggle === true,
                     description: values.description,
                     requiredSkillLevel: values.difficultyLevel,
                   },
                   id: window.location.pathname.slice(13),
                 },
               },
-            }).then(() => {
-              history.push("/home");
-            });
+            })
+              .then(() => {
+                history.push("/home");
+              })
+              .then(
+                enqueueSnackbar("Tallennettu", {
+                  variant: "success",
+                  autoHideDuration: 1000,
+                  anchorOrigin: {
+                    vertical: "top",
+                    horizontal: "center",
+                  },
+                  TransitionComponent: Slide,
+                })
+              );
           } else {
             createMatch({
               variables: {
@@ -268,7 +289,9 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                         inclusive: true,
                       },
                     },
-                    public: values.publicToggle === "true",
+                    public:
+                      values.publicToggle === "true" ||
+                      values.publicToggle === true,
                     description: values.description,
                     requiredSkillLevel: values.difficultyLevel,
                   },
@@ -337,9 +360,12 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 checked={props.values.publicToggle}
               />
 
+
+
               <TextAreaContainer>
                 {!singleGameView && editMode && (
                   <>
+                    <SendInviteField />
                     <label htmlFor="playernames">Kutsutut pelaajat</label>
                     <InvitedPlayers>
                       {props.values.playerList.map((player) => (

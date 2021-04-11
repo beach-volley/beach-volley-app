@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import SignOutButton from "../components/SignOutButton";
 import ShowNotifications from "../components/ShowNotifications";
 import useCurrentUser from "../hooks/useCurrentUser";
+import { AlertDialogButton } from "./FeedbackComponents";
 
 export const Burger = ({ open, setOpen }) => {
   return (
@@ -20,11 +21,31 @@ export const Burger = ({ open, setOpen }) => {
 
 export const Menu = ({ open }) => {
   const currentUser = useCurrentUser();
+  let history = useHistory();
+
+  const loginCreateGame = () => {
+    history.push("/login")
+  };
+
   return (
     <StyledMenu open={open}>
-      {currentUser && <Link to="/create-game">Luo peli</Link>}
-      {currentUser ? <SignOutButton /> : <Link to="/login">Kirjaudu</Link>}
-      {currentUser && <ShowNotifications>Contact</ShowNotifications>}
+      {currentUser ? (
+
+        <Link to="/create-game">
+          <MenuButton>Luo peli</MenuButton>
+        </Link>
+   
+      ) : (
+        <AlertDialogButton
+          ButtonStyle={MenuButton}
+          buttonText={"Luo peli"}
+          title={"Kirjaudu sisään luodaksesi pelin"}
+          content={""}
+          callBack={loginCreateGame}
+        />
+      )}
+      {currentUser ? <SignOutButton ButtonStyle={MenuButton}/> : <Link to="/login"><MenuButton>Kirjaudu</MenuButton></Link>}
+      {currentUser && <ShowNotifications ButtonStyle={MenuButton}/>}
     </StyledMenu>
   );
 };
@@ -115,9 +136,9 @@ const StyledMenu = styled.nav`
       props.theme.mediaQuery.desktopWidth}) {
     transform: ${({ open }) => (open ? "translateX(10%)" : "translateX(150%)")};
   }
+`;
 
-  a,
-  button {
+const MenuButton = styled.button`
     font-size: 2rem;
     text-transform: uppercase;
     padding: 2rem 0;
@@ -125,14 +146,9 @@ const StyledMenu = styled.nav`
     letter-spacing: 0.5rem;
     color: black;
     text-decoration: none;
-    transition: color 0.3s linear;
-  }
-
-  button {
     padding: 0;
     border: none;
     background: none;
     margin-bottom: 2rem;
     cursor: pointer;
-  }
 `;
