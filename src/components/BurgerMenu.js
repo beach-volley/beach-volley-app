@@ -22,9 +22,9 @@ export const Menu = ({ open }) => {
   const currentUser = useCurrentUser();
   return (
     <StyledMenu open={open}>
-      <Link to="/create-game">Luo peli</Link>
+      {currentUser && <Link to="/create-game">Luo peli</Link>}
       {currentUser ? <SignOutButton /> : <Link to="/login">Kirjaudu</Link>}
-      <ShowNotifications>Contact</ShowNotifications>
+      {currentUser &&<ShowNotifications>Contact</ShowNotifications>}
     </StyledMenu>
   );
 };
@@ -34,18 +34,19 @@ const BurgerContainer = styled.nav`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: fixed;
+  position: relative;
   background-color: transparent;
   z-index: 10;
-  top: 2.5rem;
-  right: 0.5rem;
+  margin-top: 4.5rem;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     background: lightgrey;
+    position: absolute;
+    margin-top: 0rem;
     width: 5rem;
     height: 7.5rem;
-    top: 2rem;
-    right: 3rem;
+    top: 1rem;
+    right: 1rem;
   }
 `;
 
@@ -107,7 +108,13 @@ const StyledMenu = styled.nav`
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     width: 40vw;
-    transform: ${({ open }) => (open ? "translateX(40%)" : "translateX(150%)")};
+    transform: ${({ open }) => (open ? "translateX(%)" : "translateX(150%)")};
+  }
+
+  @media only screen and (min-width: ${(props) =>
+      props.theme.mediaQuery.desktopWidth}) {
+
+    transform: ${({ open }) => (open ? "translateX(10%)" : "translateX(150%)")};
   }
 
   a,

@@ -12,6 +12,7 @@ const Header = () => {
 
   return (
     <Container>
+
       <Link to="/home">
         <Logo src={AppLogo} alt="Logo" />
       </Link>
@@ -27,19 +28,19 @@ export default Header;
 
 const Container = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   position: relative;
   grid-row: 1;
-  margin-left: ${(props) => props.theme.margins.small};
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    margin-right: ${(props) => props.theme.margins.large};
+    justify-content: flex-start;
     margin-left: ${(props) => props.theme.margins.large};
   }
 `;
 
 const Logo = styled.img`
   height: 3.5rem;
-  width: 100%;
+  max-width: 100%;
+  margin-top: 1rem;
 `;
