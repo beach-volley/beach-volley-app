@@ -30,18 +30,26 @@ export const Menu = ({ open }) => {
   return (
     <StyledMenu open={open}>
       {currentUser ? (
-        <Link to="/create-game">Luo peli</Link>
+        <Link to="/create-game">
+          <MenuButton>Luo peli</MenuButton>
+        </Link>
       ) : (
         <AlertDialogButton
-          ButtonStyle={Link}
+          ButtonStyle={MenuButton}
           buttonText={"Luo peli"}
           title={"Kirjaudu sisään luodaksesi pelin"}
           content={""}
           callBack={loginCreateGame}
         />
       )}
-      {currentUser ? <SignOutButton /> : <Link to="/login">Kirjaudu</Link>}
-      <ShowNotifications>Contact</ShowNotifications>
+      {currentUser ? (
+        <SignOutButton ButtonStyle={MenuButton} />
+      ) : (
+        <Link to="/login">
+          <MenuButton>Kirjaudu</MenuButton>
+        </Link>
+      )}
+      {currentUser && <ShowNotifications ButtonStyle={MenuButton} />}
     </StyledMenu>
   );
 };
@@ -51,18 +59,19 @@ const BurgerContainer = styled.nav`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: fixed;
+  position: relative;
   background-color: transparent;
   z-index: 10;
-  top: 2.5rem;
-  right: 0.5rem;
+  margin-top: 4.5rem;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     background: lightgrey;
+    position: absolute;
+    margin-top: 0rem;
     width: 5rem;
     height: 7.5rem;
-    top: 2rem;
-    right: 3rem;
+    top: 1rem;
+    right: 1rem;
   }
 `;
 
@@ -124,26 +133,26 @@ const StyledMenu = styled.nav`
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     width: 40vw;
-    transform: ${({ open }) => (open ? "translateX(40%)" : "translateX(150%)")};
+    transform: ${({ open }) => (open ? "translateX(%)" : "translateX(150%)")};
   }
 
-  a,
-  button {
-    font-size: 2rem;
-    text-transform: uppercase;
-    padding: 2rem 0;
-    font-weight: bold;
-    letter-spacing: 0.5rem;
-    color: black;
-    text-decoration: none;
-    transition: color 0.3s linear;
+  @media only screen and (min-width: ${(props) =>
+      props.theme.mediaQuery.desktopWidth}) {
+    transform: ${({ open }) => (open ? "translateX(10%)" : "translateX(150%)")};
   }
+`;
 
-  button {
-    padding: 0;
-    border: none;
-    background: none;
-    margin-bottom: 2rem;
-    cursor: pointer;
-  }
+const MenuButton = styled.button`
+  font-size: 2rem;
+  text-transform: uppercase;
+  padding: 2rem 0;
+  font-weight: bold;
+  letter-spacing: 0.5rem;
+  color: black;
+  text-decoration: none;
+  padding: 0;
+  border: none;
+  background: none;
+  margin-bottom: 2rem;
+  cursor: pointer;
 `;

@@ -33,7 +33,6 @@ const SingleGame = () => {
           playersByMatchId.data?.match?.joins.edges[index]?.node.participant;
       }
     }
-
     return players;
   };
 
