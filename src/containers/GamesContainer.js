@@ -42,7 +42,7 @@ const Games = () => {
   if (matches.loading) {
     return (
       <ContainerWrapper>
-        <p>Loading</p>
+        <p>Ladataan...</p>
       </ContainerWrapper>
     );
   }

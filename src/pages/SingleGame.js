@@ -40,7 +40,7 @@ const SingleGame = () => {
   if (matchById.loading || playersByMatchId.loading) {
     return (
       <PageWrapper>
-        <GameInfoContainer title="Loading" />
+        <GameInfoContainer title="Ladataan..." />
       </PageWrapper>
     );
   }
