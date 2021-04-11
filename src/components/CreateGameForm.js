@@ -360,8 +360,6 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 checked={props.values.publicToggle}
               />
 
-
-
               <TextAreaContainer>
                 {!singleGameView && editMode && (
                   <>

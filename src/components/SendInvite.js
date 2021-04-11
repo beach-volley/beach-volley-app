@@ -18,8 +18,15 @@ const AddPlayerForm = () => {
 
   return (
     <InviteContainer>
-          <input type="text" value={newName} onChange={onNameChange} placeholder="Pelaajan nimi"/>
-      <InviteButton type="button" onClick={handleContact}>Lähetä</InviteButton>
+      <input
+        type="text"
+        value={newName}
+        onChange={onNameChange}
+        placeholder="Pelaajan nimi"
+      />
+      <InviteButton type="button" onClick={handleContact}>
+        Lähetä
+      </InviteButton>
     </InviteContainer>
   );
 };
@@ -36,6 +43,5 @@ const InviteButton = styled(StyledButton)`
   height: 50%;
   margin-top: auto;
 `;
-
 
 export default AddPlayerForm;

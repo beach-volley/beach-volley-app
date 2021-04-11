@@ -24,17 +24,15 @@ export const Menu = ({ open }) => {
   let history = useHistory();
 
   const loginCreateGame = () => {
-    history.push("/login")
+    history.push("/login");
   };
 
   return (
     <StyledMenu open={open}>
       {currentUser ? (
-
         <Link to="/create-game">
           <MenuButton>Luo peli</MenuButton>
         </Link>
-   
       ) : (
         <AlertDialogButton
           ButtonStyle={MenuButton}
@@ -44,8 +42,14 @@ export const Menu = ({ open }) => {
           callBack={loginCreateGame}
         />
       )}
-      {currentUser ? <SignOutButton ButtonStyle={MenuButton}/> : <Link to="/login"><MenuButton>Kirjaudu</MenuButton></Link>}
-      {currentUser && <ShowNotifications ButtonStyle={MenuButton}/>}
+      {currentUser ? (
+        <SignOutButton ButtonStyle={MenuButton} />
+      ) : (
+        <Link to="/login">
+          <MenuButton>Kirjaudu</MenuButton>
+        </Link>
+      )}
+      {currentUser && <ShowNotifications ButtonStyle={MenuButton} />}
     </StyledMenu>
   );
 };
@@ -139,16 +143,16 @@ const StyledMenu = styled.nav`
 `;
 
 const MenuButton = styled.button`
-    font-size: 2rem;
-    text-transform: uppercase;
-    padding: 2rem 0;
-    font-weight: bold;
-    letter-spacing: 0.5rem;
-    color: black;
-    text-decoration: none;
-    padding: 0;
-    border: none;
-    background: none;
-    margin-bottom: 2rem;
-    cursor: pointer;
+  font-size: 2rem;
+  text-transform: uppercase;
+  padding: 2rem 0;
+  font-weight: bold;
+  letter-spacing: 0.5rem;
+  color: black;
+  text-decoration: none;
+  padding: 0;
+  border: none;
+  background: none;
+  margin-bottom: 2rem;
+  cursor: pointer;
 `;

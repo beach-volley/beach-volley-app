@@ -3,7 +3,7 @@ import { messaging } from "../utils/firebase";
 import { useMutation, useQuery } from "@apollo/client";
 import { ADD_FCM_TOKEN, CURRENT_USER } from "../queries";
 
-const ShowNotifications = ({ButtonStyle}) => {
+const ShowNotifications = ({ ButtonStyle }) => {
   const [permission, setPermission] = useState(
     Notification?.permission ?? "denied"
   );

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useCurrentUser from "../hooks/useCurrentUser";
 import { auth } from "../utils/firebase";
 
-const SignOutButton = ({ButtonStyle}) => {
+const SignOutButton = ({ ButtonStyle }) => {
   const currentUser = useCurrentUser();
   const onSignOut = useCallback(() => auth.signOut(), []);
 
@@ -17,6 +17,5 @@ const SignOutButton = ({ButtonStyle}) => {
     </Link>
   );
 };
-
 
 export default SignOutButton;
