@@ -25,6 +25,8 @@ import moment from "moment";
 import { useSnackbar } from "notistack";
 import Slide from "@material-ui/core/Slide";
 
+import SendInviteField from "./SendInvite";
+
 import {
   TextInput,
   PickTime,
@@ -359,16 +361,22 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
               />
 
               <TextAreaContainer>
-                <label htmlFor="playernames">Kutsutut pelaajat</label>
-                <InvitedPlayers>
-                  {props.values.playerList.map((player) => (
-                    <p key={uuidv4()}>{player.name}</p>
-                  ))}
-                </InvitedPlayers>
+                {!singleGameView && editMode && (
+                  <>
+                    <SendInviteField />
+                    <label htmlFor="playernames">Kutsutut pelaajat</label>
+                    <InvitedPlayers>
+                      {props.values.playerList.map((player) => (
+                        <p key={uuidv4()}>{player.name}</p>
+                      ))}
+                    </InvitedPlayers>
+                  </>
+                )}
 
                 <GameDescription
                   name="description"
                   placeholder="Kirjoita pelin tiedot tänne"
+                  readonly={singleGameView}
                 />
               </TextAreaContainer>
               {!singleGameView && !editMode && (
@@ -454,7 +462,6 @@ const InvitedPlayers = styled.div`
   background-color: white;
   overflow-y: scroll !important;
   pointer-events: all !important;
-  width: 100%;
   padding: 0;
   margin-left: auto;
 `;

@@ -57,7 +57,7 @@ const Games = () => {
           <p>Liitytyt pelit</p>
         </GameTab>
         <GameTab onClick={() => setGameFilter("created")}>
-          <p>Omat pelit</p>
+          <p>Luodut pelit</p>
         </GameTab>
       </GameTabRow>
       <ListContainer>

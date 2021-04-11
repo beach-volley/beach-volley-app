@@ -3,7 +3,7 @@ import { messaging } from "../utils/firebase";
 import { useMutation, useQuery } from "@apollo/client";
 import { ADD_FCM_TOKEN, CURRENT_USER } from "../queries";
 
-const ShowNotifications = () => {
+const ShowNotifications = ({ ButtonStyle }) => {
   const [permission, setPermission] = useState(
     Notification?.permission ?? "denied"
   );
@@ -35,9 +35,9 @@ const ShowNotifications = () => {
   }
 
   return (
-    <button onClick={askPermission}>
+    <ButtonStyle onClick={askPermission}>
       Pelikutsut {permission === "granted" ? "päällä" : "pois päältä"}
-    </button>
+    </ButtonStyle>
   );
 };
 
