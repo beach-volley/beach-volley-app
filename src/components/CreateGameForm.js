@@ -337,8 +337,6 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 checked={props.values.publicToggle}
               />
 
-            
-
               <TextAreaContainer>
                 {!singleGameView && editMode && (
                   <>
@@ -368,7 +366,6 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         )}
       </Formik>
       <>
-     
         {(singleGameView || editMode) &&
           !isJoined &&
           currentUser.data?.currentUser != null && (

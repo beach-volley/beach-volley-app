@@ -23,7 +23,12 @@ export const PickTime = ({ ...props }) => {
 export const PickDate = ({ ...props }) => {
   return (
     <InputRowMUI>
-      <Field component={DatePicker} {...props} format="dd-MM-yyyy" disablePast />
+      <Field
+        component={DatePicker}
+        {...props}
+        format="dd-MM-yyyy"
+        disablePast
+      />
     </InputRowMUI>
   );
 };
@@ -82,7 +87,12 @@ export const FormTextArea = ({ label, readonly, ...props }) => {
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
-      <textarea className="form-text-area" {...field} readOnly={readonly ? 'readOnly' : null} {...props} />
+      <textarea
+        className="form-text-area"
+        {...field}
+        readOnly={readonly ? "readOnly" : null}
+        {...props}
+      />
     </>
   );
 };
