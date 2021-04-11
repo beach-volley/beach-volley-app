@@ -360,6 +360,139 @@ COMMENT ON FUNCTION beachvolley_public.join_anonymously(match_id uuid, name text
 
 
 --
+-- Name: match; Type: TABLE; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TABLE beachvolley_public.match (
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now(),
+    location text,
+    "time" tstzrange,
+    player_limit int4range,
+    public boolean DEFAULT false NOT NULL,
+    match_type text DEFAULT 'mixed'::text NOT NULL,
+    required_skill_level text DEFAULT 'easy-hard'::text NOT NULL,
+    description text,
+    status text DEFAULT 'unconfirmed'::text NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    host_id uuid DEFAULT beachvolley_private.current_user_id() NOT NULL
+);
+
+
+--
+-- Name: TABLE match; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON TABLE beachvolley_public.match IS '@omit all
+A single beach volley match.';
+
+
+--
+-- Name: COLUMN match.created_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.created_at IS '@omit all,create,delete,many,read,update';
+
+
+--
+-- Name: COLUMN match.updated_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.updated_at IS '@omit all,create,delete,many,read,update';
+
+
+--
+-- Name: COLUMN match.location; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.location IS 'Location where the match is held.';
+
+
+--
+-- Name: COLUMN match."time"; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match."time" IS 'Start and end time of the match.';
+
+
+--
+-- Name: COLUMN match.player_limit; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.player_limit IS 'Minimun and maximun number of players in the match.';
+
+
+--
+-- Name: COLUMN match.public; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.public IS 'Is the match public or private. Default is private.';
+
+
+--
+-- Name: COLUMN match.match_type; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.match_type IS 'Is the match men only, women only, or mixed. Default is mixed.';
+
+
+--
+-- Name: COLUMN match.required_skill_level; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.required_skill_level IS 'Required player skill level for the match. Default is EASY_HARD.';
+
+
+--
+-- Name: COLUMN match.description; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.description IS 'Optional description of the match.';
+
+
+--
+-- Name: COLUMN match.status; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.status IS 'Status of the match. Default is UNCONFIRMED.';
+
+
+--
+-- Name: COLUMN match.id; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.id IS 'Unique id of the match.';
+
+
+--
+-- Name: COLUMN match.host_id; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.match.host_id IS '@omit create
+Host and creator of the match.';
+
+
+--
+-- Name: public_matches(); Type: FUNCTION; Schema: beachvolley_public; Owner: -
+--
+
+CREATE FUNCTION beachvolley_public.public_matches() RETURNS SETOF beachvolley_public.match
+    LANGUAGE sql STABLE
+    AS $$
+  select *
+  from beachvolley_public.match
+  where public = true and status = 'unconfirmed'
+$$;
+
+
+--
+-- Name: FUNCTION public_matches(); Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON FUNCTION beachvolley_public.public_matches() IS 'Reads and enables pagination through a set of public matches.';
+
+
+--
 -- Name: upsert_user(); Type: FUNCTION; Schema: beachvolley_public; Owner: -
 --
 
@@ -492,118 +625,6 @@ CREATE TABLE beachvolley_public.invitation_status (
 
 COMMENT ON TABLE beachvolley_public.invitation_status IS '@enum
 Invitation status (pending, accepted, rejected, or cancelled).';
-
-
---
--- Name: match; Type: TABLE; Schema: beachvolley_public; Owner: -
---
-
-CREATE TABLE beachvolley_public.match (
-    created_at timestamp without time zone DEFAULT now(),
-    updated_at timestamp without time zone DEFAULT now(),
-    location text,
-    "time" tstzrange,
-    player_limit int4range,
-    public boolean DEFAULT false NOT NULL,
-    match_type text DEFAULT 'mixed'::text NOT NULL,
-    required_skill_level text DEFAULT 'easy-hard'::text NOT NULL,
-    description text,
-    status text DEFAULT 'unconfirmed'::text NOT NULL,
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    host_id uuid DEFAULT beachvolley_private.current_user_id() NOT NULL
-);
-
-
---
--- Name: TABLE match; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON TABLE beachvolley_public.match IS 'A single beach volley match.';
-
-
---
--- Name: COLUMN match.created_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match.created_at IS '@omit all,create,delete,many,read,update';
-
-
---
--- Name: COLUMN match.updated_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match.updated_at IS '@omit all,create,delete,many,read,update';
-
-
---
--- Name: COLUMN match.location; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match.location IS 'Location where the match is held.';
-
-
---
--- Name: COLUMN match."time"; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match."time" IS 'Start and end time of the match.';
-
-
---
--- Name: COLUMN match.player_limit; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match.player_limit IS 'Minimun and maximun number of players in the match.';
-
-
---
--- Name: COLUMN match.public; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match.public IS 'Is the match public or private. Default is private.';
-
-
---
--- Name: COLUMN match.match_type; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match.match_type IS 'Is the match men only, women only, or mixed. Default is mixed.';
-
-
---
--- Name: COLUMN match.required_skill_level; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match.required_skill_level IS 'Required player skill level for the match. Default is EASY_HARD.';
-
-
---
--- Name: COLUMN match.description; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match.description IS 'Optional description of the match.';
-
-
---
--- Name: COLUMN match.status; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match.status IS 'Status of the match. Default is UNCONFIRMED.';
-
-
---
--- Name: COLUMN match.id; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match.id IS 'Unique id of the match.';
-
-
---
--- Name: COLUMN match.host_id; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.match.host_id IS '@omit create
-Host and creator of the match.';
 
 
 --
@@ -1240,53 +1261,6 @@ GRANT ALL ON FUNCTION beachvolley_public.join_anonymously(match_id uuid, name te
 
 
 --
--- Name: FUNCTION upsert_user(); Type: ACL; Schema: beachvolley_public; Owner: -
---
-
-REVOKE ALL ON FUNCTION beachvolley_public.upsert_user() FROM PUBLIC;
-GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_anonymous;
-GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_authenticated;
-
-
---
--- Name: TABLE invitation; Type: ACL; Schema: beachvolley_public; Owner: -
---
-
-GRANT SELECT ON TABLE beachvolley_public.invitation TO beachvolley_graphile_anonymous;
-GRANT SELECT ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
-
-
---
--- Name: COLUMN invitation.status; Type: ACL; Schema: beachvolley_public; Owner: -
---
-
-GRANT UPDATE(status) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_anonymous;
-GRANT UPDATE(status) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
-
-
---
--- Name: COLUMN invitation.match_id; Type: ACL; Schema: beachvolley_public; Owner: -
---
-
-GRANT INSERT(match_id) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
-
-
---
--- Name: COLUMN invitation.user_id; Type: ACL; Schema: beachvolley_public; Owner: -
---
-
-GRANT INSERT(user_id) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
-
-
---
--- Name: TABLE invitation_status; Type: ACL; Schema: beachvolley_public; Owner: -
---
-
-GRANT SELECT ON TABLE beachvolley_public.invitation_status TO beachvolley_graphile_anonymous;
-GRANT SELECT ON TABLE beachvolley_public.invitation_status TO beachvolley_graphile_authenticated;
-
-
---
 -- Name: TABLE match; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
@@ -1351,6 +1325,62 @@ GRANT UPDATE(status) ON TABLE beachvolley_public.match TO beachvolley_graphile_a
 
 
 --
+-- Name: FUNCTION public_matches(); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public.public_matches() FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public.public_matches() TO beachvolley_graphile_anonymous;
+GRANT ALL ON FUNCTION beachvolley_public.public_matches() TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: FUNCTION upsert_user(); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public.upsert_user() FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_anonymous;
+GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: TABLE invitation; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT SELECT ON TABLE beachvolley_public.invitation TO beachvolley_graphile_anonymous;
+GRANT SELECT ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: COLUMN invitation.status; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT UPDATE(status) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_anonymous;
+GRANT UPDATE(status) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: COLUMN invitation.match_id; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT INSERT(match_id) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: COLUMN invitation.user_id; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT INSERT(user_id) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: TABLE invitation_status; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT SELECT ON TABLE beachvolley_public.invitation_status TO beachvolley_graphile_anonymous;
+GRANT SELECT ON TABLE beachvolley_public.invitation_status TO beachvolley_graphile_authenticated;
+
+
+--
 -- Name: TABLE match_status; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
@@ -1379,6 +1409,23 @@ GRANT SELECT ON TABLE beachvolley_public.skill_level TO beachvolley_graphile_aut
 --
 
 ALTER DEFAULT PRIVILEGES FOR ROLE beachvolley_db_owner REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
+
+
+--
+-- Name: postgraphile_watch_ddl; Type: EVENT TRIGGER; Schema: -; Owner: -
+--
+
+CREATE EVENT TRIGGER postgraphile_watch_ddl ON ddl_command_end
+         WHEN TAG IN ('ALTER AGGREGATE', 'ALTER DOMAIN', 'ALTER EXTENSION', 'ALTER FOREIGN TABLE', 'ALTER FUNCTION', 'ALTER POLICY', 'ALTER SCHEMA', 'ALTER TABLE', 'ALTER TYPE', 'ALTER VIEW', 'COMMENT', 'CREATE AGGREGATE', 'CREATE DOMAIN', 'CREATE EXTENSION', 'CREATE FOREIGN TABLE', 'CREATE FUNCTION', 'CREATE INDEX', 'CREATE POLICY', 'CREATE RULE', 'CREATE SCHEMA', 'CREATE TABLE', 'CREATE TABLE AS', 'CREATE VIEW', 'DROP AGGREGATE', 'DROP DOMAIN', 'DROP EXTENSION', 'DROP FOREIGN TABLE', 'DROP FUNCTION', 'DROP INDEX', 'DROP OWNED', 'DROP POLICY', 'DROP RULE', 'DROP SCHEMA', 'DROP TABLE', 'DROP TYPE', 'DROP VIEW', 'GRANT', 'REVOKE', 'SELECT INTO')
+   EXECUTE FUNCTION postgraphile_watch.notify_watchers_ddl();
+
+
+--
+-- Name: postgraphile_watch_drop; Type: EVENT TRIGGER; Schema: -; Owner: -
+--
+
+CREATE EVENT TRIGGER postgraphile_watch_drop ON sql_drop
+   EXECUTE FUNCTION postgraphile_watch.notify_watchers_drop();
 
 
 --

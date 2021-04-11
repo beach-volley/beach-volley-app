@@ -178,6 +178,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Formik
+        enableReinitialize
         initialValues={{
           location: singleGameView || editMode ? matchData.location : "",
           date: singleGameView || editMode ? matchData.date : new Date(),
@@ -187,9 +188,11 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
           minPlayers: singleGameView || editMode ? matchData.minPlayers : 4,
           maxPlayers: singleGameView || editMode ? matchData.maxPlayers : 6,
           difficultyLevel:
-            singleGameView || editMode ? matchData.difficultyLevel : "",
+            singleGameView || editMode
+              ? matchData.difficultyLevel
+              : "EASY_HARD",
           publicToggle:
-            singleGameView || editMode ? matchData.publicToggle : "true",
+            singleGameView || editMode ? matchData.publicToggle : false,
           playerList: singleGameView || editMode ? matchData.playerList : [],
           description: singleGameView || editMode ? matchData.description : "",
         }}

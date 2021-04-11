@@ -70,7 +70,7 @@ const SingleGame = () => {
     endTime: matchById.data?.match?.time.end.value,
     minPlayers: minPlayers,
     maxPlayers: maxPlayers,
-    difficultyLevel: matchById.data?.match?.requiredSkillLevel,
+    difficultyLevel: matchById.data?.match?.requiredSkillLevel ?? "EASY_HARD",
     publicToggle: matchById.data?.match?.public,
     playerList: allPlayers(),
     description: matchById.data?.match?.description,

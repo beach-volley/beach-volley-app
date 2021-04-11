@@ -10,7 +10,7 @@ const ShowNotifications = () => {
   const [addFcmToken] = useMutation(ADD_FCM_TOKEN);
   const currentUser = useQuery(CURRENT_USER);
 
-  messaging.onMessage((payload) => {
+  messaging?.onMessage((payload) => {
     // todo: show notification somehow in the UI
     console.log("message received", payload);
   });
@@ -18,7 +18,7 @@ const ShowNotifications = () => {
   useEffect(() => {
     if (permission === "granted" && currentUser.data?.currentUser) {
       messaging
-        .getToken({ vapidKey: process.env.VAPID_KEY })
+        ?.getToken({ vapidKey: process.env.VAPID_KEY })
         .then((token) => addFcmToken({ variables: { token } }))
         .catch((err) => {
           console.log("Error", err);
@@ -30,7 +30,7 @@ const ShowNotifications = () => {
     setPermission(await Notification.requestPermission());
   }, [setPermission]);
 
-  if (permission === "denied") {
+  if (permission === "denied" || !messaging) {
     return null;
   }
 
