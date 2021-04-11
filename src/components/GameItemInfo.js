@@ -15,7 +15,7 @@ const ProjectItem = ({ location, time, players, status }) => {
       {formatted_time ? <p>{formatted_time}</p> : null}
       {players ? (
         <p>
-          Players: {asInclusive(players?.start.value, players?.start.inclusive)}{" "}
+          Pelaajat: {asInclusive(players?.start.value, players?.start.inclusive)}{" "}
           - {asInclusive(players?.end.value, players?.end.inclusive)}
         </p>
       ) : null}

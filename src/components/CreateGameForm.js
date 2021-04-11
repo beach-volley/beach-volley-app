@@ -337,17 +337,24 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 checked={props.values.publicToggle}
               />
 
+            
+
               <TextAreaContainer>
-                <label htmlFor="playernames">Kutsutut pelaajat</label>
-                <InvitedPlayers>
-                  {props.values.playerList.map((player) => (
-                    <p key={uuidv4()}>{player.name}</p>
-                  ))}
-                </InvitedPlayers>
+                {!singleGameView && editMode && (
+                  <>
+                    <label htmlFor="playernames">Kutsutut pelaajat</label>
+                    <InvitedPlayers>
+                      {props.values.playerList.map((player) => (
+                        <p key={uuidv4()}>{player.name}</p>
+                      ))}
+                    </InvitedPlayers>
+                  </>
+                )}
 
                 <GameDescription
                   name="description"
                   placeholder="Kirjoita pelin tiedot tänne"
+                  readonly={singleGameView}
                 />
               </TextAreaContainer>
               {!singleGameView && !editMode && (
@@ -361,6 +368,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         )}
       </Formik>
       <>
+     
         {(singleGameView || editMode) &&
           !isJoined &&
           currentUser.data?.currentUser != null && (
@@ -433,7 +441,6 @@ const InvitedPlayers = styled.div`
   background-color: white;
   overflow-y: scroll !important;
   pointer-events: all !important;
-  width: 100%;
   padding: 0;
   margin-left: auto;
 `;
