@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import SignOutButton from "../components/SignOutButton";
 import ShowNotifications from "../components/ShowNotifications";
 import useCurrentUser from "../hooks/useCurrentUser";
+import { AlertDialogButton } from "./FeedbackComponents";
 
 export const Burger = ({ open, setOpen }) => {
   return (
@@ -20,9 +21,25 @@ export const Burger = ({ open, setOpen }) => {
 
 export const Menu = ({ open }) => {
   const currentUser = useCurrentUser();
+  let history = useHistory();
+
+  const loginCreateGame = () => {
+    history.push("/login");
+  };
+
   return (
     <StyledMenu open={open}>
-      <Link to="/create-game">Luo peli</Link>
+      {currentUser ? (
+        <Link to="/create-game">Luo peli</Link>
+      ) : (
+        <AlertDialogButton
+          ButtonStyle={Link}
+          buttonText={"Luo peli"}
+          title={"Kirjaudu sisään luodaksesi pelin"}
+          content={""}
+          callBack={loginCreateGame}
+        />
+      )}
       {currentUser ? <SignOutButton /> : <Link to="/login">Kirjaudu</Link>}
       <ShowNotifications>Contact</ShowNotifications>
     </StyledMenu>
