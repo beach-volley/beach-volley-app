@@ -48,7 +48,10 @@ const GameSchema = Yup.object({
       "Eri aika",
       "Alotusaika täytyy olla ennen lopetus aikaa",
       function (value) {
-        return moment(this.parent.startTime).format("HH:mm:00Z") < moment(value).format("HH:mm:00Z");
+        return (
+          moment(this.parent.startTime).format("HH:mm:00Z") <
+          moment(value).format("HH:mm:00Z")
+        );
       }
     )
     .test(
@@ -230,27 +233,30 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                         inclusive: true,
                       },
                     },
-                    public: values.publicToggle === "true" || values.publicToggle === true,
+                    public:
+                      values.publicToggle === "true" ||
+                      values.publicToggle === true,
                     description: values.description,
                     requiredSkillLevel: values.difficultyLevel,
                   },
                   id: window.location.pathname.slice(13),
                 },
               },
-            }).then(() => {
-              history.push("/home");
             })
-            .then(
-              enqueueSnackbar("Tallennettu", {
-                variant: "success",
-                autoHideDuration: 1000,
-                anchorOrigin: {
-                  vertical: "top",
-                  horizontal: "center",
-                },
-                TransitionComponent: Slide,
+              .then(() => {
+                history.push("/home");
               })
-            );
+              .then(
+                enqueueSnackbar("Tallennettu", {
+                  variant: "success",
+                  autoHideDuration: 1000,
+                  anchorOrigin: {
+                    vertical: "top",
+                    horizontal: "center",
+                  },
+                  TransitionComponent: Slide,
+                })
+              );
           } else {
             createMatch({
               variables: {
@@ -281,7 +287,9 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                         inclusive: true,
                       },
                     },
-                    public: values.publicToggle === "true" || values.publicToggle === true,
+                    public:
+                      values.publicToggle === "true" ||
+                      values.publicToggle === true,
                     description: values.description,
                     requiredSkillLevel: values.difficultyLevel,
                   },

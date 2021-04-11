@@ -25,17 +25,21 @@ export const Menu = ({ open }) => {
 
   const loginCreateGame = () => {
     history.push("/login");
-  }
+  };
 
   return (
     <StyledMenu open={open}>
-      {currentUser ? <Link to="/create-game">Luo peli</Link> : <AlertDialogButton
-        ButtonStyle={Link}
-        buttonText={"Luo peli"}
-        title={"Kirjaudu sisään luodaksesi pelin"}
-        content={""}
-        callBack={loginCreateGame}
-      />}
+      {currentUser ? (
+        <Link to="/create-game">Luo peli</Link>
+      ) : (
+        <AlertDialogButton
+          ButtonStyle={Link}
+          buttonText={"Luo peli"}
+          title={"Kirjaudu sisään luodaksesi pelin"}
+          content={""}
+          callBack={loginCreateGame}
+        />
+      )}
       {currentUser ? <SignOutButton /> : <Link to="/login">Kirjaudu</Link>}
       <ShowNotifications>Contact</ShowNotifications>
     </StyledMenu>
