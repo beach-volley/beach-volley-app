@@ -313,11 +313,15 @@ CREATE FUNCTION beachvolley_public."join"(match_id uuid) RETURNS beachvolley_pub
 declare
   new_join beachvolley_public.join;
 begin
-  insert into beachvolley_public.join (match_id, participant_id)
-    values (match_id, beachvolley_private.current_user_id())
-    returning * into new_join;
+  if exists (select 1 from beachvolley_public.match where id = match_id and status = 'unconfirmed') then
+    insert into beachvolley_public.join (match_id, participant_id)
+      values (match_id, beachvolley_private.current_user_id())
+      returning * into new_join;
 
-  return new_join;
+    return new_join;
+  end if;
+
+  return null;
 end;
 $$;
 
@@ -339,7 +343,7 @@ CREATE FUNCTION beachvolley_public.join_anonymously(match_id uuid, name text) RE
 declare
   new_join beachvolley_public.join;
 begin
-  if exists (select 1 from beachvolley_public.match where id = match_id and public = false) then
+  if exists (select 1 from beachvolley_public.match where id = match_id and public = false and status = 'unconfirmed') then
     insert into beachvolley_public.join (match_id, name)
       values (match_id, name)
       returning * into new_join;
