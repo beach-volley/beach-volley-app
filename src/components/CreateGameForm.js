@@ -120,10 +120,10 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     }
   }
 
-  const joinGame = () => {
+  const joinGame = async () => {
     if (currentUser.data?.currentUser != null) {
       console.log("Joined as logged in user");
-      joinMatch({
+      await joinMatch({
         variables: {
           input: {
             matchId: window.location.pathname.slice(13),
@@ -132,7 +132,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
       });
     } else {
       console.log("Joined as anonymous user");
-      joinAnonymously({
+      await joinAnonymously({
         variables: {
           input: {
             matchId: window.location.pathname.slice(13),
@@ -144,7 +144,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     window.location.reload(); // THIS NEEDS TO BE REPLACED WITH REFETCH OR COMPONENT RELAOD
   };
 
-  const leaveGame = () => {
+  const leaveGame = async () => {
     for (
       let index = 0;
       index < currentUser.data.currentUser.joinsByParticipantId.edges.length;
@@ -154,7 +154,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         currentUser.data.currentUser.joinsByParticipantId.edges[index].node
           .matchId === window.location.pathname.slice(13)
       ) {
-        deleteJoin({
+        await deleteJoin({
           variables: {
             input: {
               id:
@@ -168,8 +168,8 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     }
   };
 
-  const cancelMatchById = () => {
-    cancelMatch({
+  const cancelMatchById = async () => {
+    await cancelMatch({
       variables: {
         input: {
           id: window.location.pathname.slice(13),
