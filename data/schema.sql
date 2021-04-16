@@ -80,10 +80,11 @@ CREATE FUNCTION beachvolley_private.notify_host_about_join() RETURNS trigger
     AS $$
 begin
   perform graphile_worker.add_job(
-    'send-notification-to-joined-players',
+    'send-push-notification-to-user',
     json_build_object(
       'tokens', fcm_tokens,
-      'name', coalesce(new.name, participant.name),
+      'title', concat('Pelaaja ', coalesce(new.name, participant.name), ' liittyi mukaan peliisi.'),
+      'message', 'Katso pelin tietoja painamalla tätä.',
       'link', concat('/single-game/', match.id)
     )
   )
@@ -91,6 +92,60 @@ begin
   left join beachvolley_private.user host on host.user_id = match.host_id
   left join beachvolley_public.user participant on participant.id = new.participant_id
   where match.id = new.match_id;
+
+  return null;
+end;
+$$;
+
+
+--
+-- Name: notify_participants_when_match_is_cancelled(); Type: FUNCTION; Schema: beachvolley_private; Owner: -
+--
+
+CREATE FUNCTION beachvolley_private.notify_participants_when_match_is_cancelled() RETURNS trigger
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+begin
+  perform graphile_worker.add_job(
+    'send-push-notification-to-user',
+    json_build_object(
+      'tokens', fcm_tokens,
+      'title', 'Peli peruttu',
+      'message', 'Katso pelin tietoja painamalla tätä.',
+      'link', concat('/single-game/', new.id)
+    )
+  )
+  from beachvolley_public.join
+  join beachvolley_public.user participant on "join".participant_id = participant.id
+  join beachvolley_private.user _participant on participant.id = _participant.user_id
+  where match_id = new.id;
+
+  return null;
+end;
+$$;
+
+
+--
+-- Name: notify_participants_when_match_is_confirmed(); Type: FUNCTION; Schema: beachvolley_private; Owner: -
+--
+
+CREATE FUNCTION beachvolley_private.notify_participants_when_match_is_confirmed() RETURNS trigger
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+begin
+  perform graphile_worker.add_job(
+    'send-push-notification-to-user',
+    json_build_object(
+      'tokens', fcm_tokens,
+      'title', 'Peli vahvistettu',
+      'message', 'Katso pelin tietoja painamalla tätä.',
+      'link', concat('/single-game/', new.id)
+    )
+  )
+  from beachvolley_public.join
+  join beachvolley_public.user participant on "join".participant_id = participant.id
+  join beachvolley_private.user _participant on participant.id = _participant.user_id
+  where match_id = new.id;
 
   return null;
 end;
@@ -106,10 +161,11 @@ CREATE FUNCTION beachvolley_private.send_invitation() RETURNS trigger
     AS $$
 begin
   perform graphile_worker.add_job(
-    'send-invitation-to-user',
+    'send-push-notification-to-user',
     json_build_object(
       'tokens', fcm_tokens,
-      'name', host.name,
+      'title', concat(host.name, ' kutsui sinut mukaan pelaamaan.'),
+      'message', 'Tarkastele kutsua napsauttamalla.',
       'link', concat('/invitations/', new.id)
     )
   )
@@ -904,6 +960,20 @@ CREATE TRIGGER notify_host_about_join AFTER INSERT ON beachvolley_public."join" 
 
 
 --
+-- Name: match notify_participants_when_match_is_cancelled; Type: TRIGGER; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TRIGGER notify_participants_when_match_is_cancelled AFTER UPDATE OF status ON beachvolley_public.match FOR EACH ROW WHEN (((new.status = 'cancelled'::text) AND (old.status <> 'cancelled'::text))) EXECUTE FUNCTION beachvolley_private.notify_participants_when_match_is_cancelled();
+
+
+--
+-- Name: match notify_participants_when_match_is_confirmed; Type: TRIGGER; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TRIGGER notify_participants_when_match_is_confirmed AFTER UPDATE OF status ON beachvolley_public.match FOR EACH ROW WHEN (((new.status = 'confirmed'::text) AND (old.status <> 'confirmed'::text))) EXECUTE FUNCTION beachvolley_private.notify_participants_when_match_is_confirmed();
+
+
+--
 -- Name: invitation send_invitation; Type: TRIGGER; Schema: beachvolley_public; Owner: -
 --
 
@@ -1206,6 +1276,20 @@ GRANT ALL ON FUNCTION beachvolley_private.current_user_id() TO beachvolley_graph
 --
 
 REVOKE ALL ON FUNCTION beachvolley_private.notify_host_about_join() FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION notify_participants_when_match_is_cancelled(); Type: ACL; Schema: beachvolley_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_private.notify_participants_when_match_is_cancelled() FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION notify_participants_when_match_is_confirmed(); Type: ACL; Schema: beachvolley_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_private.notify_participants_when_match_is_confirmed() FROM PUBLIC;
 
 
 --
