@@ -80,10 +80,11 @@ CREATE FUNCTION beachvolley_private.notify_host_about_join() RETURNS trigger
     AS $$
 begin
   perform graphile_worker.add_job(
-    'send-notification-to-joined-players',
+    'send-push-notification-to-user',
     json_build_object(
       'tokens', fcm_tokens,
-      'name', coalesce(new.name, participant.name),
+      'title', concat('Pelaaja ', coalesce(new.name, participant.name), ' liittyi mukaan peliisi.'),
+      'message', 'Katso pelin tietoja painamalla tätä.',
       'link', concat('/single-game/', match.id)
     )
   )
@@ -91,6 +92,60 @@ begin
   left join beachvolley_private.user host on host.user_id = match.host_id
   left join beachvolley_public.user participant on participant.id = new.participant_id
   where match.id = new.match_id;
+
+  return null;
+end;
+$$;
+
+
+--
+-- Name: notify_participants_when_match_is_cancelled(); Type: FUNCTION; Schema: beachvolley_private; Owner: -
+--
+
+CREATE FUNCTION beachvolley_private.notify_participants_when_match_is_cancelled() RETURNS trigger
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+begin
+  perform graphile_worker.add_job(
+    'send-push-notification-to-user',
+    json_build_object(
+      'tokens', fcm_tokens,
+      'title', 'Peli peruttu',
+      'message', 'Katso pelin tietoja painamalla tätä.',
+      'link', concat('/single-game/', new.id)
+    )
+  )
+  from beachvolley_public.join
+  join beachvolley_public.user participant on "join".participant_id = participant.id
+  join beachvolley_private.user _participant on participant.id = _participant.user_id
+  where match_id = new.id;
+
+  return null;
+end;
+$$;
+
+
+--
+-- Name: notify_participants_when_match_is_confirmed(); Type: FUNCTION; Schema: beachvolley_private; Owner: -
+--
+
+CREATE FUNCTION beachvolley_private.notify_participants_when_match_is_confirmed() RETURNS trigger
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+begin
+  perform graphile_worker.add_job(
+    'send-push-notification-to-user',
+    json_build_object(
+      'tokens', fcm_tokens,
+      'title', 'Peli vahvistettu',
+      'message', 'Katso pelin tietoja painamalla tätä.',
+      'link', concat('/single-game/', new.id)
+    )
+  )
+  from beachvolley_public.join
+  join beachvolley_public.user participant on "join".participant_id = participant.id
+  join beachvolley_private.user _participant on participant.id = _participant.user_id
+  where match_id = new.id;
 
   return null;
 end;
@@ -106,10 +161,11 @@ CREATE FUNCTION beachvolley_private.send_invitation() RETURNS trigger
     AS $$
 begin
   perform graphile_worker.add_job(
-    'send-invitation-to-user',
+    'send-push-notification-to-user',
     json_build_object(
       'tokens', fcm_tokens,
-      'name', host.name,
+      'title', concat(host.name, ' kutsui sinut mukaan pelaamaan.'),
+      'message', 'Tarkastele kutsua napsauttamalla.',
       'link', concat('/invitations/', new.id)
     )
   )
@@ -313,7 +369,13 @@ CREATE FUNCTION beachvolley_public."join"(match_id uuid) RETURNS beachvolley_pub
 declare
   new_join beachvolley_public.join;
 begin
-  if exists (select 1 from beachvolley_public.match where id = match_id and status = 'unconfirmed') then
+  if exists (
+    select 1
+    from beachvolley_public.match
+    where id = match_id
+      and status = 'unconfirmed'
+      and not beachvolley_public.match_is_full(match)
+  ) then
     insert into beachvolley_public.join (match_id, participant_id)
       values (match_id, beachvolley_private.current_user_id())
       returning * into new_join;
@@ -343,7 +405,14 @@ CREATE FUNCTION beachvolley_public.join_anonymously(match_id uuid, name text) RE
 declare
   new_join beachvolley_public.join;
 begin
-  if exists (select 1 from beachvolley_public.match where id = match_id and public = false and status = 'unconfirmed') then
+  if exists (
+    select 1
+    from beachvolley_public.match
+    where id = match_id
+      and public = false
+      and status = 'unconfirmed'
+      and not beachvolley_public.match_is_full(match)
+  ) then
     insert into beachvolley_public.join (match_id, name)
       values (match_id, name)
       returning * into new_join;
@@ -477,6 +546,26 @@ Host and creator of the match.';
 
 
 --
+-- Name: match_is_full(beachvolley_public.match); Type: FUNCTION; Schema: beachvolley_public; Owner: -
+--
+
+CREATE FUNCTION beachvolley_public.match_is_full(match beachvolley_public.match) RETURNS boolean
+    LANGUAGE sql STABLE
+    AS $$
+  select count(*) >= upper(match.player_limit) - 1
+  from beachvolley_public.join
+  where match_id = match.id
+$$;
+
+
+--
+-- Name: FUNCTION match_is_full(match beachvolley_public.match); Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON FUNCTION beachvolley_public.match_is_full(match beachvolley_public.match) IS 'Has this match already reached the maximum number of players.';
+
+
+--
 -- Name: public_matches(); Type: FUNCTION; Schema: beachvolley_public; Owner: -
 --
 
@@ -533,6 +622,24 @@ $$;
 --
 
 COMMENT ON FUNCTION beachvolley_public.upsert_user() IS 'Create user or update it''s details based on JWT.';
+
+
+--
+-- Name: user_is_current_user(beachvolley_public."user"); Type: FUNCTION; Schema: beachvolley_public; Owner: -
+--
+
+CREATE FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") RETURNS boolean
+    LANGUAGE sql STABLE
+    AS $$
+  SELECT u.id = beachvolley_private.current_user_id()
+$$;
+
+
+--
+-- Name: FUNCTION user_is_current_user(u beachvolley_public."user"); Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") IS 'Is this user current user.';
 
 
 --
@@ -886,6 +993,20 @@ CREATE TRIGGER notify_host_about_join AFTER INSERT ON beachvolley_public."join" 
 
 
 --
+-- Name: match notify_participants_when_match_is_cancelled; Type: TRIGGER; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TRIGGER notify_participants_when_match_is_cancelled AFTER UPDATE OF status ON beachvolley_public.match FOR EACH ROW WHEN (((new.status = 'cancelled'::text) AND (old.status <> 'cancelled'::text))) EXECUTE FUNCTION beachvolley_private.notify_participants_when_match_is_cancelled();
+
+
+--
+-- Name: match notify_participants_when_match_is_confirmed; Type: TRIGGER; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TRIGGER notify_participants_when_match_is_confirmed AFTER UPDATE OF status ON beachvolley_public.match FOR EACH ROW WHEN (((new.status = 'confirmed'::text) AND (old.status <> 'confirmed'::text))) EXECUTE FUNCTION beachvolley_private.notify_participants_when_match_is_confirmed();
+
+
+--
 -- Name: invitation send_invitation; Type: TRIGGER; Schema: beachvolley_public; Owner: -
 --
 
@@ -987,12 +1108,10 @@ CREATE POLICY anyone_can_select_invitation_statuses ON beachvolley_public.invita
 
 
 --
--- Name: join anyone_can_select_joins_of_public_not_cancelled_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+-- Name: join anyone_can_select_joins; Type: POLICY; Schema: beachvolley_public; Owner: -
 --
 
-CREATE POLICY anyone_can_select_joins_of_public_not_cancelled_matches ON beachvolley_public."join" FOR SELECT USING ((EXISTS ( SELECT 1
-   FROM beachvolley_public.match
-  WHERE ((match.id = "join".match_id) AND (match.public = true) AND (match.status <> 'cancelled'::text)))));
+CREATE POLICY anyone_can_select_joins ON beachvolley_public."join" FOR SELECT USING (true);
 
 
 --
@@ -1010,10 +1129,10 @@ CREATE POLICY anyone_can_select_match_types ON beachvolley_public.match_type FOR
 
 
 --
--- Name: match anyone_can_select_public_not_cancelled_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+-- Name: match anyone_can_select_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
 --
 
-CREATE POLICY anyone_can_select_public_not_cancelled_matches ON beachvolley_public.match FOR SELECT USING (((public = true) AND (status <> 'cancelled'::text)));
+CREATE POLICY anyone_can_select_matches ON beachvolley_public.match FOR SELECT USING (true);
 
 
 --
@@ -1062,22 +1181,6 @@ CREATE POLICY host_can_delete_join_from_their_unconfirmed_matches ON beachvolley
 CREATE POLICY host_can_select_invitations_of_their_matches ON beachvolley_public.invitation FOR SELECT TO beachvolley_graphile_authenticated USING ((EXISTS ( SELECT 1
    FROM beachvolley_public.match
   WHERE ((match.id = invitation.match_id) AND (match.host_id = beachvolley_private.current_user_id())))));
-
-
---
--- Name: join host_can_select_joins_of_their_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
---
-
-CREATE POLICY host_can_select_joins_of_their_matches ON beachvolley_public."join" FOR SELECT TO beachvolley_graphile_authenticated USING ((EXISTS ( SELECT 1
-   FROM beachvolley_public.match
-  WHERE ((match.id = "join".match_id) AND (match.host_id = beachvolley_private.current_user_id())))));
-
-
---
--- Name: match host_can_select_their_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
---
-
-CREATE POLICY host_can_select_their_matches ON beachvolley_public.match FOR SELECT TO beachvolley_graphile_authenticated USING ((host_id = beachvolley_private.current_user_id()));
 
 
 --
@@ -1209,6 +1312,20 @@ REVOKE ALL ON FUNCTION beachvolley_private.notify_host_about_join() FROM PUBLIC;
 
 
 --
+-- Name: FUNCTION notify_participants_when_match_is_cancelled(); Type: ACL; Schema: beachvolley_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_private.notify_participants_when_match_is_cancelled() FROM PUBLIC;
+
+
+--
+-- Name: FUNCTION notify_participants_when_match_is_confirmed(); Type: ACL; Schema: beachvolley_private; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_private.notify_participants_when_match_is_confirmed() FROM PUBLIC;
+
+
+--
 -- Name: FUNCTION send_invitation(); Type: ACL; Schema: beachvolley_private; Owner: -
 --
 
@@ -1329,6 +1446,15 @@ GRANT UPDATE(status) ON TABLE beachvolley_public.match TO beachvolley_graphile_a
 
 
 --
+-- Name: FUNCTION match_is_full(match beachvolley_public.match); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public.match_is_full(match beachvolley_public.match) FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public.match_is_full(match beachvolley_public.match) TO beachvolley_graphile_anonymous;
+GRANT ALL ON FUNCTION beachvolley_public.match_is_full(match beachvolley_public.match) TO beachvolley_graphile_authenticated;
+
+
+--
 -- Name: FUNCTION public_matches(); Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
@@ -1344,6 +1470,15 @@ GRANT ALL ON FUNCTION beachvolley_public.public_matches() TO beachvolley_graphil
 REVOKE ALL ON FUNCTION beachvolley_public.upsert_user() FROM PUBLIC;
 GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_anonymous;
 GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: FUNCTION user_is_current_user(u beachvolley_public."user"); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") TO beachvolley_graphile_anonymous;
+GRANT ALL ON FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") TO beachvolley_graphile_authenticated;
 
 
 --

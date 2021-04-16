@@ -285,6 +285,9 @@ type Match implements Node {
     """
     condition: JoinCondition
   ): JoinsConnection!
+
+  """Has this match already reached the maximum number of players."""
+  isFull: Boolean
 }
 
 """A range of `Datetime`."""
@@ -462,6 +465,9 @@ type User implements Node {
     """
     condition: JoinCondition
   ): JoinsConnection!
+
+  """Is this user current user."""
+  isCurrentUser: Boolean
 }
 
 """A connection to a list of `Match` values."""
