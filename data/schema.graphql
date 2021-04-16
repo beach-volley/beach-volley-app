@@ -285,6 +285,9 @@ type Match implements Node {
     """
     condition: JoinCondition
   ): JoinsConnection!
+
+  """Has this match already reached the maximum number of players."""
+  isFull: Boolean
 }
 
 """A range of `Datetime`."""

@@ -369,7 +369,13 @@ CREATE FUNCTION beachvolley_public."join"(match_id uuid) RETURNS beachvolley_pub
 declare
   new_join beachvolley_public.join;
 begin
-  if exists (select 1 from beachvolley_public.match where id = match_id and status = 'unconfirmed') then
+  if exists (
+    select 1
+    from beachvolley_public.match
+    where id = match_id
+      and status = 'unconfirmed'
+      and not beachvolley_public.match_is_full(match)
+  ) then
     insert into beachvolley_public.join (match_id, participant_id)
       values (match_id, beachvolley_private.current_user_id())
       returning * into new_join;
@@ -399,7 +405,14 @@ CREATE FUNCTION beachvolley_public.join_anonymously(match_id uuid, name text) RE
 declare
   new_join beachvolley_public.join;
 begin
-  if exists (select 1 from beachvolley_public.match where id = match_id and public = false and status = 'unconfirmed') then
+  if exists (
+    select 1
+    from beachvolley_public.match
+    where id = match_id
+      and public = false
+      and status = 'unconfirmed'
+      and not beachvolley_public.match_is_full(match)
+  ) then
     insert into beachvolley_public.join (match_id, name)
       values (match_id, name)
       returning * into new_join;
@@ -530,6 +543,26 @@ COMMENT ON COLUMN beachvolley_public.match.id IS 'Unique id of the match.';
 
 COMMENT ON COLUMN beachvolley_public.match.host_id IS '@omit create
 Host and creator of the match.';
+
+
+--
+-- Name: match_is_full(beachvolley_public.match); Type: FUNCTION; Schema: beachvolley_public; Owner: -
+--
+
+CREATE FUNCTION beachvolley_public.match_is_full(match beachvolley_public.match) RETURNS boolean
+    LANGUAGE sql STABLE
+    AS $$
+  select count(*) >= upper(match.player_limit) - 1
+  from beachvolley_public.join
+  where match_id = match.id
+$$;
+
+
+--
+-- Name: FUNCTION match_is_full(match beachvolley_public.match); Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON FUNCTION beachvolley_public.match_is_full(match beachvolley_public.match) IS 'Has this match already reached the maximum number of players.';
 
 
 --
@@ -1410,6 +1443,15 @@ GRANT INSERT(description),UPDATE(description) ON TABLE beachvolley_public.match 
 --
 
 GRANT UPDATE(status) ON TABLE beachvolley_public.match TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: FUNCTION match_is_full(match beachvolley_public.match); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public.match_is_full(match beachvolley_public.match) FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public.match_is_full(match beachvolley_public.match) TO beachvolley_graphile_anonymous;
+GRANT ALL ON FUNCTION beachvolley_public.match_is_full(match beachvolley_public.match) TO beachvolley_graphile_authenticated;
 
 
 --
