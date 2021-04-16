@@ -462,6 +462,9 @@ type User implements Node {
     """
     condition: JoinCondition
   ): JoinsConnection!
+
+  """Is this user current user."""
+  isCurrentUser: Boolean
 }
 
 """A connection to a list of `Match` values."""

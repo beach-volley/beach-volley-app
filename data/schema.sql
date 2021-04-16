@@ -536,6 +536,24 @@ COMMENT ON FUNCTION beachvolley_public.upsert_user() IS 'Create user or update i
 
 
 --
+-- Name: user_is_current_user(beachvolley_public."user"); Type: FUNCTION; Schema: beachvolley_public; Owner: -
+--
+
+CREATE FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") RETURNS boolean
+    LANGUAGE sql STABLE
+    AS $$
+  SELECT u.id = beachvolley_private.current_user_id()
+$$;
+
+
+--
+-- Name: FUNCTION user_is_current_user(u beachvolley_public."user"); Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") IS 'Is this user current user.';
+
+
+--
 -- Name: user; Type: TABLE; Schema: beachvolley_private; Owner: -
 --
 
@@ -987,12 +1005,10 @@ CREATE POLICY anyone_can_select_invitation_statuses ON beachvolley_public.invita
 
 
 --
--- Name: join anyone_can_select_joins_of_public_not_cancelled_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+-- Name: join anyone_can_select_joins; Type: POLICY; Schema: beachvolley_public; Owner: -
 --
 
-CREATE POLICY anyone_can_select_joins_of_public_not_cancelled_matches ON beachvolley_public."join" FOR SELECT USING ((EXISTS ( SELECT 1
-   FROM beachvolley_public.match
-  WHERE ((match.id = "join".match_id) AND (match.public = true) AND (match.status <> 'cancelled'::text)))));
+CREATE POLICY anyone_can_select_joins ON beachvolley_public."join" FOR SELECT USING (true);
 
 
 --
@@ -1010,10 +1026,10 @@ CREATE POLICY anyone_can_select_match_types ON beachvolley_public.match_type FOR
 
 
 --
--- Name: match anyone_can_select_public_not_cancelled_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
+-- Name: match anyone_can_select_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
 --
 
-CREATE POLICY anyone_can_select_public_not_cancelled_matches ON beachvolley_public.match FOR SELECT USING (((public = true) AND (status <> 'cancelled'::text)));
+CREATE POLICY anyone_can_select_matches ON beachvolley_public.match FOR SELECT USING (true);
 
 
 --
@@ -1062,22 +1078,6 @@ CREATE POLICY host_can_delete_join_from_their_unconfirmed_matches ON beachvolley
 CREATE POLICY host_can_select_invitations_of_their_matches ON beachvolley_public.invitation FOR SELECT TO beachvolley_graphile_authenticated USING ((EXISTS ( SELECT 1
    FROM beachvolley_public.match
   WHERE ((match.id = invitation.match_id) AND (match.host_id = beachvolley_private.current_user_id())))));
-
-
---
--- Name: join host_can_select_joins_of_their_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
---
-
-CREATE POLICY host_can_select_joins_of_their_matches ON beachvolley_public."join" FOR SELECT TO beachvolley_graphile_authenticated USING ((EXISTS ( SELECT 1
-   FROM beachvolley_public.match
-  WHERE ((match.id = "join".match_id) AND (match.host_id = beachvolley_private.current_user_id())))));
-
-
---
--- Name: match host_can_select_their_matches; Type: POLICY; Schema: beachvolley_public; Owner: -
---
-
-CREATE POLICY host_can_select_their_matches ON beachvolley_public.match FOR SELECT TO beachvolley_graphile_authenticated USING ((host_id = beachvolley_private.current_user_id()));
 
 
 --
@@ -1344,6 +1344,15 @@ GRANT ALL ON FUNCTION beachvolley_public.public_matches() TO beachvolley_graphil
 REVOKE ALL ON FUNCTION beachvolley_public.upsert_user() FROM PUBLIC;
 GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_anonymous;
 GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: FUNCTION user_is_current_user(u beachvolley_public."user"); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") TO beachvolley_graphile_anonymous;
+GRANT ALL ON FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") TO beachvolley_graphile_authenticated;
 
 
 --
