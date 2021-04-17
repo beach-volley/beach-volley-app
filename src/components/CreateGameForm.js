@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import { StyledButton } from "./StyledButton";
+import { StyledButton } from "./ComponentStyles";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";

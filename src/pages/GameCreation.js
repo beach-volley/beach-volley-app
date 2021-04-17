@@ -1,7 +1,7 @@
-import styled from "styled-components";
 import FormContainer from "../containers/CenterContainer";
 import Header from "../containers/Header";
 import CreateGameForm from "../components/CreateGameForm";
+import {PageWrapper} from "../components/ComponentStyles"
 
 const GameCreation = () => {
   return (
@@ -13,12 +13,5 @@ const GameCreation = () => {
     </PageWrapper>
   );
 };
-
-const PageWrapper = styled.div`
-  display: grid;
-  min-height: 100vh;
-  grid-template-rows: 8vh auto;
-  ${(props) => props.theme.backGroundImage()}
-`;
 
 export default GameCreation;

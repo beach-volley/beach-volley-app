@@ -1,10 +1,10 @@
 import React from "react";
-import styled from "styled-components";
 import * as firebaseui from "firebaseui";
 import { StyledFirebaseAuth } from "react-firebaseui";
 import Header from "../containers/Header";
 import { useHistory } from "react-router-dom";
 import { auth, GoogleID } from "../utils/firebase";
+import { PageWrapper } from "../components/ComponentStyles";
 
 const LoginPage = () => {
   const history = useHistory();
@@ -37,12 +37,5 @@ const LoginPage = () => {
     </PageWrapper>
   );
 };
-
-const PageWrapper = styled.div`
-  display: grid;
-  min-height: 100vh;
-  grid-template-rows: 8vh auto;
-  ${(props) => props.theme.backGroundImage()}
-`;
 
 export default LoginPage;

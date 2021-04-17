@@ -11,10 +11,7 @@ const CenterContainer = ({ title, ...props }) => (
 );
 
 const CenterWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  grid-row: 2;
+  grid-row: 3;
 `;
 
 const ContainerTitle = styled.h1`
@@ -24,6 +21,7 @@ const ContainerTitle = styled.h1`
 const Container = styled.div`
   text-align: center;
   position: relative;
+  margin: auto;
   background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
   margin-bottom: 1rem;
   width: 90%;

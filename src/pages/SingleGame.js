@@ -1,6 +1,6 @@
-import styled from "styled-components";
 import GameInfoContainer from "../containers/CenterContainer";
 import GameInfoForm from "../components/CreateGameForm";
+import { PageWrapper } from "../components/ComponentStyles";
 import Header from "../containers/Header";
 import { useQuery } from "@apollo/client";
 import { MATCH_BY_ID, PLAYERS_BY_MATCH_ID } from "../queries";
@@ -85,12 +85,5 @@ const SingleGame = () => {
     </PageWrapper>
   );
 };
-
-const PageWrapper = styled.div`
-  display: grid;
-  min-height: 100vh;
-  grid-template-rows: 8vh auto;
-  ${(props) => props.theme.backGroundImage()}
-`;
 
 export default SingleGame;

@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import styled from "styled-components";
-import { StyledButton } from "./StyledButton";
+import { StyledButton } from "./ComponentStyles";
 
 const AddPlayerForm = () => {
   const [newName, setNewName] = useState("");

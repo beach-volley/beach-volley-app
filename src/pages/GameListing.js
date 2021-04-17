@@ -1,36 +1,22 @@
 import styled from "styled-components";
 import Header from "../containers/Header";
 import GamesContainer from "../containers/GamesContainer";
+import { PageWrapper } from "../components/ComponentStyles";
 
 const GameListing = () => {
   return (
     <PageWrapper>
       <Header />
-      <TitleTextBox>
-        <h1>Etsi pelejä, pelaajia tai joukkueita.</h1>
-      </TitleTextBox>
+        <Title>Etsi pelejä, pelaajia tai joukkueita.</Title>
       <GamesContainer />
     </PageWrapper>
   );
 };
 
-const PageWrapper = styled.div`
-  display: grid;
-  min-height: 100vh;
-  grid-template-rows: 8vh 15vh auto;
-  ${(props) => props.theme.backGroundImage()}
-`;
-
-const TitleTextBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  grid-row: 2;
-  margin-right: ${(props) => props.theme.margins.small};
+const Title = styled.h1`
   margin-left: ${(props) => props.theme.margins.small};
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    margin-right: ${(props) => props.theme.margins.large};
     margin-left: ${(props) => props.theme.margins.large};
   }
 `;
