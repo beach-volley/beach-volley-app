@@ -7,7 +7,7 @@ const GameListing = () => {
   return (
     <PageWrapper>
       <Header />
-        <Title>Etsi pelejä, pelaajia tai joukkueita.</Title>
+      <Title>Etsi pelejä, pelaajia tai joukkueita.</Title>
       <GamesContainer />
     </PageWrapper>
   );
