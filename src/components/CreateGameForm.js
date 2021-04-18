@@ -24,8 +24,8 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import moment from "moment";
 import { useSnackbar } from "notistack";
 import Slide from "@material-ui/core/Slide";
-
 import SendInviteField from "./SendInvite";
+import useForm from "../hooks/useForm"
 
 import {
   TextInput,
@@ -72,7 +72,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
   let editMode = false;
   let history = useHistory();
   const currentUser = useQuery(CURRENT_USER);
-
+  const { CreateGame } = useForm();
   if (
     singleGameView &&
     currentUser.data?.currentUser?.id === matchData.hostId
@@ -88,9 +88,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
     // skip in create mode
     skip: !window.location.pathname.slice(13),
   });
-  const [createMatch] = useMutation(CREATE_MATCH, {
-    refetchQueries: [{ query: REFETCH_MATCHES }],
-  });
+
   const [joinMatch] = useMutation(JOIN_MATCH);
   const [joinAnonymously] = useMutation(JOIN_ANONYMOUSLY);
   const [cancelMatch] = useMutation(CANCEL_MATCH, {
@@ -260,44 +258,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                 })
               );
           } else {
-            createMatch({
-              variables: {
-                input: {
-                  match: {
-                    location: values.location,
-                    time: {
-                      start: {
-                        value:
-                          moment(values.date).format("YYYY-MM-DDT") +
-                          moment(values.startTime).format("HH:mm:00Z"),
-                        inclusive: true,
-                      },
-                      end: {
-                        value:
-                          moment(values.date).format("YYYY-MM-DDT") +
-                          moment(values.endTime).format("HH:mm:00Z"),
-                        inclusive: true,
-                      },
-                    },
-                    playerLimit: {
-                      start: {
-                        value: +values.minPlayers,
-                        inclusive: true,
-                      },
-                      end: {
-                        value: +values.maxPlayers,
-                        inclusive: true,
-                      },
-                    },
-                    public:
-                      values.publicToggle === "true" ||
-                      values.publicToggle === true,
-                    description: values.description,
-                    requiredSkillLevel: values.difficultyLevel,
-                  },
-                },
-              },
-            })
+            CreateGame(values)
               .then(() => {
                 history.push("/home");
               })
