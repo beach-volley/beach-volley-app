@@ -81,7 +81,7 @@ export const ToggleInput = ({ label, ...props }) => {
   );
 };
 
-export const FormTextArea = ({ label, readonly, ...props }) => {
+export const FormTextArea = ({ label, canEdit, ...props }) => {
   const [field] = useField(props);
 
   return (
@@ -90,7 +90,7 @@ export const FormTextArea = ({ label, readonly, ...props }) => {
       <textarea
         className="form-text-area"
         {...field}
-        readOnly={readonly ? "readOnly" : null}
+        readOnly={canEdit ? null : "readOnly"}
         {...props}
       />
     </>
