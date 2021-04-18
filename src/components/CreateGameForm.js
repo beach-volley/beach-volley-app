@@ -185,7 +185,7 @@ const CreateFieldSet = ({ matchData, singleGameView, currentUser = false }) => {
               </TextAreaContainer>
               <SubmitCornerButtons>
                 {!singleGameView && !editMode && (
-                  <CornerButton type="submit">Julkaise peli</CornerButton>
+                  <CornerButton type="submit">Julkaise</CornerButton>
                 )}
                 {singleGameView && editMode && (
                   <CornerButton type="submit">Tallenna</CornerButton>
@@ -199,37 +199,37 @@ const CreateFieldSet = ({ matchData, singleGameView, currentUser = false }) => {
         {(singleGameView || editMode) &&
           !playerJoined &&
           currentUser.data?.currentUser != null && (
-            <CornerButton onClick={JoinGame}>Liity Peliin</CornerButton>
+            <CornerButton onClick={JoinGame}>Liity</CornerButton>
           )}
 
         {(singleGameView || editMode) && playerJoined && (
-          <CornerButton onClick={LeaveGame}>Poistu Pelistä</CornerButton>
+          <CornerButton onClick={LeaveGame}>Poistu</CornerButton>
         )}
         {editMode && (
           <AlertDialogButton
             ButtonStyle={CornerButton}
-            buttonText={"Peru peli"}
+            buttonText={"Peru"}
             title={"Haluatko perua pelin?"}
             content={""}
             callBack={CancelMatchById}
           />
         )}
         {singleGameView && editMode && <CornerButton>Vahvista</CornerButton>}
-      </AdditionalCornerButtons>
 
-      {singleGameView &&
-        !matchData.publicToggle &&
-        currentUser.data?.currentUser === null && (
-          <AnonNameInput>
-            <input
-              type="text"
-              id="anonymousName"
-              maxLength="30"
-              placeholder="Anna nimi"
-            />
-            <CornerButton onClick={JoinGame}>Liity Peliin</CornerButton>
-          </AnonNameInput>
-        )}
+        {singleGameView &&
+          !matchData.publicToggle &&
+          currentUser.data?.currentUser === null && (
+            <>
+              <input
+                type="text"
+                id="anonymousName"
+                maxLength="30"
+                placeholder="Anna nimi"
+              />
+              <CornerButton onClick={JoinGame}>Liity</CornerButton>
+            </>
+          )}
+      </AdditionalCornerButtons>
     </MuiPickersUtilsProvider>
   );
 };
@@ -284,7 +284,7 @@ const SubmitCornerButtons = styled.div`
 `;
 
 const AdditionalCornerButtons = styled(SubmitCornerButtons)`
-  margin-right: 6rem;
+  margin-right: 5.5rem;
   button {
     margin-right: 1rem;
   }
@@ -293,12 +293,4 @@ const AdditionalCornerButtons = styled(SubmitCornerButtons)`
 const CornerButton = styled(StyledButton)`
   height: 2rem;
 `;
-
-const AnonNameInput = styled(SubmitCornerButtons)`
-  margin-right: 5rem;
-  input {
-    width: 55%;
-  }
-`;
-
 export default CreateFieldSet;

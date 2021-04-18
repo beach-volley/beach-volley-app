@@ -22,9 +22,10 @@ const Container = styled.div`
   text-align: center;
   position: relative;
   margin: auto;
+  margin-top: 4rem;
   background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
   margin-bottom: 1rem;
-  width: 90%;
+  width: 95%;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     width: 60%;

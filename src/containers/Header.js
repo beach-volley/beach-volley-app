@@ -39,7 +39,7 @@ const Container = styled.div`
 `;
 
 const Logo = styled.img`
-  height: 3.5rem;
+  height: 3rem;
   max-width: 100%;
   margin-top: 1rem;
 `;
