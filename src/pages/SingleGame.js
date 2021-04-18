@@ -114,9 +114,7 @@ const SingleGame = () => {
             <StyledButton onClick={JoinGame}>Liity</StyledButton>
           )}
 
-          {isJoined && (
-            <StyledButton onClick={LeaveGame}>Poistu</StyledButton>
-          )}
+          {isJoined && <StyledButton onClick={LeaveGame}>Poistu</StyledButton>}
 
           {editMode && (
             <AlertDialogButton
