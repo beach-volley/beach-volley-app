@@ -163,7 +163,7 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
                 <GameDescription
                   name="description"
                   placeholder="Kirjoita pelin tiedot tänne"
-                  readonly={!creatingGame}
+                  readonly={!creatingGame || !editMode}
                 />
               </TextAreaContainer>
               <CornerButtons>

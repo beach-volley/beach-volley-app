@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import GameInfoContainer from "../containers/CenterContainer";
 import GameInfoForm from "../components/CreateGameForm";
 import { PageWrapper } from "../components/ComponentStyles";
@@ -76,7 +75,6 @@ const SingleGame = () => {
   };
 
   const editMode = currentUser.data?.currentUser?.id === matchData.hostId;
-  const loggedIn = currentUser.data?.currentUser !== null;
 
   let isJoined = false;
   const players = [];
@@ -112,10 +110,14 @@ const SingleGame = () => {
           creatingGame={false}
           editMode={editMode}
         >
-          {!isJoined && loggedIn && (
+        {editMode && !isJoined &&
+          currentUser.data?.currentUser != null && (
             <StyledButton onClick={JoinGame}>Liity</StyledButton>
           )}
-          {isJoined && <StyledButton onClick={LeaveGame}>Poistu</StyledButton>}
+
+          {editMode && isJoined && (
+            <StyledButton onClick={LeaveGame}>Poistu</StyledButton>
+          )}
 
           {editMode && (
             <AlertDialogButton
@@ -128,8 +130,9 @@ const SingleGame = () => {
           )}
           {editMode && <StyledButton>Vahvista</StyledButton>}
 
-          {matchData.publicToggle === false && !loggedIn && (
-            <AnonymousInviteInput>
+       {!matchData.publicToggle &&
+          currentUser.data?.currentUser === null && (
+            <>
               <input
                 type="text"
                 id="anonymousName"
@@ -137,16 +140,14 @@ const SingleGame = () => {
                 placeholder="Anna nimi"
               />
               <StyledButton onClick={JoinGame}>Liity</StyledButton>
-            </AnonymousInviteInput>
+            </>
           )}
+
         </GameInfoForm>
       </GameInfoContainer>
     </PageWrapper>
   );
 };
 
-const AnonymousInviteInput = styled.div`
-  display: flex;
-  height: 2rem;
-`;
+
 export default SingleGame;

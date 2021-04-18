@@ -90,7 +90,7 @@ export const FormTextArea = ({ label, readonly, ...props }) => {
       <textarea
         className="form-text-area"
         {...field}
-        readOnly={readonly ? "readOnly" : null}
+        readOnly={readonly ? null : "readOnly"}
         {...props}
       />
     </>
