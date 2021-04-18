@@ -1,10 +1,8 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import { StyledButton } from "./ComponentStyles";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { AlertDialogButton } from "../components/FeedbackComponents";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import moment from "moment";
@@ -12,7 +10,7 @@ import { useSnackbar } from "notistack";
 import Slide from "@material-ui/core/Slide";
 import SendInviteField from "./SendInvite";
 import useForm from "../hooks/useForm";
-
+import { StyledButton } from "./ComponentStyles";
 import {
   TextInput,
   PickTime,
@@ -54,41 +52,25 @@ const GameSchema = Yup.object({
   description: Yup.string(),
 });
 
-const CreateFieldSet = ({ matchData, singleGameView, currentUser = false }) => {
-  const {
-    CreateGame,
-    UpdateGame,
-    LeaveGame,
-    JoinGame,
-    CancelMatchById,
-    IsJoined,
-    CanEdit,
-  } = useForm();
+const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
+  const { CreateGame, UpdateGame } = useForm();
   const { enqueueSnackbar } = useSnackbar();
-
-  const editMode = CanEdit(matchData, singleGameView);
-  const playerJoined = IsJoined();
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Formik
         enableReinitialize
         initialValues={{
-          location: singleGameView || editMode ? matchData.location : "",
-          date: singleGameView || editMode ? matchData.date : new Date(),
-          startTime:
-            singleGameView || editMode ? matchData.startTime : new Date(),
-          endTime: singleGameView || editMode ? matchData.endTime : new Date(),
-          minPlayers: singleGameView || editMode ? matchData.minPlayers : 4,
-          maxPlayers: singleGameView || editMode ? matchData.maxPlayers : 6,
-          difficultyLevel:
-            singleGameView || editMode
-              ? matchData.difficultyLevel
-              : "EASY_HARD",
-          publicToggle:
-            singleGameView || editMode ? matchData.publicToggle : false,
-          playerList: singleGameView || editMode ? matchData.playerList : [],
-          description: singleGameView || editMode ? matchData.description : "",
+          location: matchData.location,
+          date: matchData.date,
+          startTime: matchData.startTime,
+          endTime: matchData.endTime,
+          minPlayers: matchData.minPlayers,
+          maxPlayers: matchData.maxPlayers,
+          difficultyLevel: matchData.difficultyLevel,
+          publicToggle: matchData.publicToggle,
+          playerList: matchData.playerList,
+          description: matchData.description,
         }}
         validationSchema={GameSchema}
         onSubmit={(values) => {
@@ -120,7 +102,7 @@ const CreateFieldSet = ({ matchData, singleGameView, currentUser = false }) => {
         }}
       >
         {(props) => (
-          <FieldSet singleGameView={singleGameView}>
+          <FieldSet editable={creatingGame || editMode}>
             <Form>
               <TextInput name="location" label="Sijainti" />
 
@@ -165,9 +147,10 @@ const CreateFieldSet = ({ matchData, singleGameView, currentUser = false }) => {
               />
 
               <TextAreaContainer>
-                {singleGameView && editMode && (
+                {!creatingGame && (
                   <>
-                    <SendInviteField />
+                  {editMode && <SendInviteField />}
+          
                     <label htmlFor="playernames">Kutsutut pelaajat</label>
                     <InvitedPlayers>
                       {props.values.playerList.map((player) => (
@@ -180,56 +163,22 @@ const CreateFieldSet = ({ matchData, singleGameView, currentUser = false }) => {
                 <GameDescription
                   name="description"
                   placeholder="Kirjoita pelin tiedot tänne"
-                  readonly={singleGameView}
+                  readonly={(!creatingGame)}
                 />
               </TextAreaContainer>
-              <SubmitCornerButtons>
-                {!singleGameView && !editMode && (
-                  <CornerButton type="submit">Julkaise</CornerButton>
+              <CornerButtons>
+                {creatingGame && (
+                  <StyledButton type="submit">Julkaise</StyledButton>
                 )}
-                {singleGameView && editMode && (
-                  <CornerButton type="submit">Tallenna</CornerButton>
+                {editMode && (
+                  <StyledButton type="submit">Tallenna</StyledButton>
                 )}
-              </SubmitCornerButtons>
+              </CornerButtons>
             </Form>
           </FieldSet>
         )}
       </Formik>
-      <AdditionalCornerButtons>
-        {(singleGameView || editMode) &&
-          !playerJoined &&
-          currentUser.data?.currentUser != null && (
-            <CornerButton onClick={JoinGame}>Liity</CornerButton>
-          )}
-
-        {(singleGameView || editMode) && playerJoined && (
-          <CornerButton onClick={LeaveGame}>Poistu</CornerButton>
-        )}
-        {editMode && (
-          <AlertDialogButton
-            ButtonStyle={CornerButton}
-            buttonText={"Peru"}
-            title={"Haluatko perua pelin?"}
-            content={""}
-            callBack={CancelMatchById}
-          />
-        )}
-        {singleGameView && editMode && <CornerButton>Vahvista</CornerButton>}
-
-        {singleGameView &&
-          !matchData.publicToggle &&
-          currentUser.data?.currentUser === null && (
-            <>
-              <input
-                type="text"
-                id="anonymousName"
-                maxLength="30"
-                placeholder="Anna nimi"
-              />
-              <CornerButton onClick={JoinGame}>Liity</CornerButton>
-            </>
-          )}
-      </AdditionalCornerButtons>
+      <SingleGameViewCornerButtons>{children}</SingleGameViewCornerButtons>
     </MuiPickersUtilsProvider>
   );
 };
@@ -239,7 +188,7 @@ const FieldSet = styled.fieldset`
   flex-direction: column;
   padding: 1rem;
   border: none;
-  pointer-events: ${(props) => (props.singleGameView ? "all" : "none")};
+  pointer-events: ${(props) => (props.editable ? "all" : "none")};
 `;
 
 const TextAreaContainer = styled.div`
@@ -275,22 +224,21 @@ const InvitedPlayers = styled.div`
   margin-left: auto;
 `;
 
-const SubmitCornerButtons = styled.div`
+const CornerButtons = styled.div`
   display: flex;
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: 0 1rem 1rem 0;
-`;
-
-const AdditionalCornerButtons = styled(SubmitCornerButtons)`
-  margin-right: 5.5rem;
+  margin-bottom: 1rem;
   button {
-    margin-right: 1rem;
+    margin-right: 0.5rem;
+    padding: 0.2rem 0.5rem;
   }
 `;
 
-const CornerButton = styled(StyledButton)`
-  height: 2rem;
+const SingleGameViewCornerButtons = styled(CornerButtons)`
+  margin-right: 7rem;
 `;
+
+
 export default CreateFieldSet;
