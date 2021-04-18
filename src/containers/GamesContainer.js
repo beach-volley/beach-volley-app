@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import GameItemInfo from "../components/GameItemInfo";
-import { StyledButton } from "../components/StyledButton";
+import { StyledButton } from "../components/ComponentStyles";
 import { useHistory } from "react-router";
 import { useQuery } from "@apollo/client";
 import { MATCHES, CURRENT_USER_MATCHES_JOINS } from "../queries";
@@ -93,7 +93,7 @@ const Games = () => {
 };
 
 const ContainerWrapper = styled.div`
-  width: 95%;
+  width: 90%;
   margin: auto;
   grid-row: 3;
   p {

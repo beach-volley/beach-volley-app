@@ -1,31 +1,17 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import { StyledButton } from "./StyledButton";
+import { StyledButton } from "./ComponentStyles";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import {
-  CREATE_MATCH,
-  REFETCH_MATCHES,
-  JOIN_MATCH,
-  PLAYERS_BY_MATCH_ID,
-  CURRENT_USER,
-  JOIN_ANONYMOUSLY,
-  CANCEL_MATCH,
-  UPDATE_MATCH,
-  DELETE_JOIN,
-} from "../queries";
-
 import { AlertDialogButton } from "../components/FeedbackComponents";
-import { useMutation, useQuery } from "@apollo/client";
-import { useHistory } from "react-router";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import moment from "moment";
 import { useSnackbar } from "notistack";
 import Slide from "@material-ui/core/Slide";
-
 import SendInviteField from "./SendInvite";
+import useForm from "../hooks/useForm";
 
 import {
   TextInput,
@@ -68,119 +54,20 @@ const GameSchema = Yup.object({
   description: Yup.string(),
 });
 
-const CreateFieldSet = ({ matchData, singleGameView }) => {
-  let editMode = false;
-  let history = useHistory();
-  const currentUser = useQuery(CURRENT_USER);
-
-  if (
-    singleGameView &&
-    currentUser.data?.currentUser?.id === matchData.hostId
-  ) {
-    singleGameView = false;
-    editMode = true;
-  }
-
-  const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
-    variables: {
-      id: window.location.pathname.slice(13),
-    },
-    // skip in create mode
-    skip: !window.location.pathname.slice(13),
-  });
-  const [createMatch] = useMutation(CREATE_MATCH, {
-    refetchQueries: [{ query: REFETCH_MATCHES }],
-  });
-  const [joinMatch] = useMutation(JOIN_MATCH);
-  const [joinAnonymously] = useMutation(JOIN_ANONYMOUSLY);
-  const [cancelMatch] = useMutation(CANCEL_MATCH, {
-    refetchQueries: [{ query: REFETCH_MATCHES }],
-  });
-  const [updateMatch] = useMutation(UPDATE_MATCH, {
-    refetchQueries: [{ query: REFETCH_MATCHES }],
-  });
-  const [deleteJoin] = useMutation(DELETE_JOIN);
-
+const CreateFieldSet = ({ matchData, singleGameView, currentUser = false }) => {
+  const {
+    CreateGame,
+    UpdateGame,
+    LeaveGame,
+    JoinGame,
+    CancelMatchById,
+    IsJoined,
+    CanEdit,
+  } = useForm();
   const { enqueueSnackbar } = useSnackbar();
 
-  let isJoined = false;
-  const players = [];
-  for (
-    let index = 0;
-    index < playersByMatchId.data?.match?.joins.edges.length;
-    index++
-  ) {
-    players[index] =
-      playersByMatchId.data?.match.joins?.edges[index]?.node.participant;
-    if (
-      players[index]?.id === currentUser.data?.currentUser?.id &&
-      currentUser.data?.currentUser?.id != null
-    ) {
-      isJoined = true;
-    }
-  }
-
-  const joinGame = async () => {
-    if (currentUser.data?.currentUser != null) {
-      console.log("Joined as logged in user");
-      await joinMatch({
-        variables: {
-          input: {
-            matchId: window.location.pathname.slice(13),
-          },
-        },
-      });
-    } else {
-      console.log("Joined as anonymous user");
-      await joinAnonymously({
-        variables: {
-          input: {
-            matchId: window.location.pathname.slice(13),
-            name: document.getElementById("anonymousName").value,
-          },
-        },
-      });
-    }
-    window.location.reload(); // THIS NEEDS TO BE REPLACED WITH REFETCH OR COMPONENT RELAOD
-  };
-
-  const leaveGame = async () => {
-    for (
-      let index = 0;
-      index < currentUser.data.currentUser.joinsByParticipantId.edges.length;
-      index++
-    ) {
-      if (
-        currentUser.data.currentUser.joinsByParticipantId.edges[index].node
-          .matchId === window.location.pathname.slice(13)
-      ) {
-        await deleteJoin({
-          variables: {
-            input: {
-              id:
-                currentUser.data.currentUser.joinsByParticipantId.edges[index]
-                  .node.id,
-            },
-          },
-        });
-        window.location.reload();
-      }
-    }
-  };
-
-  const cancelMatchById = async () => {
-    await cancelMatch({
-      variables: {
-        input: {
-          id: window.location.pathname.slice(13),
-          patch: {
-            status: "CANCELLED",
-          },
-        },
-      },
-    });
-    history.push("/home");
-  };
+  const editMode = CanEdit(matchData, singleGameView);
+  const playerJoined = IsJoined();
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -206,112 +93,29 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
         validationSchema={GameSchema}
         onSubmit={(values) => {
           if (editMode) {
-            updateMatch({
-              variables: {
-                input: {
-                  patch: {
-                    location: values.location,
-                    time: {
-                      start: {
-                        value:
-                          moment(values.date).format("YYYY-MM-DDT") +
-                          moment(values.startTime).format("HH:mm:00Z"),
-                        inclusive: true,
-                      },
-                      end: {
-                        value:
-                          moment(values.date).format("YYYY-MM-DDT") +
-                          moment(values.endTime).format("HH:mm:00Z"),
-                        inclusive: true,
-                      },
-                    },
-                    playerLimit: {
-                      start: {
-                        value: +values.minPlayers,
-                        inclusive: true,
-                      },
-                      end: {
-                        value: +values.maxPlayers,
-                        inclusive: true,
-                      },
-                    },
-                    public:
-                      values.publicToggle === "true" ||
-                      values.publicToggle === true,
-                    description: values.description,
-                    requiredSkillLevel: values.difficultyLevel,
-                  },
-                  id: window.location.pathname.slice(13),
+            UpdateGame(values).then(
+              enqueueSnackbar("Tallennettu", {
+                variant: "success",
+                autoHideDuration: 1000,
+                anchorOrigin: {
+                  vertical: "top",
+                  horizontal: "center",
                 },
-              },
-            })
-              .then(() => {
-                history.push("/home");
+                TransitionComponent: Slide,
               })
-              .then(
-                enqueueSnackbar("Tallennettu", {
-                  variant: "success",
-                  autoHideDuration: 1000,
-                  anchorOrigin: {
-                    vertical: "top",
-                    horizontal: "center",
-                  },
-                  TransitionComponent: Slide,
-                })
-              );
+            );
           } else {
-            createMatch({
-              variables: {
-                input: {
-                  match: {
-                    location: values.location,
-                    time: {
-                      start: {
-                        value:
-                          moment(values.date).format("YYYY-MM-DDT") +
-                          moment(values.startTime).format("HH:mm:00Z"),
-                        inclusive: true,
-                      },
-                      end: {
-                        value:
-                          moment(values.date).format("YYYY-MM-DDT") +
-                          moment(values.endTime).format("HH:mm:00Z"),
-                        inclusive: true,
-                      },
-                    },
-                    playerLimit: {
-                      start: {
-                        value: +values.minPlayers,
-                        inclusive: true,
-                      },
-                      end: {
-                        value: +values.maxPlayers,
-                        inclusive: true,
-                      },
-                    },
-                    public:
-                      values.publicToggle === "true" ||
-                      values.publicToggle === true,
-                    description: values.description,
-                    requiredSkillLevel: values.difficultyLevel,
-                  },
+            CreateGame(values).then(
+              enqueueSnackbar("Peli luotu", {
+                variant: "success",
+                autoHideDuration: 1000,
+                anchorOrigin: {
+                  vertical: "top",
+                  horizontal: "center",
                 },
-              },
-            })
-              .then(() => {
-                history.push("/home");
+                TransitionComponent: Slide,
               })
-              .then(
-                enqueueSnackbar("Peli luotu", {
-                  variant: "success",
-                  autoHideDuration: 1000,
-                  anchorOrigin: {
-                    vertical: "top",
-                    horizontal: "center",
-                  },
-                  TransitionComponent: Slide,
-                })
-              );
+            );
           }
         }}
       >
@@ -361,7 +165,7 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
               />
 
               <TextAreaContainer>
-                {!singleGameView && editMode && (
+                {singleGameView && editMode && (
                   <>
                     <SendInviteField />
                     <label htmlFor="playernames">Kutsutut pelaajat</label>
@@ -379,49 +183,53 @@ const CreateFieldSet = ({ matchData, singleGameView }) => {
                   readonly={singleGameView}
                 />
               </TextAreaContainer>
-              {!singleGameView && !editMode && (
-                <CornerButton type="submit">Julkaise peli</CornerButton>
-              )}
-              {!singleGameView && editMode && (
-                <SaveEditButton type="submit">Tallenna</SaveEditButton>
-              )}
+              <SubmitCornerButtons>
+                {!singleGameView && !editMode && (
+                  <CornerButton type="submit">Julkaise peli</CornerButton>
+                )}
+                {singleGameView && editMode && (
+                  <CornerButton type="submit">Tallenna</CornerButton>
+                )}
+              </SubmitCornerButtons>
             </Form>
           </FieldSet>
         )}
       </Formik>
-      <>
+      <AdditionalCornerButtons>
         {(singleGameView || editMode) &&
-          !isJoined &&
+          !playerJoined &&
           currentUser.data?.currentUser != null && (
-            <CornerButton onClick={joinGame}>Liity Peliin</CornerButton>
+            <CornerButton onClick={JoinGame}>Liity Peliin</CornerButton>
           )}
-        {singleGameView &&
-          !matchData.publicToggle &&
-          currentUser.data?.currentUser === null && (
-            <>
-              <input
-                type="text"
-                id="anonymousName"
-                maxLength="30"
-                placeholder="Anna nimi"
-                style={{ marginLeft: "7rem", marginBottom: "1.15rem" }}
-              />
-              <CornerButton onClick={joinGame}>Liity Peliin</CornerButton>
-            </>
-          )}
-        {(singleGameView || editMode) && isJoined && (
-          <CornerButton onClick={leaveGame}>Poistu Pelistä</CornerButton>
+
+        {(singleGameView || editMode) && playerJoined && (
+          <CornerButton onClick={LeaveGame}>Poistu Pelistä</CornerButton>
         )}
         {editMode && (
           <AlertDialogButton
-            ButtonStyle={DeleteGameButton}
+            ButtonStyle={CornerButton}
             buttonText={"Peru peli"}
             title={"Haluatko perua pelin?"}
             content={""}
-            callBack={cancelMatchById}
+            callBack={CancelMatchById}
           />
         )}
-      </>
+        {singleGameView && editMode && <CornerButton>Vahvista</CornerButton>}
+      </AdditionalCornerButtons>
+
+      {singleGameView &&
+        !matchData.publicToggle &&
+        currentUser.data?.currentUser === null && (
+          <AnonNameInput>
+            <input
+              type="text"
+              id="anonymousName"
+              maxLength="30"
+              placeholder="Anna nimi"
+            />
+            <CornerButton onClick={JoinGame}>Liity Peliin</CornerButton>
+          </AnonNameInput>
+        )}
     </MuiPickersUtilsProvider>
   );
 };
@@ -431,7 +239,7 @@ const FieldSet = styled.fieldset`
   flex-direction: column;
   padding: 1rem;
   border: none;
-  pointer-events: ${(props) => (props.singleGameView ? "none" : "all")};
+  pointer-events: ${(props) => (props.singleGameView ? "all" : "none")};
 `;
 
 const TextAreaContainer = styled.div`
@@ -448,7 +256,8 @@ const TextAreaContainer = styled.div`
 const GameDescription = styled(FormTextArea)`
   width: 100%;
   height: 5rem;
-  margin: 2.5rem 0;
+  margin-top: 1rem;
+  margin-bottom: 5rem;
   overflow-y: scroll !important;
   pointer-events: all !important;
   resize: none;
@@ -466,26 +275,30 @@ const InvitedPlayers = styled.div`
   margin-left: auto;
 `;
 
+const SubmitCornerButtons = styled.div`
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 0 1rem 1rem 0;
+`;
+
+const AdditionalCornerButtons = styled(SubmitCornerButtons)`
+  margin-right: 6rem;
+  button {
+    margin-right: 1rem;
+  }
+`;
+
 const CornerButton = styled(StyledButton)`
   height: 2rem;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  margin-right: 1rem;
-  margin-bottom: 0.5rem;
 `;
 
-const SaveEditButton = styled(StyledButton)`
-  height: 2rem;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  margin-right: 8rem;
-  margin-bottom: 0.5rem;
-`;
-
-const DeleteGameButton = styled(CornerButton)`
-  margin-right: 14rem;
+const AnonNameInput = styled(SubmitCornerButtons)`
+  margin-right: 5rem;
+  input {
+    width: 55%;
+  }
 `;
 
 export default CreateFieldSet;
