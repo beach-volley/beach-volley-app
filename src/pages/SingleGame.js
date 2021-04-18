@@ -112,10 +112,10 @@ const SingleGame = () => {
           creatingGame={false}
           editMode={editMode}
         >
-          {editMode && !isJoined && currentUser.data?.currentUser != null && (
+          {(!isJoined &&  loggedIn) && (
             <StyledButton onClick={JoinGame}>Liity</StyledButton>
           )}
-          {editMode && isJoined && (
+          {isJoined && (
             <StyledButton onClick={LeaveGame}>Poistu</StyledButton>
           )}
 
