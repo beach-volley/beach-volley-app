@@ -76,7 +76,7 @@ const SingleGame = () => {
   };
 
   const editMode = currentUser.data?.currentUser?.id === matchData.hostId;
-  const loggedIn = currentUser.data?.currentUser === null;
+  const loggedIn = currentUser.data?.currentUser !== null;
 
   let isJoined = false;
   const players = [];
@@ -128,7 +128,7 @@ const SingleGame = () => {
           )}
           {editMode && <StyledButton>Vahvista</StyledButton>}
 
-          {!matchData.publicToggle && !loggedIn && (
+          {matchData.publicToggle === false && !loggedIn && (
             <AnonymousInviteInput>
               <input
                 type="text"
