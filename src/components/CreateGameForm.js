@@ -56,6 +56,8 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
   const { CreateGame, UpdateGame } = useForm();
   const { enqueueSnackbar } = useSnackbar();
 
+  console.log(creatingGame || editMode)
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Formik
@@ -163,7 +165,7 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
                 <GameDescription
                   name="description"
                   placeholder="Kirjoita pelin tiedot tänne"
-                  readonly={!creatingGame || !editMode}
+                  canEdit={creatingGame || editMode}
                 />
               </TextAreaContainer>
               <CornerButtons>
