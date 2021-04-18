@@ -7,7 +7,6 @@ import {
   JOIN_MATCH,
   JOIN_ANONYMOUSLY,
   CANCEL_MATCH,
-  PLAYERS_BY_MATCH_ID,
 } from "../queries";
 import { useHistory } from "react-router";
 import { useMutation, useQuery } from "@apollo/client";
@@ -141,7 +140,6 @@ const useForm = () => {
 
   const JoinGame = async () => {
     if (currentUser.data?.currentUser != null) {
-      console.log("Joined as logged in user");
       await joinMatch({
         variables: {
           input: {
@@ -150,7 +148,6 @@ const useForm = () => {
         },
       });
     } else {
-      console.log("Joined as anonymous user");
       await joinAnonymously({
         variables: {
           input: {
@@ -177,55 +174,12 @@ const useForm = () => {
     history.push("/home");
   };
 
-  const IsJoined = () => {
-    const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
-      variables: {
-        id: window.location.pathname.slice(13),
-      },
-      // skip in create mode
-      skip: !window.location.pathname.slice(13),
-    });
-
-    let isJoined = false;
-    const players = [];
-    for (
-      let index = 0;
-      index < playersByMatchId.data?.match?.joins.edges.length;
-      index++
-    ) {
-      players[index] =
-        playersByMatchId.data?.match.joins?.edges[index]?.node.participant;
-      if (
-        players[index]?.id === currentUser.data?.currentUser?.id &&
-        currentUser.data?.currentUser?.id != null
-      ) {
-        isJoined = true;
-      }
-    }
-    return isJoined;
-  };
-
-  const CanEdit = (matchData, singleGameView) => {
-    let editMode = false;
-
-    if (
-      singleGameView &&
-      currentUser.data?.currentUser?.id === matchData.hostId
-    ) {
-      singleGameView = false;
-      editMode = true;
-    }
-    return editMode;
-  };
-
   return {
     CreateGame,
     UpdateGame,
     LeaveGame,
     JoinGame,
     CancelMatchById,
-    IsJoined,
-    CanEdit,
   };
 };
 

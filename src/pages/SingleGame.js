@@ -1,15 +1,21 @@
+import styled from "styled-components";
 import GameInfoContainer from "../containers/CenterContainer";
 import GameInfoForm from "../components/CreateGameForm";
 import { PageWrapper } from "../components/ComponentStyles";
 import Header from "../containers/Header";
 import { useQuery } from "@apollo/client";
 import { MATCH_BY_ID, PLAYERS_BY_MATCH_ID, CURRENT_USER } from "../queries";
+import { AlertDialogButton } from "../components/FeedbackComponents";
+import useForm from "../hooks/useForm";
+import { StyledButton } from "../components/ComponentStyles";
 
 const SingleGame = () => {
   const currentUser = useQuery(CURRENT_USER);
   const matchById = useQuery(MATCH_BY_ID, {
     variables: { id: window.location.pathname.slice(13) },
   });
+
+  const { LeaveGame, JoinGame, CancelMatchById } = useForm();
 
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
@@ -36,14 +42,6 @@ const SingleGame = () => {
     }
     return players;
   };
-
-  if (matchById.loading || playersByMatchId.loading) {
-    return (
-      <PageWrapper>
-        <GameInfoContainer title="Ladataan..." />
-      </PageWrapper>
-    );
-  }
 
   const asInclusive = (value, inclusive) => {
     if (inclusive === false) {
@@ -77,19 +75,80 @@ const SingleGame = () => {
     hostId: matchById.data?.match?.host.id,
   };
 
+  const editMode = currentUser.data?.currentUser?.id === matchData.hostId;
+  const loggedIn = currentUser.data?.currentUser === null;
+
+  let isJoined = false;
+  const players = [];
+  for (
+    let index = 0;
+    index < playersByMatchId.data?.match?.joins.edges.length;
+    index++
+  ) {
+    players[index] =
+      playersByMatchId.data?.match.joins?.edges[index]?.node.participant;
+    if (
+      players[index]?.id === currentUser.data?.currentUser?.id &&
+      currentUser.data?.currentUser?.id != null
+    ) {
+      isJoined = true;
+    }
+  }
+
+  if (matchById.loading || playersByMatchId.loading) {
+    return (
+      <PageWrapper>
+        <GameInfoContainer title="Ladataan..." />
+      </PageWrapper>
+    );
+  }
+
   return (
     <PageWrapper>
       <Header />
       <GameInfoContainer title="Pelaajan Peli">
         <GameInfoForm
           matchData={matchData}
-          singleGameView={true}
-          editMode={true}
-          currentUser={currentUser}
-        />
+          creatingGame={false}
+          editMode={editMode}
+        >
+          {editMode && !isJoined && currentUser.data?.currentUser != null && (
+            <StyledButton onClick={JoinGame}>Liity</StyledButton>
+          )}
+          {editMode && isJoined && (
+            <StyledButton onClick={LeaveGame}>Poistu</StyledButton>
+          )}
+
+          {editMode && (
+            <AlertDialogButton
+              ButtonStyle={StyledButton}
+              buttonText={"Peru peli"}
+              title={"Haluatko perua pelin?"}
+              content={""}
+              callBack={CancelMatchById}
+            />
+          )}
+          {editMode && <StyledButton>Vahvista</StyledButton>}
+
+          {!matchData.publicToggle && !loggedIn && (
+            <AnonymousInviteInput>
+              <input
+                type="text"
+                id="anonymousName"
+                maxLength="30"
+                placeholder="Anna nimi"
+              />
+              <StyledButton onClick={JoinGame}>Liity</StyledButton>
+            </AnonymousInviteInput>
+          )}
+        </GameInfoForm>
       </GameInfoContainer>
     </PageWrapper>
   );
 };
 
+const AnonymousInviteInput = styled.div`
+  display: flex;
+  height: 2rem;
+`;
 export default SingleGame;
