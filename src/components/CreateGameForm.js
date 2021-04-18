@@ -56,8 +56,6 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
   const { CreateGame, UpdateGame } = useForm();
   const { enqueueSnackbar } = useSnackbar();
 
-  console.log(creatingGame || editMode);
-
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Formik
