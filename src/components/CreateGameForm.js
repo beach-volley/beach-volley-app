@@ -149,8 +149,8 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
               <TextAreaContainer>
                 {!creatingGame && (
                   <>
-                  {editMode && <SendInviteField />}
-          
+                    {editMode && <SendInviteField />}
+
                     <label htmlFor="playernames">Kutsutut pelaajat</label>
                     <InvitedPlayers>
                       {props.values.playerList.map((player) => (
@@ -163,7 +163,7 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
                 <GameDescription
                   name="description"
                   placeholder="Kirjoita pelin tiedot tänne"
-                  readonly={(!creatingGame)}
+                  readonly={!creatingGame}
                 />
               </TextAreaContainer>
               <CornerButtons>
@@ -239,6 +239,5 @@ const CornerButtons = styled.div`
 const SingleGameViewCornerButtons = styled(CornerButtons)`
   margin-right: 7rem;
 `;
-
 
 export default CreateFieldSet;

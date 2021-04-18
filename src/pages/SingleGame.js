@@ -141,7 +141,6 @@ const SingleGame = () => {
               <StyledButton onClick={JoinGame}>Liity</StyledButton>
             </AnonymousInviteInput>
           )}
-
         </GameInfoForm>
       </GameInfoContainer>
     </PageWrapper>
