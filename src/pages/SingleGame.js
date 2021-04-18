@@ -112,12 +112,10 @@ const SingleGame = () => {
           creatingGame={false}
           editMode={editMode}
         >
-          {(!isJoined && loggedIn) && (
+          {!isJoined && loggedIn && (
             <StyledButton onClick={JoinGame}>Liity</StyledButton>
           )}
-          {isJoined && (
-            <StyledButton onClick={LeaveGame}>Poistu</StyledButton>
-          )}
+          {isJoined && <StyledButton onClick={LeaveGame}>Poistu</StyledButton>}
 
           {editMode && (
             <AlertDialogButton
@@ -130,7 +128,7 @@ const SingleGame = () => {
           )}
           {editMode && <StyledButton>Vahvista</StyledButton>}
 
-          {matchData.publicToggle===false && !loggedIn && (
+          {matchData.publicToggle === false && !loggedIn && (
             <AnonymousInviteInput>
               <input
                 type="text"
