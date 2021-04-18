@@ -110,8 +110,7 @@ const SingleGame = () => {
           creatingGame={false}
           editMode={editMode}
         >
-        {editMode && !isJoined &&
-          currentUser.data?.currentUser != null && (
+          {editMode && !isJoined && currentUser.data?.currentUser != null && (
             <StyledButton onClick={JoinGame}>Liity</StyledButton>
           )}
 
@@ -130,8 +129,7 @@ const SingleGame = () => {
           )}
           {editMode && <StyledButton>Vahvista</StyledButton>}
 
-       {!matchData.publicToggle &&
-          currentUser.data?.currentUser === null && (
+          {!matchData.publicToggle && currentUser.data?.currentUser === null && (
             <>
               <input
                 type="text"
@@ -142,12 +140,10 @@ const SingleGame = () => {
               <StyledButton onClick={JoinGame}>Liity</StyledButton>
             </>
           )}
-
         </GameInfoForm>
       </GameInfoContainer>
     </PageWrapper>
   );
 };
-
 
 export default SingleGame;
