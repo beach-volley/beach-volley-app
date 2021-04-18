@@ -214,28 +214,24 @@ const CreateFieldSet = ({ matchData, singleGameView, currentUser = false }) => {
             callBack={CancelMatchById}
           />
         )}
-        {singleGameView && editMode && (
-          <CornerButton>Vahvista</CornerButton>
-        )}
+        {singleGameView && editMode && <CornerButton>Vahvista</CornerButton>}
       </AdditionalCornerButtons>
 
       {singleGameView &&
-    !matchData.publicToggle &&
-    currentUser.data?.currentUser === null && (
-            <AnonNameInput>
-              <input
-                type="text"
-                id="anonymousName"
-                maxLength="30"
-                placeholder="Anna nimi"
-              />
-              <CornerButton onClick={JoinGame}>Liity Peliin</CornerButton>
-            </AnonNameInput>
-    )}
+        !matchData.publicToggle &&
+        currentUser.data?.currentUser === null && (
+          <AnonNameInput>
+            <input
+              type="text"
+              id="anonymousName"
+              maxLength="30"
+              placeholder="Anna nimi"
+            />
+            <CornerButton onClick={JoinGame}>Liity Peliin</CornerButton>
+          </AnonNameInput>
+        )}
     </MuiPickersUtilsProvider>
   );
-
-
 };
 
 const FieldSet = styled.fieldset`
@@ -301,7 +297,7 @@ const CornerButton = styled(StyledButton)`
 const AnonNameInput = styled(SubmitCornerButtons)`
   margin-right: 5rem;
   input {
-    width: 55%
+    width: 55%;
   }
 `;
 

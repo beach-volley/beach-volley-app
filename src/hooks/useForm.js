@@ -225,7 +225,7 @@ const useForm = () => {
     JoinGame,
     CancelMatchById,
     IsJoined,
-    CanEdit
+    CanEdit,
   };
 };
 

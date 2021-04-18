@@ -10,7 +10,7 @@ const SingleGame = () => {
   const matchById = useQuery(MATCH_BY_ID, {
     variables: { id: window.location.pathname.slice(13) },
   });
-  
+
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
       id: window.location.pathname.slice(13),
@@ -81,12 +81,12 @@ const SingleGame = () => {
     <PageWrapper>
       <Header />
       <GameInfoContainer title="Pelaajan Peli">
-        <GameInfoForm 
-          matchData={matchData} 
-          singleGameView={true} 
+        <GameInfoForm
+          matchData={matchData}
+          singleGameView={true}
           editMode={true}
           currentUser={currentUser}
-          />
+        />
       </GameInfoContainer>
     </PageWrapper>
   );
