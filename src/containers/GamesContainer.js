@@ -4,7 +4,12 @@ import GameItemInfo from "../components/GameItemInfo";
 import { StyledButton } from "../components/ComponentStyles";
 import { useHistory } from "react-router";
 import { useQuery } from "@apollo/client";
-import { MATCHES, CURRENT_USER_MATCHES_JOINS, ALL_USERS, MATCHES_INVITATIONS } from "../queries";
+import {
+  MATCHES,
+  CURRENT_USER_MATCHES_JOINS,
+  ALL_USERS,
+  MATCHES_INVITATIONS,
+} from "../queries";
 import LoadingComponent from "../components/LoadingComponent";
 
 const Games = () => {
@@ -14,8 +19,8 @@ const Games = () => {
   const matchesInvitations = useQuery(MATCHES_INVITATIONS);
   const [gameFilter, setGameFilter] = useState("");
 
-  console.log({allUsers})
-  console.log({matchesInvitations})
+  console.log({ allUsers });
+  console.log({ matchesInvitations });
 
   const userCreatedGames =
     currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
@@ -69,32 +74,29 @@ const Games = () => {
         </GameTab>
       </GameTabRow>
       <ListContainer>
-        {filterGameList()
-          ?.map(({ node }) => (
-            <ListStyle key={node.id || node.match?.id}>
-              <CardWrapper>
-                <Row>
-                  <GameItemInfo
-                    status={node.status || node.match?.status}
-                    location={node.location || node.match?.location}
-                    time={node.time || node.match?.time}
-                  />
-                </Row>
-                <Row>
-                  <GameItemInfo
-                    players={node.playerLimit || node.match?.playerLimit}
-                  />
-                </Row>
-                <JoinGameButton
-                  onClick={() => joinMatchById(node.id || node.match?.id)}
-                >
-                  Näytä
-                </JoinGameButton>
-              </CardWrapper>
-            </ListStyle>
-            //newest first
-          ))
-          .reverse()}
+        {filterGameList()?.map(({ node }) => (
+          <ListStyle key={node.id || node.match?.id}>
+            <CardWrapper>
+              <Row>
+                <GameItemInfo
+                  status={node.status || node.match?.status}
+                  location={node.location || node.match?.location}
+                  time={node.time || node.match?.time}
+                />
+              </Row>
+              <Row>
+                <GameItemInfo
+                  players={node.playerLimit || node.match?.playerLimit}
+                />
+              </Row>
+              <JoinGameButton
+                onClick={() => joinMatchById(node.id || node.match?.id)}
+              >
+                Näytä
+              </JoinGameButton>
+            </CardWrapper>
+          </ListStyle>
+        ))}
       </ListContainer>
     </ContainerWrapper>
   );

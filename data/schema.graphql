@@ -101,6 +101,14 @@ type Query implements Node {
 
     """Read all values in the set after (below) this cursor."""
     after: Cursor
+
+    """The method to use when ordering `Match`."""
+    orderBy: [MatchesOrderBy!]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: MatchCondition
   ): MatchesConnection
 
   """Reads a single `Invitation` using its globally unique `ID`."""
@@ -181,6 +189,9 @@ type Join implements Node {
 
   """Reads a single `User` that is related to this `Join`."""
   participant: User
+
+  """Time of the related match."""
+  matchTime: DatetimeRange
 }
 
 """
@@ -517,6 +528,8 @@ type PageInfo {
 """Methods to use when ordering `Match`."""
 enum MatchesOrderBy {
   NATURAL
+  TIME_ASC
+  TIME_DESC
   MATCH_TYPE_ASC
   MATCH_TYPE_DESC
   REQUIRED_SKILL_LEVEL_ASC
@@ -535,6 +548,9 @@ enum MatchesOrderBy {
 A condition to be used against `Match` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
 input MatchCondition {
+  """Checks for equality with the object’s `time` field."""
+  time: DatetimeRangeInput
+
   """Checks for equality with the object’s `matchType` field."""
   matchType: MatchType
 
@@ -549,6 +565,26 @@ input MatchCondition {
 
   """Checks for equality with the object’s `hostId` field."""
   hostId: UUID
+}
+
+"""A range of `Datetime`."""
+input DatetimeRangeInput {
+  """The starting bound of our range."""
+  start: DatetimeRangeBoundInput
+
+  """The ending bound of our range."""
+  end: DatetimeRangeBoundInput
+}
+
+"""
+The value at one end of a range. A range can either include this value, or not.
+"""
+input DatetimeRangeBoundInput {
+  """The value at one end of our range."""
+  value: Datetime!
+
+  """Whether or not the value of this bound is included in the range."""
+  inclusive: Boolean!
 }
 
 """A connection to a list of `Invitation` values."""
@@ -592,6 +628,9 @@ type Invitation implements Node {
 
   """Reads a single `User` that is related to this `Invitation`."""
   user: User
+
+  """Time of the related match."""
+  matchTime: DatetimeRange
 }
 
 """Invitation status (pending, accepted, rejected, or cancelled)."""
@@ -622,6 +661,8 @@ enum InvitationsOrderBy {
   MATCH_ID_DESC
   USER_ID_ASC
   USER_ID_DESC
+  MATCH_TIME_ASC
+  MATCH_TIME_DESC
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
 }
@@ -653,6 +694,8 @@ enum JoinsOrderBy {
   MATCH_ID_DESC
   PARTICIPANT_ID_ASC
   PARTICIPANT_ID_DESC
+  MATCH_TIME_ASC
+  MATCH_TIME_DESC
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
 }
@@ -959,26 +1002,6 @@ input MatchInput {
 
   """Optional description of the match."""
   description: String
-}
-
-"""A range of `Datetime`."""
-input DatetimeRangeInput {
-  """The starting bound of our range."""
-  start: DatetimeRangeBoundInput
-
-  """The ending bound of our range."""
-  end: DatetimeRangeBoundInput
-}
-
-"""
-The value at one end of a range. A range can either include this value, or not.
-"""
-input DatetimeRangeBoundInput {
-  """The value at one end of our range."""
-  value: Datetime!
-
-  """Whether or not the value of this bound is included in the range."""
-  inclusive: Boolean!
 }
 
 """A range of `Int`."""
