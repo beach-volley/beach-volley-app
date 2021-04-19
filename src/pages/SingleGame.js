@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import GameInfoContainer from "../containers/CenterContainer";
 import GameInfoForm from "../components/CreateGameForm";
 import { PageWrapper } from "../components/ComponentStyles";
@@ -75,6 +76,7 @@ const SingleGame = () => {
   };
 
   const editMode = currentUser.data?.currentUser?.id === matchData.hostId;
+  const loggedIn = currentUser.data?.currentUser !== null;
 
   let isJoined = false;
   const players = [];
@@ -101,6 +103,8 @@ const SingleGame = () => {
     );
   }
 
+  console.log(isJoined);
+
   return (
     <PageWrapper>
       <Header />
@@ -110,13 +114,19 @@ const SingleGame = () => {
           creatingGame={false}
           editMode={editMode}
         >
-          {!isJoined && currentUser.data?.currentUser != null && (
-            <StyledButton onClick={JoinGame}>Liity</StyledButton>
+          {loggedIn && (
+            <>
+              <JoinOrLeave enabled={!isJoined} onClick={JoinGame}>
+                Liity
+              </JoinOrLeave>
+              <JoinOrLeave enabled={isJoined} onClick={LeaveGame}>
+                Poistu
+              </JoinOrLeave>
+            </>
           )}
 
-          {isJoined && <StyledButton onClick={LeaveGame}>Poistu</StyledButton>}
-
           {editMode && (
+            <>
             <AlertDialogButton
               ButtonStyle={StyledButton}
               buttonText={"Peru peli"}
@@ -124,10 +134,11 @@ const SingleGame = () => {
               content={""}
               callBack={CancelMatchById}
             />
+            <StyledButton>Vahvista</StyledButton>
+            </>
           )}
-          {editMode && <StyledButton>Vahvista</StyledButton>}
 
-          {!matchData.publicToggle && currentUser.data?.currentUser === null && (
+          {!matchData.publicToggle && !loggedIn && (
             <>
               <input
                 type="text"
@@ -143,5 +154,10 @@ const SingleGame = () => {
     </PageWrapper>
   );
 };
+
+const JoinOrLeave = styled(StyledButton)`
+  pointer-events: ${(props) => (props.enabled ? "all" : "none")};
+  background-color: ${(props) => (props.enabled ? "#FBFF48" : "grey")};
+`;
 
 export default SingleGame;

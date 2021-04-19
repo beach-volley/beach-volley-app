@@ -51,7 +51,7 @@ const Games = () => {
     <ContainerWrapper>
       <GameTabRow whichTabPushed={whichTabPushed}>
         <GameTab onClick={() => setGameFilter("")}>
-          <p>Kaikki pelit</p>
+          <p>Julkiset pelit</p>
         </GameTab>
         <GameTab onClick={() => setGameFilter("joined")}>
           <p>Liitytyt pelit</p>

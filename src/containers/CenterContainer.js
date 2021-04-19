@@ -16,6 +16,7 @@ const CenterWrapper = styled.div`
 
 const ContainerTitle = styled.h1`
   color: white;
+  text-decoration: underline;
 `;
 
 const Container = styled.div`
@@ -23,6 +24,7 @@ const Container = styled.div`
   position: relative;
   margin: auto;
   margin-top: 4rem;
+  padding: 1rem;
   background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
   margin-bottom: 1rem;
   width: 95%;
