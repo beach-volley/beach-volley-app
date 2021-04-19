@@ -175,6 +175,47 @@ export const MATCHES = gql`
   }
 `;
 
+export const MATCHES_INVITATIONS = gql`
+  {
+    currentUser {
+      invitations {
+        edges {
+          node {
+            match {
+              id
+              nodeId
+              location
+              public
+              status
+              matchType
+              playerLimit {
+                end {
+                  inclusive
+                  value
+                }
+                start {
+                  inclusive
+                  value
+                }
+              }
+              time {
+                end {
+                  inclusive
+                  value
+                }
+                start {
+                  inclusive
+                  value
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const PLAYERS_BY_MATCH_ID = gql`
   query match($id: UUID!) {
     match(id: $id) {
