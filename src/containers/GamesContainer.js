@@ -4,13 +4,18 @@ import GameItemInfo from "../components/GameItemInfo";
 import { StyledButton } from "../components/ComponentStyles";
 import { useHistory } from "react-router";
 import { useQuery } from "@apollo/client";
-import { MATCHES, CURRENT_USER_MATCHES_JOINS } from "../queries";
+import { MATCHES, CURRENT_USER_MATCHES_JOINS, ALL_USERS, MATCHES_INVITATIONS } from "../queries";
 import LoadingComponent from "../components/LoadingComponent";
 
 const Games = () => {
   const matches = useQuery(MATCHES);
   const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
+  const allUsers = useQuery(ALL_USERS);
+  const matchesInvitations = useQuery(MATCHES_INVITATIONS);
   const [gameFilter, setGameFilter] = useState("");
+
+  console.log({allUsers})
+  console.log({matchesInvitations})
 
   const userCreatedGames =
     currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
