@@ -216,6 +216,20 @@ export const MATCHES_INVITATIONS = gql`
   }
 `;
 
+export const ALL_USERS = gql`
+  {
+    users {
+      edges {
+        node {
+          id
+          name
+          nodeId
+        }
+      }
+    }
+  }
+`;
+
 export const PLAYERS_BY_MATCH_ID = gql`
   query match($id: UUID!) {
     match(id: $id) {
