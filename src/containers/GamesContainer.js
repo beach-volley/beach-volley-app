@@ -12,8 +12,10 @@ const Games = () => {
   const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
   const [gameFilter, setGameFilter] = useState("");
 
-  const userCreatedGames = currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
-  const userJoinedGames = currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
+  const userCreatedGames =
+    currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
+  const userJoinedGames =
+    currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
   const allPublicGames = matches.data?.publicMatches.edges;
 
   let history = useHistory();
@@ -30,7 +32,7 @@ const Games = () => {
     if (gameFilter === "created") {
       return userCreatedGames;
     }
-    return allPublicGames.filter((game) => game.node.status==="UNCONFIRMED");
+    return allPublicGames.filter((game) => game.node.status === "UNCONFIRMED");
   };
 
   const whichTabPushed = () => {
@@ -47,7 +49,7 @@ const Games = () => {
     return <LoadingComponent />;
   }
 
-  console.log(userCreatedGames)
+  console.log(userCreatedGames);
   return (
     <ContainerWrapper>
       <GameTabRow whichTabPushed={whichTabPushed}>
