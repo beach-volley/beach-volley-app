@@ -23,6 +23,7 @@ const Container = styled.div`
   position: relative;
   margin: auto;
   margin-top: 4rem;
+  padding: 1rem;
   background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
   margin-bottom: 1rem;
   width: 95%;

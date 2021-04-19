@@ -13,16 +13,16 @@ import { useMutation, useQuery } from "@apollo/client";
 import moment from "moment";
 
 const useForm = () => {
+  const [deleteJoin] = useMutation(DELETE_JOIN);
+  const currentUser = useQuery(CURRENT_USER);
+  const [joinMatch] = useMutation(JOIN_MATCH);
+  const [joinAnonymously] = useMutation(JOIN_ANONYMOUSLY);
   const [createMatch] = useMutation(CREATE_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
   const [updateMatch] = useMutation(UPDATE_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });
-  const [deleteJoin] = useMutation(DELETE_JOIN);
-  const currentUser = useQuery(CURRENT_USER);
-  const [joinMatch] = useMutation(JOIN_MATCH);
-  const [joinAnonymously] = useMutation(JOIN_ANONYMOUSLY);
   const [cancelMatch] = useMutation(CANCEL_MATCH, {
     refetchQueries: [{ query: REFETCH_MATCHES }],
   });

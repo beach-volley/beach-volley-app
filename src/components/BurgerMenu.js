@@ -14,7 +14,6 @@ export const Burger = ({ open, setOpen }) => {
         <div />
         <div />
       </StyledBurger>
-      <p>MENU</p>
     </BurgerContainer>
   );
 };
@@ -62,14 +61,16 @@ const BurgerContainer = styled.nav`
   position: relative;
   background-color: transparent;
   z-index: 10;
-  margin-top: 4.5rem;
+  margin-top: 1.5rem;
+  margin-left: 0.75rem;
+  border-radius: 0.5rem;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    background: lightgrey;
+    background: #7fbeeb;
     position: absolute;
     margin-top: 0rem;
     width: 5rem;
-    height: 7.5rem;
+    height: 5rem;
     top: 1rem;
     right: 1rem;
   }
@@ -79,13 +80,14 @@ const StyledBurger = styled.button`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  width: 2rem;
+  width: 1.7rem;
   height: 2rem;
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
-
+  transition: all 0.3s linear;
+  transform: ${({ open }) => (open ? "translate(3px)" : "translate(0)")};
   &:focus {
     outline: none;
   }
@@ -94,7 +96,7 @@ const StyledBurger = styled.button`
     width: 2rem;
     height: 0.25rem;
     background: black;
-    border-radius: 10px;
+    border-radius: 5px;
     transition: all 0.3s linear;
     position: relative;
     transform-origin: 1px;
@@ -119,7 +121,7 @@ const StyledMenu = styled.nav`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: lightgrey;
+  background: hsl(123, 80%, 82%);
   height: 100vh;
   text-align: left;
   padding: 2rem;
@@ -155,4 +157,7 @@ const MenuButton = styled.button`
   background: none;
   margin-bottom: 2rem;
   cursor: pointer;
+  :hover {
+    text-decoration: underline;
+  }
 `;

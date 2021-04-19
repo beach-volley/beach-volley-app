@@ -5,11 +5,18 @@ import { StyledButton } from "../components/ComponentStyles";
 import { useHistory } from "react-router";
 import { useQuery } from "@apollo/client";
 import { MATCHES, CURRENT_USER_MATCHES_JOINS } from "../queries";
+import LoadingComponent from "../components/LoadingComponent";
 
 const Games = () => {
   const matches = useQuery(MATCHES);
   const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
   const [gameFilter, setGameFilter] = useState("");
+
+  const userCreatedGames =
+    currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
+  const userJoinedGames =
+    currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
+  const allPublicGames = matches.data?.publicMatches.edges;
 
   let history = useHistory();
   const joinMatchById = (id) => {
@@ -20,13 +27,12 @@ const Games = () => {
 
   const filterGameList = () => {
     if (gameFilter === "joined") {
-      return currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId
-        ?.edges;
+      return userJoinedGames;
     }
     if (gameFilter === "created") {
-      return currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
+      return userCreatedGames;
     }
-    return matches.data?.publicMatches.edges;
+    return allPublicGames.filter((game) => game.node.status === "UNCONFIRMED");
   };
 
   const whichTabPushed = () => {
@@ -40,18 +46,15 @@ const Games = () => {
   };
 
   if (matches.loading) {
-    return (
-      <ContainerWrapper>
-        <p>Ladataan...</p>
-      </ContainerWrapper>
-    );
+    return <LoadingComponent />;
   }
 
+  console.log(userCreatedGames);
   return (
     <ContainerWrapper>
       <GameTabRow whichTabPushed={whichTabPushed}>
         <GameTab onClick={() => setGameFilter("")}>
-          <p>Kaikki pelit</p>
+          <p>Julkiset pelit</p>
         </GameTab>
         <GameTab onClick={() => setGameFilter("joined")}>
           <p>Liitytyt pelit</p>

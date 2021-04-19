@@ -1,12 +1,14 @@
+import styled from "styled-components";
 import GameInfoContainer from "../containers/CenterContainer";
 import GameInfoForm from "../components/CreateGameForm";
 import { PageWrapper } from "../components/ComponentStyles";
+import LoadingComponent from "../components/LoadingComponent";
 import Header from "../containers/Header";
+import { StyledButton } from "../components/ComponentStyles";
+import { AlertDialogButton } from "../components/FeedbackComponents";
 import { useQuery } from "@apollo/client";
 import { MATCH_BY_ID, PLAYERS_BY_MATCH_ID, CURRENT_USER } from "../queries";
-import { AlertDialogButton } from "../components/FeedbackComponents";
 import useForm from "../hooks/useForm";
-import { StyledButton } from "../components/ComponentStyles";
 
 const SingleGame = () => {
   const currentUser = useQuery(CURRENT_USER);
@@ -75,6 +77,7 @@ const SingleGame = () => {
   };
 
   const editMode = currentUser.data?.currentUser?.id === matchData.hostId;
+  const loggedIn = currentUser.data?.currentUser !== null;
 
   let isJoined = false;
   const players = [];
@@ -96,7 +99,7 @@ const SingleGame = () => {
   if (matchById.loading || playersByMatchId.loading) {
     return (
       <PageWrapper>
-        <GameInfoContainer title="Ladataan..." />
+        <LoadingComponent />
       </PageWrapper>
     );
   }
@@ -110,24 +113,31 @@ const SingleGame = () => {
           creatingGame={false}
           editMode={editMode}
         >
-          {!isJoined && currentUser.data?.currentUser != null && (
-            <StyledButton onClick={JoinGame}>Liity</StyledButton>
+          {loggedIn && (
+            <>
+              <JoinOrLeave enabled={!isJoined} onClick={JoinGame}>
+                Liity
+              </JoinOrLeave>
+              <JoinOrLeave enabled={isJoined} onClick={LeaveGame}>
+                Poistu
+              </JoinOrLeave>
+            </>
           )}
-
-          {isJoined && <StyledButton onClick={LeaveGame}>Poistu</StyledButton>}
 
           {editMode && (
-            <AlertDialogButton
-              ButtonStyle={StyledButton}
-              buttonText={"Peru peli"}
-              title={"Haluatko perua pelin?"}
-              content={""}
-              callBack={CancelMatchById}
-            />
+            <>
+              <AlertDialogButton
+                ButtonStyle={StyledButton}
+                buttonText={"Peru"}
+                title={"Haluatko perua pelin?"}
+                content={""}
+                callBack={CancelMatchById}
+              />
+              <StyledButton>Vahvista</StyledButton>
+            </>
           )}
-          {editMode && <StyledButton>Vahvista</StyledButton>}
 
-          {!matchData.publicToggle && currentUser.data?.currentUser === null && (
+          {!matchData.publicToggle && !loggedIn && (
             <>
               <input
                 type="text"
@@ -143,5 +153,10 @@ const SingleGame = () => {
     </PageWrapper>
   );
 };
+
+const JoinOrLeave = styled(StyledButton)`
+  pointer-events: ${(props) => (props.enabled ? "all" : "none")};
+  background-color: ${(props) => (props.enabled ? "#FBFF48" : "grey")};
+`;
 
 export default SingleGame;

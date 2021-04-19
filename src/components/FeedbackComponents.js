@@ -47,20 +47,15 @@ export const AlertDialogButton = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Peruuta</Button>
-          <Button onClick={handleCloseAgree} autoFocus>
+          <StyledButton onClick={handleClose}>Peruuta</StyledButton>
+          <StyledButton onClick={handleCloseAgree} autoFocus>
             Vahvista
-          </Button>
+          </StyledButton>
         </DialogActions>
       </DialogWrapper>
     </div>
   );
 };
-
-const Button = styled(StyledButton)`
-  width: auto;
-  height: 2rem;
-`;
 
 const DialogWrapper = styled(Dialog)`
   .MuiDialog-paperWidthSm {
