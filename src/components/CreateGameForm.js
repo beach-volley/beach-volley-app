@@ -232,12 +232,12 @@ const CornerButtons = styled.div`
   height: 2rem;
   button {
     margin-right: 0.5rem;
-    padding: 0.2rem 0.5rem;
+    padding: 0.2rem 0.4rem;
   }
 `;
 
 const SingleGameViewCornerButtons = styled(CornerButtons)`
-  margin-right: 7rem;
+  margin-right: 5rem;
 `;
 
 export default CreateFieldSet;
