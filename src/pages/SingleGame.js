@@ -2,12 +2,14 @@ import styled from "styled-components";
 import GameInfoContainer from "../containers/CenterContainer";
 import GameInfoForm from "../components/CreateGameForm";
 import { PageWrapper } from "../components/ComponentStyles";
+import LoadingComponent from "../components/LoadingComponent"
 import Header from "../containers/Header";
+import { StyledButton } from "../components/ComponentStyles";
+import { AlertDialogButton } from "../components/FeedbackComponents";
 import { useQuery } from "@apollo/client";
 import { MATCH_BY_ID, PLAYERS_BY_MATCH_ID, CURRENT_USER } from "../queries";
-import { AlertDialogButton } from "../components/FeedbackComponents";
 import useForm from "../hooks/useForm";
-import { StyledButton } from "../components/ComponentStyles";
+
 
 const SingleGame = () => {
   const currentUser = useQuery(CURRENT_USER);
@@ -98,12 +100,10 @@ const SingleGame = () => {
   if (matchById.loading || playersByMatchId.loading) {
     return (
       <PageWrapper>
-        <GameInfoContainer title="Ladataan..." />
-      </PageWrapper>
+        <LoadingComponent/>
+        </PageWrapper>
     );
   }
-
-  console.log(isJoined);
 
   return (
     <PageWrapper>
@@ -127,14 +127,14 @@ const SingleGame = () => {
 
           {editMode && (
             <>
-            <AlertDialogButton
-              ButtonStyle={StyledButton}
-              buttonText={"Peru peli"}
-              title={"Haluatko perua pelin?"}
-              content={""}
-              callBack={CancelMatchById}
-            />
-            <StyledButton>Vahvista</StyledButton>
+              <AlertDialogButton
+                ButtonStyle={StyledButton}
+                buttonText={"Peru peli"}
+                title={"Haluatko perua pelin?"}
+                content={""}
+                callBack={CancelMatchById}
+              />
+              <StyledButton>Vahvista</StyledButton>
             </>
           )}
 

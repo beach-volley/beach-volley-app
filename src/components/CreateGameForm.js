@@ -210,18 +210,17 @@ const GameDescription = styled(FormTextArea)`
   overflow-y: scroll !important;
   pointer-events: all !important;
   resize: none;
+  border: 0.15rem solid black;
 `;
 
 const InvitedPlayers = styled.div`
   text-align: center;
-  border-style: solid;
-  border-width: 0.1rem;
+  border-width: 0.15rem;
   height: 5rem;
   background-color: white;
   overflow-y: scroll !important;
   pointer-events: all !important;
-  padding: 0;
-  margin-left: auto;
+  border: 0.15rem solid black;
 `;
 
 const CornerButtons = styled.div`
@@ -239,7 +238,6 @@ const CornerButtons = styled.div`
 
 const SingleGameViewCornerButtons = styled(CornerButtons)`
   margin-right: 7rem;
- 
 `;
 
 export default CreateFieldSet;

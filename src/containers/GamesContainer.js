@@ -5,6 +5,7 @@ import { StyledButton } from "../components/ComponentStyles";
 import { useHistory } from "react-router";
 import { useQuery } from "@apollo/client";
 import { MATCHES, CURRENT_USER_MATCHES_JOINS } from "../queries";
+import LoadingComponent from "../components/LoadingComponent"
 
 const Games = () => {
   const matches = useQuery(MATCHES);
@@ -41,9 +42,7 @@ const Games = () => {
 
   if (matches.loading) {
     return (
-      <ContainerWrapper>
-        <p>Ladataan...</p>
-      </ContainerWrapper>
+     <LoadingComponent />
     );
   }
 

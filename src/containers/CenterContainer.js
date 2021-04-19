@@ -16,7 +16,6 @@ const CenterWrapper = styled.div`
 
 const ContainerTitle = styled.h1`
   color: white;
-  text-decoration: underline;
 `;
 
 const Container = styled.div`
