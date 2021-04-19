@@ -296,6 +296,91 @@ COMMENT ON FUNCTION beachvolley_public."current_user"() IS 'Get the current user
 
 
 --
+-- Name: invitation; Type: TABLE; Schema: beachvolley_public; Owner: -
+--
+
+CREATE TABLE beachvolley_public.invitation (
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now(),
+    status text DEFAULT 'pending'::text NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    match_id uuid NOT NULL,
+    user_id uuid NOT NULL
+);
+
+
+--
+-- Name: TABLE invitation; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON TABLE beachvolley_public.invitation IS '@omit all
+Invitation to single match sent to single user.';
+
+
+--
+-- Name: COLUMN invitation.created_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.created_at IS '@omit all,create,delete,many,read,update';
+
+
+--
+-- Name: COLUMN invitation.updated_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.updated_at IS '@omit all,create,delete,many,read,update';
+
+
+--
+-- Name: COLUMN invitation.status; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.status IS 'Status of the invitation. Default is PENDING.';
+
+
+--
+-- Name: COLUMN invitation.id; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.id IS 'Unique id of the invitation.';
+
+
+--
+-- Name: COLUMN invitation.match_id; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.match_id IS 'The match to which the user has been invited.';
+
+
+--
+-- Name: COLUMN invitation.user_id; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON COLUMN beachvolley_public.invitation.user_id IS 'Invited user.';
+
+
+--
+-- Name: invitation_match_time(beachvolley_public.invitation); Type: FUNCTION; Schema: beachvolley_public; Owner: -
+--
+
+CREATE FUNCTION beachvolley_public.invitation_match_time(i beachvolley_public.invitation) RETURNS tstzrange
+    LANGUAGE sql STABLE
+    AS $$
+  select time
+  from beachvolley_public.match
+  where i.match_id = match.id
+$$;
+
+
+--
+-- Name: FUNCTION invitation_match_time(i beachvolley_public.invitation); Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON FUNCTION beachvolley_public.invitation_match_time(i beachvolley_public.invitation) IS '@sortable
+Time of the related match.';
+
+
+--
 -- Name: join; Type: TABLE; Schema: beachvolley_public; Owner: -
 --
 
@@ -430,6 +515,27 @@ $$;
 --
 
 COMMENT ON FUNCTION beachvolley_public.join_anonymously(match_id uuid, name text) IS 'Join with name to the private match. _Anonymous user only._';
+
+
+--
+-- Name: join_match_time(beachvolley_public."join"); Type: FUNCTION; Schema: beachvolley_public; Owner: -
+--
+
+CREATE FUNCTION beachvolley_public.join_match_time(j beachvolley_public."join") RETURNS tstzrange
+    LANGUAGE sql STABLE
+    AS $$
+  select time
+  from beachvolley_public.match
+  where j.match_id = match.id
+$$;
+
+
+--
+-- Name: FUNCTION join_match_time(j beachvolley_public."join"); Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON FUNCTION beachvolley_public.join_match_time(j beachvolley_public."join") IS '@sortable
+Time of the related match.';
 
 
 --
@@ -582,7 +688,9 @@ $$;
 -- Name: FUNCTION public_matches(); Type: COMMENT; Schema: beachvolley_public; Owner: -
 --
 
-COMMENT ON FUNCTION beachvolley_public.public_matches() IS 'Reads and enables pagination through a set of public matches.';
+COMMENT ON FUNCTION beachvolley_public.public_matches() IS '@sortable
+@filterable
+Reads and enables pagination through a set of public matches.';
 
 
 --
@@ -654,70 +762,6 @@ CREATE TABLE beachvolley_private."user" (
     user_id uuid NOT NULL,
     CONSTRAINT user_email_check CHECK ((email OPERATOR(public.~*) '^.+@.+\..+$'::text))
 );
-
-
---
--- Name: invitation; Type: TABLE; Schema: beachvolley_public; Owner: -
---
-
-CREATE TABLE beachvolley_public.invitation (
-    created_at timestamp without time zone DEFAULT now(),
-    updated_at timestamp without time zone DEFAULT now(),
-    status text DEFAULT 'pending'::text NOT NULL,
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    match_id uuid NOT NULL,
-    user_id uuid NOT NULL
-);
-
-
---
--- Name: TABLE invitation; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON TABLE beachvolley_public.invitation IS '@omit all
-Invitation to single match sent to single user.';
-
-
---
--- Name: COLUMN invitation.created_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.invitation.created_at IS '@omit all,create,delete,many,read,update';
-
-
---
--- Name: COLUMN invitation.updated_at; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.invitation.updated_at IS '@omit all,create,delete,many,read,update';
-
-
---
--- Name: COLUMN invitation.status; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.invitation.status IS 'Status of the invitation. Default is PENDING.';
-
-
---
--- Name: COLUMN invitation.id; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.invitation.id IS 'Unique id of the invitation.';
-
-
---
--- Name: COLUMN invitation.match_id; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.invitation.match_id IS 'The match to which the user has been invited.';
-
-
---
--- Name: COLUMN invitation.user_id; Type: COMMENT; Schema: beachvolley_public; Owner: -
---
-
-COMMENT ON COLUMN beachvolley_public.invitation.user_id IS 'Invited user.';
 
 
 --
@@ -955,6 +999,13 @@ CREATE INDEX match_required_skill_level_idx ON beachvolley_public.match USING bt
 --
 
 CREATE INDEX match_status_idx ON beachvolley_public.match USING btree (status);
+
+
+--
+-- Name: match_time_idx; Type: INDEX; Schema: beachvolley_public; Owner: -
+--
+
+CREATE INDEX match_time_idx ON beachvolley_public.match USING btree ("time");
 
 
 --
@@ -1358,6 +1409,45 @@ GRANT ALL ON FUNCTION beachvolley_public."current_user"() TO beachvolley_graphil
 
 
 --
+-- Name: TABLE invitation; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT SELECT ON TABLE beachvolley_public.invitation TO beachvolley_graphile_anonymous;
+GRANT SELECT ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: COLUMN invitation.status; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT UPDATE(status) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_anonymous;
+GRANT UPDATE(status) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: COLUMN invitation.match_id; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT INSERT(match_id) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: COLUMN invitation.user_id; Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+GRANT INSERT(user_id) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: FUNCTION invitation_match_time(i beachvolley_public.invitation); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public.invitation_match_time(i beachvolley_public.invitation) FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public.invitation_match_time(i beachvolley_public.invitation) TO beachvolley_graphile_anonymous;
+GRANT ALL ON FUNCTION beachvolley_public.invitation_match_time(i beachvolley_public.invitation) TO beachvolley_graphile_authenticated;
+
+
+--
 -- Name: TABLE "join"; Type: ACL; Schema: beachvolley_public; Owner: -
 --
 
@@ -1379,6 +1469,15 @@ GRANT ALL ON FUNCTION beachvolley_public."join"(match_id uuid) TO beachvolley_gr
 
 REVOKE ALL ON FUNCTION beachvolley_public.join_anonymously(match_id uuid, name text) FROM PUBLIC;
 GRANT ALL ON FUNCTION beachvolley_public.join_anonymously(match_id uuid, name text) TO beachvolley_graphile_anonymous;
+
+
+--
+-- Name: FUNCTION join_match_time(j beachvolley_public."join"); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public.join_match_time(j beachvolley_public."join") FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public.join_match_time(j beachvolley_public."join") TO beachvolley_graphile_anonymous;
+GRANT ALL ON FUNCTION beachvolley_public.join_match_time(j beachvolley_public."join") TO beachvolley_graphile_authenticated;
 
 
 --
@@ -1479,36 +1578,6 @@ GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_a
 REVOKE ALL ON FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") FROM PUBLIC;
 GRANT ALL ON FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") TO beachvolley_graphile_anonymous;
 GRANT ALL ON FUNCTION beachvolley_public.user_is_current_user(u beachvolley_public."user") TO beachvolley_graphile_authenticated;
-
-
---
--- Name: TABLE invitation; Type: ACL; Schema: beachvolley_public; Owner: -
---
-
-GRANT SELECT ON TABLE beachvolley_public.invitation TO beachvolley_graphile_anonymous;
-GRANT SELECT ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
-
-
---
--- Name: COLUMN invitation.status; Type: ACL; Schema: beachvolley_public; Owner: -
---
-
-GRANT UPDATE(status) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_anonymous;
-GRANT UPDATE(status) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
-
-
---
--- Name: COLUMN invitation.match_id; Type: ACL; Schema: beachvolley_public; Owner: -
---
-
-GRANT INSERT(match_id) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
-
-
---
--- Name: COLUMN invitation.user_id; Type: ACL; Schema: beachvolley_public; Owner: -
---
-
-GRANT INSERT(user_id) ON TABLE beachvolley_public.invitation TO beachvolley_graphile_authenticated;
 
 
 --

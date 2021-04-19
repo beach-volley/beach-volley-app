@@ -92,9 +92,7 @@ const Games = () => {
                 </JoinGameButton>
               </CardWrapper>
             </ListStyle>
-            //newest first
-          ))
-          .reverse()}
+          ))}
       </ListContainer>
     </ContainerWrapper>
   );

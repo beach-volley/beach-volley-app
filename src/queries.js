@@ -7,7 +7,7 @@ export const CURRENT_USER = gql`
     currentUser {
       id
       nodeId
-      joinsByParticipantId {
+      joinsByParticipantId(orderBy: MATCH_TIME_ASC) {
         edges {
           node {
             id
@@ -16,7 +16,7 @@ export const CURRENT_USER = gql`
           }
         }
       }
-      matchesByHostId {
+      matchesByHostId(orderBy: TIME_ASC) {
         edges {
           node {
             id
@@ -31,7 +31,7 @@ export const CURRENT_USER = gql`
 export const CURRENT_USER_MATCHES_JOINS = gql`
   {
     currentUser {
-      matchesByHostId {
+      matchesByHostId(orderBy: TIME_ASC) {
         edges {
           node {
             id
@@ -78,7 +78,7 @@ export const CURRENT_USER_MATCHES_JOINS = gql`
           }
         }
       }
-      joinsByParticipantId {
+      joinsByParticipantId(orderBy: MATCH_TIME_ASC) {
         edges {
           node {
             match {
@@ -141,7 +141,7 @@ export const MATCHES_TOTAL_COUNT = gql`
 
 export const MATCHES = gql`
   {
-    publicMatches {
+    publicMatches(orderBy: TIME_ASC) {
       edges {
         node {
           id
@@ -178,7 +178,7 @@ export const MATCHES = gql`
 export const MATCHES_INVITATIONS = gql`
   {
     currentUser {
-      invitations {
+      invitations(orderBy: MATCH_TIME_ASC) {
         edges {
           node {
             match {
@@ -253,7 +253,7 @@ export const PLAYERS_BY_MATCH_ID = gql`
 
 export const REFETCH_MATCHES = gql`
   {
-    publicMatches {
+    publicMatches(orderBy: TIME_ASC) {
       edges {
         node {
           id
@@ -262,14 +262,23 @@ export const REFETCH_MATCHES = gql`
       }
     }
     currentUser {
-      matchesByHostId {
+      matchesByHostId(orderBy: TIME_ASC) {
         edges {
           node {
             nodeId
           }
         }
       }
-      joinsByParticipantId {
+      joinsByParticipantId(orderBy: MATCH_TIME_ASC) {
+        edges {
+          node {
+            match {
+              nodeId
+            }
+          }
+        }
+      }
+      invitations(orderBy: MATCH_TIME_ASC) {
         edges {
           node {
             match {
