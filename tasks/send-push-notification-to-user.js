@@ -8,6 +8,7 @@ module.exports = async ({ tokens, title, message, link }) => {
         notification: {
           title,
           body: message,
+          imageUrl: "/logo512.png",
         },
         webpush: {
           fcmOptions: {
