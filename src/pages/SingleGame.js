@@ -128,7 +128,7 @@ const SingleGame = () => {
             <>
               <AlertDialogButton
                 ButtonStyle={StyledButton}
-                buttonText={"Peru"}
+                buttonText={"Peru peli"}
                 title={"Haluatko perua pelin?"}
                 content={""}
                 callBack={CancelMatchById}

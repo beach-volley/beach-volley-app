@@ -1,47 +1,45 @@
 import { React, useState } from "react";
-import styled from "styled-components";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { useQuery } from "@apollo/client";
 import { StyledButton } from "./ComponentStyles";
+import { ALL_USERS } from "../queries";
+import { InputRow } from "./ComponentStyles";
 
-const AddPlayerForm = () => {
+const SendInviteInput = () => {
+  const allUsers = useQuery(ALL_USERS);
+  const players = allUsers?.data?.users?.edges.map((user) => ({
+    name: user.node.name,
+  }));
   const [newName, setNewName] = useState("");
 
-  const onNameChange = (event) => {
-    setNewName(event.target.value);
+  const onOptionChange = (value) => {
+    setNewName(value);
   };
 
-  const handleContact = (event) => {
+  const handleInvite = (event) => {
     event.preventDefault();
     //todo send invite
     console.log(newName);
     setNewName("");
   };
 
+  if (allUsers.loading) {
+    return <label>Ladataan</label>;
+  }
   return (
-    <InviteContainer>
-      <input
-        type="text"
-        value={newName}
-        onChange={onNameChange}
-        placeholder="Pelaajan nimi"
+    <InputRow>
+      <Autocomplete
+        onChange={(event, value) => onOptionChange(value)}
+        options={players}
+        getOptionSelected={(players) => players.name}
+        getOptionLabel={(players) => players.name}
+        loadingText={"Ladataan..."}
+        renderInput={(params) => <TextField {...params} />}
       />
-      <InviteButton type="button" onClick={handleContact}>
-        Lähetä
-      </InviteButton>
-    </InviteContainer>
+      <StyledButton onClick={handleInvite}>Kutsu</StyledButton>
+    </InputRow>
   );
 };
 
-const InviteContainer = styled.div`
-  display: flex;
-  margin: 2rem 0;
-  input {
-    width: 100%;
-  }
-`;
-
-const InviteButton = styled(StyledButton)`
-  height: 50%;
-  margin-top: auto;
-`;
-
-export default AddPlayerForm;
+export default SendInviteInput;

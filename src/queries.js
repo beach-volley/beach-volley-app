@@ -39,6 +39,7 @@ export const CURRENT_USER_MATCHES_JOINS = gql`
             location
             description
             matchType
+            status
             playerLimit {
               end {
                 inclusive

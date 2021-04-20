@@ -7,10 +7,9 @@ import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import moment from "moment";
 import { useSnackbar } from "notistack";
-import Slide from "@material-ui/core/Slide";
-import SendInviteField from "./SendInvite";
-import useForm from "../hooks/useForm";
 import { StyledButton } from "./ComponentStyles";
+import Slide from "@material-ui/core/Slide";
+import useForm from "../hooks/useForm";
 import {
   TextInput,
   PickTime,
@@ -19,6 +18,7 @@ import {
   ToggleInput,
   FormTextArea,
 } from "./InputComponents";
+import SendInviteInput from "./SendInvite";
 
 const GameSchema = Yup.object({
   location: Yup.string()
@@ -149,9 +149,11 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
               <TextAreaContainer>
                 {!creatingGame && (
                   <>
-                    {editMode && <SendInviteField />}
+                    <Row>
+                      <SendInviteInput />
+                    </Row>
 
-                    <label htmlFor="playernames">Kutsutut pelaajat</label>
+                    <label htmlFor="playernames">Liittyneet pelaajat</label>
                     <InvitedPlayers>
                       {props.values.playerList.map((player) => (
                         <p key={uuidv4()}>{player.name}</p>
@@ -166,6 +168,7 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
                   canEdit={creatingGame || editMode}
                 />
               </TextAreaContainer>
+
               <CornerButtons>
                 {creatingGame && (
                   <StyledButton type="submit">Julkaise</StyledButton>
@@ -189,12 +192,17 @@ const FieldSet = styled.fieldset`
   padding: 1rem;
   border: none;
   pointer-events: ${(props) => (props.editable ? "all" : "none")};
-`;
-
-const TextAreaContainer = styled.div`
   label {
     color: white;
   }
+`;
+
+const Row = styled.div`
+  height: 2rem;
+  margin: 1.5rem 0;
+`;
+
+const TextAreaContainer = styled.div`
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     width: 50%;

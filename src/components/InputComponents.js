@@ -3,39 +3,40 @@ import { Field, useField } from "formik";
 import { TextField } from "formik-material-ui";
 import MenuItem from "@material-ui/core/MenuItem";
 import { TimePicker, DatePicker } from "formik-material-ui-pickers";
+import { InputRow } from "./ComponentStyles";
 
 export const TextInput = ({ ...props }) => {
   return (
-    <InputRowMUI>
+    <InputRow>
       <Field component={TextField} {...props} />
-    </InputRowMUI>
+    </InputRow>
   );
 };
 
 export const PickTime = ({ ...props }) => {
   return (
-    <InputRowMUI>
+    <InputRow>
       <Field component={TimePicker} {...props} />
-    </InputRowMUI>
+    </InputRow>
   );
 };
 
 export const PickDate = ({ ...props }) => {
   return (
-    <InputRowMUI>
+    <InputRow>
       <Field
         component={DatePicker}
         {...props}
         format="dd-MM-yyyy"
         disablePast
       />
-    </InputRowMUI>
+    </InputRow>
   );
 };
 
 export const DropDown = ({ name, options, ...props }) => {
   return (
-    <InputRowMUI>
+    <InputRow>
       <Field name={name} {...props} component={TextField} type="text" select>
         {options.map((option) => {
           return (
@@ -45,14 +46,14 @@ export const DropDown = ({ name, options, ...props }) => {
           );
         })}
       </Field>
-    </InputRowMUI>
+    </InputRow>
   );
 };
 
 export const ToggleInput = ({ label, ...props }) => {
   const [field] = useField(props);
   return (
-    <InputRowMUI>
+    <InputRow>
       <label htmlFor={props.id || props.name}></label>
       <RadioContainer>
         <input
@@ -77,7 +78,7 @@ export const ToggleInput = ({ label, ...props }) => {
           {props.toggleNo}
         </label>
       </RadioContainer>
-    </InputRowMUI>
+    </InputRow>
   );
 };
 
@@ -135,71 +136,5 @@ const RadioContainer = styled.div`
 
   label:last-of-type {
     border-radius: 0 0.25rem 0.25rem 0;
-  }
-`;
-
-//override material-ui css
-const InputRowMUI = styled.div`
-  display: flex;
-  margin-bottom: 1rem;
-
-  label {
-    font-size: ${(props) => props.theme.fontSizes.medium};
-    flex: 1;
-    color: white !important;
-  }
-
-  .MuiFormControl-root {
-    flex-direction: row;
-    margin: 0;
-  }
-
-  .MuiInputLabel-formControl {
-    transform: none;
-    position: relative;
-  }
-
-  .MuiInput-root,
-  .MuiTextField-root {
-    flex: 1;
-  }
-
-  .MuiInput-underline::before {
-    transition: none;
-    border-bottom: 1px solid white;
-  }
-
-  .MuiInput-underline::after {
-    transition: none;
-    border-bottom: none;
-    border-color: white;
-  }
-
-  .MuiInputBase-input {
-    color: white;
-    text-align: center;
-  }
-
-  & .MuiFormLabel-root {
-    display: flex;
-    align-items: flex-end;
-    font-family: inherit;
-  }
-
-  /* .MuiSelect-nativeInput {
-    display: none;
-  } */
-
-  .MuiSelect-select.MuiSelect-select {
-    padding-right: 0;
-  }
-
-  .MuiSvgIcon-root {
-    color: white;
-  }
-
-  .MuiFormHelperText-root {
-    position: absolute;
-    left: 0;
   }
 `;
