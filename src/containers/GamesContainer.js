@@ -17,16 +17,18 @@ const Games = () => {
   const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
   const allUsers = useQuery(ALL_USERS);
   const matchesInvitations = useQuery(MATCHES_INVITATIONS);
-  const [gameFilter, setGameFilter] = useState("");
+  const [filter, setFilter] = useState("public");
 
-  console.log({ allUsers });
-  console.log({ matchesInvitations });
-
-  const userCreatedGames =
-    currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
+  const userCreatedGames = currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges.filter(
+    (game) => game.node.status === "UNCONFIRMED"
+  );
   const userJoinedGames =
     currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
-  const allPublicGames = matches.data?.publicMatches.edges;
+  const allPublicGames = matches.data?.publicMatches.edges.filter(
+    (game) => game.node.status === "UNCONFIRMED"
+  );
+  const userInvitedGames =
+    matchesInvitations.data?.currentUser?.invitations.edges;
 
   let history = useHistory();
   const joinMatchById = (id) => {
@@ -36,43 +38,53 @@ const Games = () => {
   };
 
   const filterGameList = () => {
-    if (gameFilter === "joined") {
-      return userJoinedGames;
-    }
-    if (gameFilter === "created") {
-      return userCreatedGames;
-    }
-    return allPublicGames.filter((game) => game.node.status === "UNCONFIRMED");
+    const games = {
+      public: allPublicGames,
+      joined: userJoinedGames,
+      created: userCreatedGames,
+      invited: userInvitedGames,
+    };
+
+    return games[filter.toLowerCase()] ?? "Games not found";
   };
 
   const whichTabPushed = () => {
-    if (gameFilter === "") {
-      return 1;
-    }
-    if (gameFilter === "joined") {
-      return 2;
-    }
-    return 3;
+    const tabs = {
+      public: 1,
+      joined: 2,
+      created: 3,
+      invited: 4,
+    };
+
+    return tabs[filter.toLowerCase()] ?? "Tab not found";
   };
+
+  console.log(matchesInvitations.data?.currentUser?.invitations.edges);
 
   if (matches.loading) {
     return <LoadingComponent />;
   }
 
-  console.log(userCreatedGames);
   return (
     <ContainerWrapper>
       <GameTabRow whichTabPushed={whichTabPushed}>
-        <GameTab onClick={() => setGameFilter("")}>
+        <GameTab onClick={() => setFilter("public")}>
           <p>Julkiset pelit</p>
         </GameTab>
-        <GameTab onClick={() => setGameFilter("joined")}>
+
+        <GameTab onClick={() => setFilter("joined")}>
           <p>Liitytyt pelit</p>
         </GameTab>
-        <GameTab onClick={() => setGameFilter("created")}>
+
+        <GameTab onClick={() => setFilter("created")}>
           <p>Luodut pelit</p>
         </GameTab>
+
+        <GameTab onClick={() => setFilter("invited")}>
+          <p>Kutsutut pelit</p>
+        </GameTab>
       </GameTabRow>
+
       <ListContainer>
         {filterGameList()?.map(({ node }) => (
           <ListStyle key={node.id || node.match?.id}>
@@ -119,15 +131,11 @@ const ContainerWrapper = styled.div`
 
 const GameTabRow = styled.div`
   display: flex;
-  div:nth-child(2) {
-    margin-left: 1rem;
+  div:nth-last-child(n + 2) {
     margin-right: 1rem;
   }
-
   div:nth-child(${(props) => props.whichTabPushed()}) {
-    border: 0.15rem;
-    border-color: black;
-    border-style: solid;
+    border: 0.15rem solid black;
   }
 `;
 
