@@ -1,41 +1,46 @@
+import { React, useState } from "react";
 import styled from "styled-components";
 import { Field, useField } from "formik";
-import { TextField } from "formik-material-ui";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import MenuItem from "@material-ui/core/MenuItem";
 import { TimePicker, DatePicker } from "formik-material-ui-pickers";
+import { useQuery } from "@apollo/client";
+import { StyledButton } from "./ComponentStyles";
+import { ALL_USERS } from "../queries";
 
 export const TextInput = ({ ...props }) => {
   return (
-    <InputRowMUI>
+    <InputRow>
       <Field component={TextField} {...props} />
-    </InputRowMUI>
+    </InputRow>
   );
 };
 
 export const PickTime = ({ ...props }) => {
   return (
-    <InputRowMUI>
+    <InputRow>
       <Field component={TimePicker} {...props} />
-    </InputRowMUI>
+    </InputRow>
   );
 };
 
 export const PickDate = ({ ...props }) => {
   return (
-    <InputRowMUI>
+    <InputRow>
       <Field
         component={DatePicker}
         {...props}
         format="dd-MM-yyyy"
         disablePast
       />
-    </InputRowMUI>
+    </InputRow>
   );
 };
 
 export const DropDown = ({ name, options, ...props }) => {
   return (
-    <InputRowMUI>
+    <InputRow>
       <Field name={name} {...props} component={TextField} type="text" select>
         {options.map((option) => {
           return (
@@ -45,14 +50,14 @@ export const DropDown = ({ name, options, ...props }) => {
           );
         })}
       </Field>
-    </InputRowMUI>
+    </InputRow>
   );
 };
 
 export const ToggleInput = ({ label, ...props }) => {
   const [field] = useField(props);
   return (
-    <InputRowMUI>
+    <InputRow>
       <label htmlFor={props.id || props.name}></label>
       <RadioContainer>
         <input
@@ -77,7 +82,7 @@ export const ToggleInput = ({ label, ...props }) => {
           {props.toggleNo}
         </label>
       </RadioContainer>
-    </InputRowMUI>
+    </InputRow>
   );
 };
 
@@ -95,6 +100,43 @@ export const FormTextArea = ({ label, canEdit, ...props }) => {
       />
     </>
   );
+};
+
+export const InvitePlayers = () => {
+  const allUsers = useQuery(ALL_USERS);
+  const players = allUsers?.data?.users?.edges.map((user) => ({
+    name: user.node.name,
+  }));
+  const [newName, setNewName] = useState("");
+
+  const onOptionChange = (value) => {
+    setNewName(value);
+  };
+
+  const handleInvite = (event) => {
+    event.preventDefault();
+    //todo send invite
+    console.log(newName);
+    setNewName("");
+  };
+  
+  if (allUsers.loading) {
+    return <label>Ladataan</label>;
+  }
+    return (
+      <InputRow>
+        <Autocomplete
+          onChange={(event, value) => onOptionChange(value)}
+          options={players}
+          getOptionSelected={(players) => players.name}
+          getOptionLabel={(players) => players.name}
+          noOptionsText='Ei löydy'
+          renderInput={(params) => <TextField {...params} />}
+        />
+        <StyledButton onClick={handleInvite}>Kutsu</StyledButton>
+      </InputRow>
+    );
+
 };
 
 const RadioContainer = styled.div`
@@ -139,7 +181,7 @@ const RadioContainer = styled.div`
 `;
 
 //override material-ui css
-const InputRowMUI = styled.div`
+const InputRow = styled.div`
   display: flex;
   margin-bottom: 1rem;
 
@@ -201,5 +243,12 @@ const InputRowMUI = styled.div`
   .MuiFormHelperText-root {
     position: absolute;
     left: 0;
+  }
+
+  .MuiAutocomplete-root {
+    width: 100%;
+    .MuiSvgIcon-root {
+      display: none;
+    }
   }
 `;

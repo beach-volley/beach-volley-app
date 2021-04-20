@@ -7,7 +7,6 @@ import { useQuery } from "@apollo/client";
 import {
   MATCHES,
   CURRENT_USER_MATCHES_JOINS,
-  ALL_USERS,
   MATCHES_INVITATIONS,
 } from "../queries";
 import LoadingComponent from "../components/LoadingComponent";
@@ -15,7 +14,6 @@ import LoadingComponent from "../components/LoadingComponent";
 const Games = () => {
   const matches = useQuery(MATCHES);
   const currentUserMatchesJoins = useQuery(CURRENT_USER_MATCHES_JOINS);
-  const allUsers = useQuery(ALL_USERS);
   const matchesInvitations = useQuery(MATCHES_INVITATIONS);
   const [filter, setFilter] = useState("public");
 
@@ -59,8 +57,6 @@ const Games = () => {
     return tabs[filter.toLowerCase()] ?? "Tab not found";
   };
 
-  console.log(matchesInvitations.data?.currentUser?.invitations.edges);
-
   if (matches.loading) {
     return <LoadingComponent />;
   }
@@ -69,19 +65,19 @@ const Games = () => {
     <ContainerWrapper>
       <GameTabRow whichTabPushed={whichTabPushed}>
         <GameTab onClick={() => setFilter("public")}>
-          <p>Julkiset pelit</p>
+          <p>Julkiset</p>
         </GameTab>
 
         <GameTab onClick={() => setFilter("joined")}>
-          <p>Liitytyt pelit</p>
+          <p>Liitytyt</p>
         </GameTab>
 
         <GameTab onClick={() => setFilter("created")}>
-          <p>Luodut pelit</p>
+          <p>Luodut</p>
         </GameTab>
 
         <GameTab onClick={() => setFilter("invited")}>
-          <p>Kutsutut pelit</p>
+          <p>Kutsuttu</p>
         </GameTab>
       </GameTabRow>
 
@@ -142,6 +138,7 @@ const GameTabRow = styled.div`
 const GameTab = styled.div`
   flex: 1;
   text-align: center;
+  padding: 0 0.5rem;
   background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
   margin-bottom: 0.5rem;
 `;

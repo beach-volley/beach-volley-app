@@ -2,13 +2,14 @@ import styled from "styled-components";
 import GameInfoContainer from "../containers/CenterContainer";
 import GameInfoForm from "../components/CreateGameForm";
 import { PageWrapper } from "../components/ComponentStyles";
-import LoadingComponent from "../components/LoadingComponent";
+import LoadingComponent from "../components/LoadingComponent"
 import Header from "../containers/Header";
 import { StyledButton } from "../components/ComponentStyles";
 import { AlertDialogButton } from "../components/FeedbackComponents";
 import { useQuery } from "@apollo/client";
 import { MATCH_BY_ID, PLAYERS_BY_MATCH_ID, CURRENT_USER } from "../queries";
 import useForm from "../hooks/useForm";
+
 
 const SingleGame = () => {
   const currentUser = useQuery(CURRENT_USER);
@@ -99,8 +100,8 @@ const SingleGame = () => {
   if (matchById.loading || playersByMatchId.loading) {
     return (
       <PageWrapper>
-        <LoadingComponent />
-      </PageWrapper>
+        <LoadingComponent/>
+        </PageWrapper>
     );
   }
 
@@ -128,7 +129,7 @@ const SingleGame = () => {
             <>
               <AlertDialogButton
                 ButtonStyle={StyledButton}
-                buttonText={"Peru"}
+                buttonText={"Peru peli"}
                 title={"Haluatko perua pelin?"}
                 content={""}
                 callBack={CancelMatchById}

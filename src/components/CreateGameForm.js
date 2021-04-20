@@ -7,10 +7,9 @@ import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import moment from "moment";
 import { useSnackbar } from "notistack";
-import Slide from "@material-ui/core/Slide";
-import SendInviteField from "./SendInvite";
-import useForm from "../hooks/useForm";
 import { StyledButton } from "./ComponentStyles";
+import Slide from "@material-ui/core/Slide";
+import useForm from "../hooks/useForm";
 import {
   TextInput,
   PickTime,
@@ -18,7 +17,9 @@ import {
   DropDown,
   ToggleInput,
   FormTextArea,
+  InvitePlayers,
 } from "./InputComponents";
+
 
 const GameSchema = Yup.object({
   location: Yup.string()
@@ -149,9 +150,8 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
               <TextAreaContainer>
                 {!creatingGame && (
                   <>
-                    {editMode && <SendInviteField />}
-
-                    <label htmlFor="playernames">Kutsutut pelaajat</label>
+                    {editMode && <InvitePlayers />}
+                    <label htmlFor="playernames">Liittyneet pelaajat</label>
                     <InvitedPlayers>
                       {props.values.playerList.map((player) => (
                         <p key={uuidv4()}>{player.name}</p>
@@ -166,6 +166,7 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
                   canEdit={creatingGame || editMode}
                 />
               </TextAreaContainer>
+
               <CornerButtons>
                 {creatingGame && (
                   <StyledButton type="submit">Julkaise</StyledButton>
@@ -189,12 +190,13 @@ const FieldSet = styled.fieldset`
   padding: 1rem;
   border: none;
   pointer-events: ${(props) => (props.editable ? "all" : "none")};
-`;
-
-const TextAreaContainer = styled.div`
   label {
     color: white;
   }
+`;
+
+const TextAreaContainer = styled.div`
+  
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     width: 50%;
