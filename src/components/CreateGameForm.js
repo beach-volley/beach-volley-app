@@ -149,8 +149,6 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
               <TextAreaContainer>
                 {!creatingGame && (
                   <>
-   
-            
                     <label htmlFor="playernames">Liittyneet pelaajat</label>
                     <InvitedPlayers>
                       {props.values.playerList.map((player) => (
@@ -196,7 +194,7 @@ const FieldSet = styled.fieldset`
 `;
 
 const Row = styled.div`
-height: 2rem;
+  height: 2rem;
 `;
 
 const TextAreaContainer = styled.div`
@@ -206,7 +204,6 @@ const TextAreaContainer = styled.div`
     margin-left: auto;
   }
 `;
-
 
 const GameDescription = styled(FormTextArea)`
   width: 100%;
