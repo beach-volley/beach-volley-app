@@ -20,7 +20,6 @@ import {
   InvitePlayers,
 } from "./InputComponents";
 
-
 const GameSchema = Yup.object({
   location: Yup.string()
     .min(2, "Täytyy olla vähintään 2 merkkiä pitkä")
@@ -196,7 +195,6 @@ const FieldSet = styled.fieldset`
 `;
 
 const TextAreaContainer = styled.div`
-  
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     width: 50%;

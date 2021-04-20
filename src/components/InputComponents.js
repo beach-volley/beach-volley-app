@@ -119,24 +119,23 @@ export const InvitePlayers = () => {
     console.log(newName);
     setNewName("");
   };
-  
+
   if (allUsers.loading) {
     return <label>Ladataan</label>;
   }
-    return (
-      <InputRow>
-        <Autocomplete
-          onChange={(event, value) => onOptionChange(value)}
-          options={players}
-          getOptionSelected={(players) => players.name}
-          getOptionLabel={(players) => players.name}
-          noOptionsText='Ei löydy'
-          renderInput={(params) => <TextField {...params} />}
-        />
-        <StyledButton onClick={handleInvite}>Kutsu</StyledButton>
-      </InputRow>
-    );
-
+  return (
+    <InputRow>
+      <Autocomplete
+        onChange={(event, value) => onOptionChange(value)}
+        options={players}
+        getOptionSelected={(players) => players.name}
+        getOptionLabel={(players) => players.name}
+        noOptionsText="Ei löydy"
+        renderInput={(params) => <TextField {...params} />}
+      />
+      <StyledButton onClick={handleInvite}>Kutsu</StyledButton>
+    </InputRow>
+  );
 };
 
 const RadioContainer = styled.div`
