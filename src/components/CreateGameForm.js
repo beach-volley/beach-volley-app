@@ -149,7 +149,8 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
               <TextAreaContainer>
                 {!creatingGame && (
                   <>
-                    {editMode && <InvitePlayers />}
+   
+            
                     <label htmlFor="playernames">Liittyneet pelaajat</label>
                     <InvitedPlayers>
                       {props.values.playerList.map((player) => (
@@ -194,6 +195,10 @@ const FieldSet = styled.fieldset`
   }
 `;
 
+const Row = styled.div`
+height: 2rem;
+`;
+
 const TextAreaContainer = styled.div`
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
@@ -201,6 +206,7 @@ const TextAreaContainer = styled.div`
     margin-left: auto;
   }
 `;
+
 
 const GameDescription = styled(FormTextArea)`
   width: 100%;

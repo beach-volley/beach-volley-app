@@ -11,7 +11,7 @@ const GameCreation = () => {
     endTime: new Date(),
     minPlayers: 4,
     maxPlayers: 6,
-    difficultyLevel: "EASY_HARD",
+    difficultyLevel: "EASY",
     publicToggle: false,
     playerList: [],
     description: "",
