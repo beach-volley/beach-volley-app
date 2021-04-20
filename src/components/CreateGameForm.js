@@ -17,8 +17,8 @@ import {
   DropDown,
   ToggleInput,
   FormTextArea,
-  InvitePlayers,
 } from "./InputComponents";
+import SendInviteInput from "./SendInvite";
 
 const GameSchema = Yup.object({
   location: Yup.string()
@@ -149,6 +149,10 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
               <TextAreaContainer>
                 {!creatingGame && (
                   <>
+                    <Row>
+                      <SendInviteInput />
+                    </Row>
+
                     <label htmlFor="playernames">Liittyneet pelaajat</label>
                     <InvitedPlayers>
                       {props.values.playerList.map((player) => (
@@ -195,6 +199,7 @@ const FieldSet = styled.fieldset`
 
 const Row = styled.div`
   height: 2rem;
+  margin: 1.5rem 0;
 `;
 
 const TextAreaContainer = styled.div`
