@@ -3,7 +3,7 @@ import { Field, useField } from "formik";
 import { TextField } from "formik-material-ui";
 import MenuItem from "@material-ui/core/MenuItem";
 import { TimePicker, DatePicker } from "formik-material-ui-pickers";
-import { InputRow } from "./ComponentStyles"
+import { InputRow } from "./ComponentStyles";
 
 export const TextInput = ({ ...props }) => {
   return (
@@ -138,4 +138,3 @@ const RadioContainer = styled.div`
     border-radius: 0 0.25rem 0.25rem 0;
   }
 `;
-

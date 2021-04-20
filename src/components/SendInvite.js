@@ -4,7 +4,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useQuery } from "@apollo/client";
 import { StyledButton } from "./ComponentStyles";
 import { ALL_USERS } from "../queries";
-import { InputRow } from "./ComponentStyles"
+import { InputRow } from "./ComponentStyles";
 
 const SendInviteInput = () => {
   const allUsers = useQuery(ALL_USERS);
