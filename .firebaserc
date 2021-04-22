@@ -1,5 +1,6 @@
 {
   "projects": {
-    "staging": "beach-volley-app"
+    "staging": "beach-volley-app",
+    "production": "osallistujat-512aa"
   }
 }
