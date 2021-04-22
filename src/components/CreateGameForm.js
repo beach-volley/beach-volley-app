@@ -72,6 +72,7 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
           playerList: matchData.playerList,
           description: matchData.description,
         }}
+        validateOnBlur={false}
         validationSchema={GameSchema}
         onSubmit={(values) => {
           if (editMode) {
@@ -149,9 +150,11 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
               <TextAreaContainer>
                 {!creatingGame && (
                   <>
-                    <Row>
-                      <SendInviteInput />
-                    </Row>
+                    {editMode && (
+                      <Row>
+                        <SendInviteInput />
+                      </Row>
+                    )}
 
                     <label htmlFor="playernames">Liittyneet pelaajat</label>
                     <InvitedPlayers>
