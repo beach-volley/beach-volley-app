@@ -23,8 +23,10 @@ const Games = () => {
   const allPublicGames = matches.data?.publicMatches.edges.filter(
     (game) => game.node.status === "UNCONFIRMED"
   );
-  const userJoinedGames = currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
-  const userInvitedGames = matchesInvitations.data?.currentUser?.invitations.edges;
+  const userJoinedGames =
+    currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
+  const userInvitedGames =
+    matchesInvitations.data?.currentUser?.invitations.edges;
 
   let history = useHistory();
   const joinMatchById = (id) => {
@@ -54,7 +56,11 @@ const Games = () => {
     return tabs[filter.toLowerCase()] ?? 1;
   };
 
-  if (matches.loading || currentUserMatchesJoins.loading || matchesInvitations.loading ) {
+  if (
+    matches.loading ||
+    currentUserMatchesJoins.loading ||
+    matchesInvitations.loading
+  ) {
     return <LoadingComponent />;
   }
 

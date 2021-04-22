@@ -10,11 +10,11 @@ const PageRoutes = () => {
   return (
     <Switch>
       <Route path="/login" component={LoginPage} />
-      <Route path="/games" component={GameListing} />
+      <Route path="/home" component={GameListing} />
       <Route path="/create-game" component={GameCreation} />
       <Route path="/single-game" component={SingleGame} />
       <Route path="/" component={GameListing}>
-        <Redirect to="/games" />
+        <Redirect to="/home" />
       </Route>
     </Switch>
   );
