@@ -3,7 +3,12 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useQuery, useMutation } from "@apollo/client";
 import { StyledButton } from "./ComponentStyles";
-import { ALL_USERS, CREATE_INVITATION, CURRENT_USER, USER_ALL_INVITATIONS, } from "../queries";
+import {
+  ALL_USERS,
+  CREATE_INVITATION,
+  CURRENT_USER,
+  USER_ALL_INVITATIONS,
+} from "../queries";
 import { InputRow } from "./ComponentStyles";
 import { useSnackbar } from "notistack";
 import Slide from "@material-ui/core/Slide";
@@ -13,7 +18,7 @@ const SendInviteInput = () => {
   const currentUser = useQuery(CURRENT_USER);
   const players = allUsers?.data?.users?.edges.map((user) => ({
     name: user.node.name,
-    id: user.node.id
+    id: user.node.id,
   }));
   const [createInvitation] = useMutation(CREATE_INVITATION);
   const [userId, setUserId] = useState("");
@@ -36,23 +41,28 @@ const SendInviteInput = () => {
       index++
     ) {
       if (
-        userAllInvitations.data.user.invitations.edges[index].node
-        .match.id === window.location.pathname.slice(13)
+        userAllInvitations.data.user.invitations.edges[index].node.match.id ===
+        window.location.pathname.slice(13)
       ) {
         alreadyJoined = true;
       }
     }
 
-    if(userId !== "" && userId !== null && userId !== currentUser.data.currentUser.id && !alreadyJoined) {
+    if (
+      userId !== "" &&
+      userId !== null &&
+      userId !== currentUser.data.currentUser.id &&
+      !alreadyJoined
+    ) {
       createInvitation({
         variables: {
           input: {
             invitation: {
               matchId: window.location.pathname.slice(13),
               userId: userId,
-            }
-          }
-        }
+            },
+          },
+        },
       }).then(
         enqueueSnackbar("Kutsu lähetetty", {
           variant: "success",

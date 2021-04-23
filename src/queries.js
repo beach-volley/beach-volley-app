@@ -156,7 +156,6 @@ export const USER_ALL_INVITATIONS = gql`
   }
 `;
 
-
 export const MATCHES = gql`
   {
     publicMatches(orderBy: TIME_ASC) {
