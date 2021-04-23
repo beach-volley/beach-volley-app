@@ -140,6 +140,23 @@ export const MATCHES_TOTAL_COUNT = gql`
   }
 `;
 
+export const USER_ALL_INVITATIONS = gql`
+  query user($id: UUID!) {
+    user(id: $id) {
+      invitations {
+        edges {
+          node {
+            match {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+
 export const MATCHES = gql`
   {
     publicMatches(orderBy: TIME_ASC) {
@@ -339,6 +356,20 @@ export const CREATE_MATCH = gql`
       match {
         id
         nodeId
+      }
+    }
+  }
+`;
+
+export const CREATE_INVITATION = gql`
+  mutation createInvitation($input: CreateInvitationInput!) {
+    createInvitation(input: $input) {
+      invitation {
+        id
+        matchId
+        nodeId
+        userId
+        status
       }
     }
   }
