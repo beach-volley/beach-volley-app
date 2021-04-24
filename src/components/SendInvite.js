@@ -63,7 +63,7 @@ const SendInviteInput = () => {
             },
           },
         },
-      }).then(
+      }).then(() => {
         enqueueSnackbar("Kutsu lähetetty", {
           variant: "success",
           autoHideDuration: 2000,
@@ -72,9 +72,10 @@ const SendInviteInput = () => {
             horizontal: "center",
           },
           TransitionComponent: Slide,
-        })
-      );
-      window.location.reload();
+        });
+
+        window.location.reload();
+      });
     }
 
     setUserId("");
