@@ -733,6 +733,32 @@ COMMENT ON FUNCTION beachvolley_public.upsert_user() IS 'Create user or update i
 
 
 --
+-- Name: user_invitations(beachvolley_public."user"); Type: FUNCTION; Schema: beachvolley_public; Owner: -
+--
+
+CREATE FUNCTION beachvolley_public.user_invitations(u beachvolley_public."user") RETURNS SETOF beachvolley_public.invitation
+    LANGUAGE sql STABLE
+    AS $$
+  select i.*
+  from beachvolley_public.invitation i
+  left join beachvolley_public.match m on m.id = i.match_id
+  where not exists (
+    select 1 from beachvolley_public.join j
+    where i.match_id = m.id and i.user_id = j.participant_id
+  ) and i.user_id = u.id
+$$;
+
+
+--
+-- Name: FUNCTION user_invitations(u beachvolley_public."user"); Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON FUNCTION beachvolley_public.user_invitations(u beachvolley_public."user") IS '@sortable
+@filterable
+Reads and enables pagination through a set of `Invitation`.';
+
+
+--
 -- Name: user_is_current_user(beachvolley_public."user"); Type: FUNCTION; Schema: beachvolley_public; Owner: -
 --
 
@@ -1101,6 +1127,13 @@ ALTER TABLE ONLY beachvolley_public.invitation
 
 ALTER TABLE ONLY beachvolley_public.invitation
     ADD CONSTRAINT invitation_user_id_fkey FOREIGN KEY (user_id) REFERENCES beachvolley_public."user"(id);
+
+
+--
+-- Name: CONSTRAINT invitation_user_id_fkey ON invitation; Type: COMMENT; Schema: beachvolley_public; Owner: -
+--
+
+COMMENT ON CONSTRAINT invitation_user_id_fkey ON beachvolley_public.invitation IS '@omit many';
 
 
 --
@@ -1569,6 +1602,15 @@ GRANT ALL ON FUNCTION beachvolley_public.public_matches() TO beachvolley_graphil
 REVOKE ALL ON FUNCTION beachvolley_public.upsert_user() FROM PUBLIC;
 GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_anonymous;
 GRANT ALL ON FUNCTION beachvolley_public.upsert_user() TO beachvolley_graphile_authenticated;
+
+
+--
+-- Name: FUNCTION user_invitations(u beachvolley_public."user"); Type: ACL; Schema: beachvolley_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION beachvolley_public.user_invitations(u beachvolley_public."user") FROM PUBLIC;
+GRANT ALL ON FUNCTION beachvolley_public.user_invitations(u beachvolley_public."user") TO beachvolley_graphile_anonymous;
+GRANT ALL ON FUNCTION beachvolley_public.user_invitations(u beachvolley_public."user") TO beachvolley_graphile_authenticated;
 
 
 --
