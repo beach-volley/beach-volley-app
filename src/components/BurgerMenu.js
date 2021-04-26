@@ -130,30 +130,21 @@ const StyledMenu = styled.nav`
   right: 0;
   z-index: 9;
   transition: transform 0.3s ease-in-out;
-  transform: ${({ open }) => (open ? "translateX(0%)" : "translateX(150%)")};
+  transform: ${({ open }) => (open ? "translateX(0%)" : "translateX(100%)")};
   width: 100vw;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    width: 55vw;
-    transform: ${({ open }) => (open ? "translateX(%)" : "translateX(150%)")};
-  }
-
-  @media only screen and (min-width: ${(props) =>
-      props.theme.mediaQuery.desktopWidth}) {
     width: 40vw;
-    transform: ${({ open }) => (open ? "translateX(10%)" : "translateX(150%)")};
   }
 `;
 
 const MenuButton = styled.button`
   font-size: 2rem;
   text-transform: uppercase;
-  padding: 2rem 0;
   font-weight: bold;
   letter-spacing: 0.5rem;
   color: black;
   text-decoration: none;
-  padding: 0;
   border: none;
   background: none;
   margin-bottom: 2rem;

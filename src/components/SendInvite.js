@@ -94,7 +94,9 @@ const SendInviteInput = () => {
         loadingText={"Ladataan..."}
         renderInput={(params) => <TextField {...params} />}
       />
-      <StyledButton onClick={handleInvite}>Kutsu</StyledButton>
+      <StyledButton type="button" onClick={handleInvite}>
+        Kutsu
+      </StyledButton>
     </InputRow>
   );
 };
