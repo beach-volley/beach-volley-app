@@ -166,7 +166,7 @@ begin
       'tokens', fcm_tokens,
       'title', concat(host.name, ' kutsui sinut mukaan pelaamaan.'),
       'message', 'Tarkastele kutsua napsauttamalla.',
-      'link', concat('/invitations/', new.id)
+      'link', concat('/single-game/', match.id)
     )
   )
   from beachvolley_public.match
