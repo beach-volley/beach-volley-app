@@ -31,23 +31,24 @@ const GameSchema = Yup.object({
   endTime: Yup.string()
     .required("Pakollinen kenttä")
     .test(
-      "Eri aika",
+      "Aloitus ennen",
       "Alotusaika täytyy olla ennen lopetus aikaa",
       function (value) {
         return (
           moment(this.parent.startTime).format("HH:mm:00Z") <
-          moment(value).format("HH:mm:00Z")
+          moment(this.parent.endTime).format("HH:mm:00Z")
         );
-      }
-    )
-    .test(
-      "Eri aika",
-      "Lopetusajan täytyy olla eri kuin aloitusajan!",
-      function (value) {
-        return this.parent.startTime !== value;
       }
     ),
   difficultyLevel: Yup.string().required("Valitse taso"),
+  minPlayers: Yup.number().test(
+    "Minimi pienempi",
+    "Min pitää olla pienempi kuin max",
+    function () {
+      return this.parent.minPlayers < this.parent.maxPlayers;
+    }
+  ),
+  maxPlayers: Yup.number(),
   publicToggle: Yup.boolean(),
   description: Yup.string(),
 });
@@ -72,6 +73,7 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
           playerList: matchData.playerList,
           description: matchData.description,
         }}
+        validateOnChange={false}
         validateOnBlur={false}
         validationSchema={GameSchema}
         onSubmit={(values) => {
