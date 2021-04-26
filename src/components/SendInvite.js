@@ -77,7 +77,6 @@ const SendInviteInput = () => {
         window.location.reload();
       });
     }
-
     setUserId("");
   };
 

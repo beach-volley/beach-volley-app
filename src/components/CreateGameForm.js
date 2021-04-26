@@ -41,7 +41,8 @@ const GameSchema = Yup.object({
       }
     ),
   difficultyLevel: Yup.string().required("Valitse taso"),
-  minPlayers: Yup.number().test(
+  minPlayers: Yup.number()
+  .test(
     "Minimi pienempi",
     "Min pitää olla pienempi kuin max",
     function () {

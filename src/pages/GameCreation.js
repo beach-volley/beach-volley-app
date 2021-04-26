@@ -2,6 +2,8 @@ import FormContainer from "../containers/CenterContainer";
 import Header from "../containers/Header";
 import CreateGameForm from "../components/CreateGameForm";
 import { PageWrapper } from "../components/ComponentStyles";
+import BackButton from "../components/BackButton";
+
 
 const GameCreation = () => {
   const matchData = {
@@ -21,11 +23,13 @@ const GameCreation = () => {
     <PageWrapper>
       <Header />
       <FormContainer title={"Luo peli"}>
+      <BackButton />
         <CreateGameForm
           matchData={matchData}
           creatingGame={true}
           editMode={false}
         />
+        
       </FormContainer>
     </PageWrapper>
   );

@@ -4,17 +4,22 @@ import styled from "styled-components";
 import { Burger, Menu } from "../components/BurgerMenu";
 import { useOnClickOutside } from "../hooks/useOnClickOutside";
 import AppLogo from "../assets/logo.png";
+import useCurrentUser from "../hooks/useCurrentUser";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
   const node = useRef();
   useOnClickOutside(node, () => setOpen(false));
+  const currentUser = useCurrentUser();
 
   return (
     <Container>
-      <Link to="/home">
-        <Logo src={AppLogo} alt="Logo" />
-      </Link>
+      <ColumnContainer>
+        <Link to="/home">
+          <Logo src={AppLogo} alt="Logo" />
+        </Link>
+       {currentUser?.displayName && <p> Hei, {currentUser?.displayName}</p>}
+      </ColumnContainer>
       <div ref={node}>
         <Burger open={open} setOpen={setOpen} />
         <Menu open={open} setOpen={setOpen} />
@@ -38,8 +43,12 @@ const Container = styled.div`
   }
 `;
 
+const ColumnContainer = styled.div`
+  margin: 1rem 0 0 0.5rem
+`;
+
 const Logo = styled.img`
   height: 3rem;
   max-width: 100%;
-  margin-top: 1rem;
+
 `;
