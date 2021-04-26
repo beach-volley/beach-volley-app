@@ -41,7 +41,9 @@ const Games = () => {
       invited: userInvitedGames,
     };
 
-    return games[filter.toLowerCase()].filter((game)=>game.node.status !== "CANCELLED" ?? []);
+    return games[filter.toLowerCase()].filter(
+      (game) => game.node.status !== "CANCELLED" ?? []
+    );
   };
 
   const whichTabPushed = () => {
@@ -86,7 +88,7 @@ const Games = () => {
       <ListContainer>
         {filterGameList()?.map(({ node }) => (
           <ListStyle key={node.id || node.match?.id}>
-            <CardWrapper status={node.status || node.match?.status }>
+            <CardWrapper status={node.status || node.match?.status}>
               <Row>
                 <GameItemInfo
                   status={node.status || node.match?.status}

@@ -70,7 +70,6 @@ const BurgerContainer = styled.nav`
     background: #7fbeeb;
     width: 5rem;
     height: 5rem;
-
   }
 `;
 
