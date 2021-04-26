@@ -12,7 +12,7 @@ export const StyledButton = styled.button`
 export const PageWrapper = styled.div`
   display: grid;
   min-height: 100vh;
-  grid-template-rows: 8vh auto;
+  grid-template-rows: 15vh auto;
   ${(props) => props.theme.backGroundImage()}
 `;
 

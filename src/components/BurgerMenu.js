@@ -61,8 +61,8 @@ const BurgerContainer = styled.nav`
   position: relative;
   background-color: transparent;
   z-index: 10;
-  margin-top: 1.5rem;
-  margin-left: 2rem;
+  margin-top: -1.75rem;
+  margin-left: 0.5rem;
   border-radius: 0.5rem;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {

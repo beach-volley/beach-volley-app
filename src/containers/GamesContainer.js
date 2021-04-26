@@ -41,23 +41,15 @@ const Games = () => {
       invited: userInvitedGames,
     };
 
-    return dateAndConfirmFilter(games[filter.toLowerCase()]) ?? [];
+    return dateFilter(games[filter.toLowerCase()]) ?? [];
   };
 
-  const dateAndConfirmFilter = (games) => {
-    if (filter === "public" || "created") {
-      return games?.filter(
-        (game) =>
-          (new Date(game.node.time.end.value) >
-            moment(new Date()).subtract(1, "days") &&
-            game.node.status === "UNCONFIRMED") ||
-          "CANCELLED"
-      );
-    }
+  const dateFilter = (games) => {
     return games?.filter(
       (game) =>
-        new Date(game.node.time.end.value) >
-        moment(new Date()).subtract(1, "days")
+        new Date(game.node.time.start.value) >
+          moment(new Date()).subtract(1, "day") &&
+        game.node.status !== "CANCELLED"
     );
   };
 

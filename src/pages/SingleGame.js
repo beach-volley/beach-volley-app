@@ -9,6 +9,7 @@ import { AlertDialogButton } from "../components/FeedbackComponents";
 import { useQuery } from "@apollo/client";
 import { MATCH_BY_ID, PLAYERS_BY_MATCH_ID, CURRENT_USER } from "../queries";
 import useForm from "../hooks/useForm";
+import BackButton from "../components/BackButton";
 
 const SingleGame = () => {
   const currentUser = useQuery(CURRENT_USER);
@@ -17,7 +18,7 @@ const SingleGame = () => {
   });
 
   const { LeaveGame, JoinGame, CancelMatchById } = useForm();
-
+  const hostName = matchById?.data?.match?.host?.name;
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
       id: window.location.pathname.slice(13),
@@ -107,7 +108,8 @@ const SingleGame = () => {
   return (
     <PageWrapper>
       <Header />
-      <GameInfoContainer title="Pelaajan Peli">
+      <GameInfoContainer title={`Host: ${hostName}`}>
+        <BackButton />
         <GameInfoForm
           matchData={matchData}
           creatingGame={false}
@@ -127,8 +129,8 @@ const SingleGame = () => {
           {editMode && (
             <>
               <AlertDialogButton
-                ButtonStyle={StyledButton}
-                buttonText={"Peru peli"}
+                ButtonStyle={CancelGame}
+                buttonText={"Peru"}
                 title={"Haluatko perua pelin?"}
                 content={""}
                 callBack={CancelMatchById}
@@ -157,6 +159,10 @@ const SingleGame = () => {
 const JoinOrLeave = styled(StyledButton)`
   pointer-events: ${(props) => (props.enabled ? "all" : "none")};
   background-color: ${(props) => (props.enabled ? "#FBFF48" : "grey")};
+`;
+
+const CancelGame = styled(StyledButton)`
+  background-color: red;
 `;
 
 export default SingleGame;
