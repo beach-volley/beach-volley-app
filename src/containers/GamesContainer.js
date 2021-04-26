@@ -48,9 +48,10 @@ const Games = () => {
     if (filter === "public" || "created") {
       return games?.filter(
         (game) =>
-          new Date(game.node.time.end.value) >
+          (new Date(game.node.time.end.value) >
             moment(new Date()).subtract(1, "days") &&
-          game.node.status === "UNCONFIRMED" || "CANCELLED"
+            game.node.status === "UNCONFIRMED") ||
+          "CANCELLED"
       );
     }
     return games?.filter(
