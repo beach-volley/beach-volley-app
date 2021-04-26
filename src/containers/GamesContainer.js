@@ -41,8 +41,23 @@ const Games = () => {
       invited: userInvitedGames,
     };
 
-    return games[filter.toLowerCase()].filter(
-      (game) => game.node.status !== "CANCELLED" ?? []
+    return dateFilter(games[filter.toLowerCase()]) ?? [];
+  };
+
+  console.log(userJoinedGames)
+  const dateFilter = (games) => {
+    if (filter !== "joined")
+      return games?.filter(
+        (game) =>
+          new Date(game.node.time.end.value) >
+            moment(new Date()).subtract(1, "days") &&
+          game.node.status !== "CANCELLED"
+      );
+    return games?.filter(
+      (game) =>
+        new Date(game.node.match.time.end.value) >
+          moment(new Date()).subtract(1, "days") &&
+        game.node.status !== "CANCELLED"
     );
   };
 
