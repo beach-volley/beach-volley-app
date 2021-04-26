@@ -41,16 +41,7 @@ const Games = () => {
       invited: userInvitedGames,
     };
 
-    return dateFilter(games[filter.toLowerCase()]) ?? [];
-  };
-
-  const dateFilter = (games) => {
-    return games?.filter(
-      (game) =>
-        new Date(game.node.time.start.value) >
-          moment(new Date()).subtract(1, "day") &&
-        game.node.status !== "CANCELLED"
-    );
+    return games[filter.toLowerCase()].filter((game)=>game.node.status !== "CANCELLED" ?? []);
   };
 
   const whichTabPushed = () => {
@@ -95,7 +86,7 @@ const Games = () => {
       <ListContainer>
         {filterGameList()?.map(({ node }) => (
           <ListStyle key={node.id || node.match?.id}>
-            <CardWrapper status={node.status}>
+            <CardWrapper status={node.status || node.match?.status }>
               <Row>
                 <GameItemInfo
                   status={node.status || node.match?.status}

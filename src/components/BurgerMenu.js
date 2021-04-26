@@ -61,18 +61,16 @@ const BurgerContainer = styled.nav`
   position: relative;
   background-color: transparent;
   z-index: 10;
-  margin-top: -1.75rem;
-  margin-left: 0.5rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   border-radius: 0.5rem;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     background: #7fbeeb;
-    position: absolute;
-    margin-top: 0rem;
     width: 5rem;
     height: 5rem;
-    top: 1rem;
-    right: 1rem;
+
   }
 `;
 
