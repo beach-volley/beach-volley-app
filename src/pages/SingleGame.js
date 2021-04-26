@@ -18,7 +18,7 @@ const SingleGame = () => {
   });
 
   const { LeaveGame, JoinGame, CancelMatchById } = useForm();
-  const hostName= matchById?.data?.match?.host?.name
+  const hostName = matchById?.data?.match?.host?.name;
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
       id: window.location.pathname.slice(13),
@@ -104,12 +104,12 @@ const SingleGame = () => {
       </PageWrapper>
     );
   }
-  
+
   return (
     <PageWrapper>
       <Header />
       <GameInfoContainer title={`Host: ${hostName}`}>
-      <BackButton />
+        <BackButton />
         <GameInfoForm
           matchData={matchData}
           creatingGame={false}

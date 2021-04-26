@@ -5,8 +5,11 @@ import { StyledButton } from "../components/ComponentStyles";
 
 const BackButton = () => {
   let history = useHistory();
-  return <TopLeftCornerButton onClick={()=>history.push("/home")}>Takaisin</TopLeftCornerButton>;
-
+  return (
+    <TopLeftCornerButton onClick={() => history.push("/home")}>
+      Takaisin
+    </TopLeftCornerButton>
+  );
 };
 
 const TopLeftCornerButton = styled(StyledButton)`

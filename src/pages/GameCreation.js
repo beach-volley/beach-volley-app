@@ -4,7 +4,6 @@ import CreateGameForm from "../components/CreateGameForm";
 import { PageWrapper } from "../components/ComponentStyles";
 import BackButton from "../components/BackButton";
 
-
 const GameCreation = () => {
   const matchData = {
     location: "",
@@ -23,13 +22,12 @@ const GameCreation = () => {
     <PageWrapper>
       <Header />
       <FormContainer title={"Luo peli"}>
-      <BackButton />
+        <BackButton />
         <CreateGameForm
           matchData={matchData}
           creatingGame={true}
           editMode={false}
         />
-        
       </FormContainer>
     </PageWrapper>
   );

@@ -46,9 +46,11 @@ const Games = () => {
 
   const dateFilter = (games) => {
     return games?.filter(
-      (game) => 
-      new Date(game.node.time.start.value) > moment(new Date()).subtract(1, 'day')
-      && game.node.status !== "CANCELLED");
+      (game) =>
+        new Date(game.node.time.start.value) >
+          moment(new Date()).subtract(1, "day") &&
+        game.node.status !== "CANCELLED"
+    );
   };
 
   const whichTabPushed = () => {

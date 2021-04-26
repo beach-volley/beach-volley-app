@@ -18,7 +18,7 @@ const Header = () => {
         <Link to="/home">
           <Logo src={AppLogo} alt="Logo" />
         </Link>
-       {currentUser?.displayName && <p> Hei, {currentUser?.displayName}</p>}
+        {currentUser?.displayName && <p> Hei, {currentUser?.displayName}</p>}
       </ColumnContainer>
       <div ref={node}>
         <Burger open={open} setOpen={setOpen} />
@@ -44,11 +44,10 @@ const Container = styled.div`
 `;
 
 const ColumnContainer = styled.div`
-  margin: 1rem 0 0 0.5rem
+  margin: 1rem 0 0 0.5rem;
 `;
 
 const Logo = styled.img`
   height: 3rem;
   max-width: 100%;
-
 `;
