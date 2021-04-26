@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import moment from "moment";
 import GameItemInfo from "../components/GameItemInfo";
 import { StyledButton } from "../components/ComponentStyles";
 import { useHistory } from "react-router";
@@ -17,10 +18,13 @@ const Games = () => {
   const matchesInvitations = useQuery(MATCHES_INVITATIONS);
   const [filter, setFilter] = useState("public");
 
-  const userCreatedGames = currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
+  const userCreatedGames =
+    currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
   const allPublicGames = matches.data?.publicMatches?.edges;
-  const userJoinedGames = currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
-  const userInvitedGames = matchesInvitations.data?.currentUser?.invitations?.edges;
+  const userJoinedGames =
+    currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
+  const userInvitedGames =
+    matchesInvitations.data?.currentUser?.invitations?.edges;
 
   let history = useHistory();
   const joinMatchById = (id) => {
@@ -36,8 +40,24 @@ const Games = () => {
       created: userCreatedGames,
       invited: userInvitedGames,
     };
-    return games[filter.toLowerCase()].filter(
-      (game) => game.node.status === "UNCONFIRMED") ?? [];
+
+    return dateAndConfirmFilter(games[filter.toLowerCase()]) ?? [];
+  };
+
+  const dateAndConfirmFilter = (games) => {
+    if (filter === "public" || "created") {
+      return games?.filter(
+        (game) =>
+          new Date(game.node.time.end.value) >
+            moment(new Date()).subtract(1, "days") &&
+          game.node.status === "UNCONFIRMED"
+      );
+    }
+    return games?.filter(
+      (game) =>
+        new Date(game.node.time.end.value) >
+        moment(new Date()).subtract(1, "days")
+    );
   };
 
   const whichTabPushed = () => {
@@ -82,7 +102,7 @@ const Games = () => {
       <ListContainer>
         {filterGameList()?.map(({ node }) => (
           <ListStyle key={node.id || node.match?.id}>
-            <CardWrapper>
+            <CardWrapper status={node.status}>
               <Row>
                 <GameItemInfo
                   status={node.status || node.match?.status}
@@ -159,8 +179,9 @@ const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  height: 8rem;
-  background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
+  padding: 1.5rem;
+  background: ${(props) =>
+    props.status === "UNCONFIRMED" ? "rgb(1, 20, 88, 0.75)" : "grey"};
 `;
 
 const Row = styled.div`
