@@ -50,7 +50,7 @@ const Games = () => {
         (game) =>
           new Date(game.node.time.end.value) >
             moment(new Date()).subtract(1, "days") &&
-          game.node.status === "UNCONFIRMED"
+          game.node.status === "UNCONFIRMED" || "CANCELLED"
       );
     }
     return games?.filter(
