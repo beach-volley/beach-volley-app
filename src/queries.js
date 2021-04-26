@@ -83,6 +83,7 @@ export const CURRENT_USER_MATCHES_JOINS = gql`
         edges {
           node {
             match {
+              status
               location
               description
               id
