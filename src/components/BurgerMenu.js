@@ -62,7 +62,7 @@ const BurgerContainer = styled.nav`
   background-color: transparent;
   z-index: 10;
   margin-top: 1.5rem;
-  margin-left: 0.75rem;
+  margin-left: 2rem;
   border-radius: 0.5rem;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
@@ -134,12 +134,13 @@ const StyledMenu = styled.nav`
   width: 100vw;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    width: 40vw;
+    width: 55vw;
     transform: ${({ open }) => (open ? "translateX(%)" : "translateX(150%)")};
   }
 
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.desktopWidth}) {
+    width: 40vw;
     transform: ${({ open }) => (open ? "translateX(10%)" : "translateX(150%)")};
   }
 `;

@@ -17,16 +17,10 @@ const Games = () => {
   const matchesInvitations = useQuery(MATCHES_INVITATIONS);
   const [filter, setFilter] = useState("public");
 
-  const userCreatedGames = currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges.filter(
-    (game) => game.node.status === "UNCONFIRMED"
-  );
-  const allPublicGames = matches.data?.publicMatches.edges.filter(
-    (game) => game.node.status === "UNCONFIRMED"
-  );
-  const userJoinedGames =
-    currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
-  const userInvitedGames =
-    matchesInvitations.data?.currentUser?.invitations.edges;
+  const userCreatedGames = currentUserMatchesJoins.data?.currentUser?.matchesByHostId?.edges;
+  const allPublicGames = matches.data?.publicMatches?.edges;
+  const userJoinedGames = currentUserMatchesJoins.data?.currentUser?.joinsByParticipantId?.edges;
+  const userInvitedGames = matchesInvitations.data?.currentUser?.invitations?.edges;
 
   let history = useHistory();
   const joinMatchById = (id) => {
@@ -42,7 +36,8 @@ const Games = () => {
       created: userCreatedGames,
       invited: userInvitedGames,
     };
-    return games[filter.toLowerCase()] ?? [];
+    return games[filter.toLowerCase()].filter(
+      (game) => game.node.status === "UNCONFIRMED") ?? [];
   };
 
   const whichTabPushed = () => {

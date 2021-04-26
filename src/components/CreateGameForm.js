@@ -31,7 +31,7 @@ const GameSchema = Yup.object({
   endTime: Yup.string()
     .required("Pakollinen kenttä")
     .test(
-      "Eri aika",
+      "Aloitus ennen",
       "Alotusaika täytyy olla ennen lopetus aikaa",
       function (value) {
         return (
@@ -48,6 +48,15 @@ const GameSchema = Yup.object({
       }
     ),
   difficultyLevel: Yup.string().required("Valitse taso"),
+  minPlayers: Yup.number(),
+  maxPlayers: Yup.number()
+  .test(
+    "Minimi pienempi",
+    "Minimipelaajamäärä pitää olla isompi kuin maksimi",
+    function () {
+      return this.parent.minPlayers < this.parent.maxPlayers;
+    }
+  ),
   publicToggle: Yup.boolean(),
   description: Yup.string(),
 });
