@@ -44,7 +44,7 @@ const Games = () => {
     return dateFilter(games[filter.toLowerCase()]) ?? [];
   };
 
-  console.log(userJoinedGames)
+  console.log(userJoinedGames);
   const dateFilter = (games) => {
     if (filter !== "joined")
       return games?.filter(
