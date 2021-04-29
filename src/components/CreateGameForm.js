@@ -53,7 +53,13 @@ const GameSchema = Yup.object({
   description: Yup.string(),
 });
 
-const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
+const CreateFieldSet = ({
+  matchData,
+  creatingGame,
+  editMode,
+  children,
+  isConfirmedOrCancelled,
+}) => {
   const { CreateGame, UpdateGame } = useForm();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -133,10 +139,10 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
                 label="Taso"
                 options={[
                   { value: "EASY", label: "Aloittelija" },
-                  { value: "MEDIUM", label: "Keskitaso" },
-                  { value: "HARD", label: "Pro" },
                   { value: "EASY_MEDIUM", label: "Aloittelija-Keskitaso" },
+                  { value: "MEDIUM", label: "Keskitaso" },
                   { value: "MEDIUM_HARD", label: "Keskitaso-Pro" },
+                  { value: "HARD", label: "Pro" },
                   { value: "EASY_HARD", label: "Kaikki" },
                 ]}
               />
@@ -179,7 +185,12 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children }) => {
                   <StyledButton type="submit">Julkaise</StyledButton>
                 )}
                 {editMode && (
-                  <StyledButton type="submit">Tallenna</StyledButton>
+                  <ConfirmOrConfirmed
+                    enabled={!isConfirmedOrCancelled}
+                    type="submit"
+                  >
+                    Tallenna
+                  </ConfirmOrConfirmed>
                 )}
               </CornerButtons>
             </Form>
@@ -200,6 +211,11 @@ const FieldSet = styled.fieldset`
   label {
     color: white;
   }
+`;
+
+const ConfirmOrConfirmed = styled(StyledButton)`
+  pointer-events: ${(props) => (props.enabled ? "all" : "none")};
+  background-color: ${(props) => (props.enabled ? "#FBFF48" : "grey")};
 `;
 
 const Row = styled.div`

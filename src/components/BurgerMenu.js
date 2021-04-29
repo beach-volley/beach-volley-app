@@ -39,6 +39,8 @@ export const Menu = ({ open }) => {
           title={"Kirjaudu sisään luodaksesi pelin"}
           content={""}
           callBack={loginCreateGame}
+          cancelButton="Peruuta"
+          agreeButton="Ok"
         />
       )}
       {currentUser ? (

@@ -17,7 +17,7 @@ const SingleGame = () => {
     variables: { id: window.location.pathname.slice(13) },
   });
 
-  const { LeaveGame, JoinGame, CancelMatchById } = useForm();
+  const { LeaveGame, JoinGame, CancelMatchById, ConfirmGame } = useForm();
   const hostName = matchById?.data?.match?.host?.name;
   const playersByMatchId = useQuery(PLAYERS_BY_MATCH_ID, {
     variables: {
@@ -97,6 +97,15 @@ const SingleGame = () => {
     }
   }
 
+  let isConfirmedOrCancelled =
+    matchById.data?.match?.status !== "UNCONFIRMED" ? true : false;
+  let stateOfTheGame =
+    matchById.data?.match?.status === "CONFIRMED"
+      ? "VAHVISTETTU"
+      : matchById.data?.match?.status === "CANCELLED"
+      ? "PERUTTU"
+      : "EI VAHVISTETTU";
+
   if (matchById.loading || playersByMatchId.loading) {
     return (
       <PageWrapper>
@@ -109,18 +118,26 @@ const SingleGame = () => {
     <PageWrapper>
       <Header />
       <GameInfoContainer title={`Host: ${hostName}`}>
+        <p style={{ color: "white" }}>Pelin tila: {stateOfTheGame}</p>
         <BackButton />
         <GameInfoForm
           matchData={matchData}
           creatingGame={false}
           editMode={editMode}
+          isConfirmedOrCancelled={isConfirmedOrCancelled}
         >
           {loggedIn && (
             <>
-              <JoinOrLeave enabled={!isJoined} onClick={JoinGame}>
+              <JoinOrLeave
+                enabled={!isJoined && !isConfirmedOrCancelled}
+                onClick={JoinGame}
+              >
                 Liity
               </JoinOrLeave>
-              <JoinOrLeave enabled={isJoined} onClick={LeaveGame}>
+              <JoinOrLeave
+                enabled={isJoined && !isConfirmedOrCancelled}
+                onClick={LeaveGame}
+              >
                 Poistu
               </JoinOrLeave>
             </>
@@ -128,14 +145,40 @@ const SingleGame = () => {
 
           {editMode && (
             <>
-              <AlertDialogButton
-                ButtonStyle={CancelGame}
-                buttonText={"Peru"}
-                title={"Haluatko perua pelin?"}
-                content={""}
-                callBack={CancelMatchById}
-              />
-              <StyledButton>Vahvista</StyledButton>
+              {!isConfirmedOrCancelled && (
+                <AlertDialogButton
+                  ButtonStyle={CancelGame}
+                  buttonText={"Peru"}
+                  title={"Haluatko perua pelin?"}
+                  content={""}
+                  callBack={CancelMatchById}
+                  cancelButton="Ei"
+                  agreeButton="Kyllä"
+                />
+              )}
+              {isConfirmedOrCancelled && (
+                <ConfirmOrConfirmed enabled={!isConfirmedOrCancelled}>
+                  Peru
+                </ConfirmOrConfirmed>
+              )}
+              {!isConfirmedOrCancelled && (
+                <AlertDialogButton
+                  ButtonStyle={StyledButton}
+                  buttonText={"Vahvista"}
+                  title={"Haluatko varmasti vahvistaa pelin?"}
+                  content={
+                    "Vahvistettuasi pelin et voi enää muokata tietoja, eikä siihen voi enää liittyä."
+                  }
+                  callBack={ConfirmGame}
+                  cancelButton="Ei"
+                  agreeButton="Kyllä"
+                />
+              )}
+              {isConfirmedOrCancelled && (
+                <ConfirmOrConfirmed enabled={!isConfirmedOrCancelled}>
+                  Vahvista
+                </ConfirmOrConfirmed>
+              )}
             </>
           )}
 
@@ -147,7 +190,12 @@ const SingleGame = () => {
                 maxLength="30"
                 placeholder="Anna nimi"
               />
-              <StyledButton onClick={JoinGame}>Liity</StyledButton>
+              <ConfirmOrConfirmed
+                enabled={!isConfirmedOrCancelled}
+                onClick={JoinGame}
+              >
+                Liity
+              </ConfirmOrConfirmed>
             </>
           )}
         </GameInfoForm>
@@ -157,6 +205,11 @@ const SingleGame = () => {
 };
 
 const JoinOrLeave = styled(StyledButton)`
+  pointer-events: ${(props) => (props.enabled ? "all" : "none")};
+  background-color: ${(props) => (props.enabled ? "#FBFF48" : "grey")};
+`;
+
+const ConfirmOrConfirmed = styled(StyledButton)`
   pointer-events: ${(props) => (props.enabled ? "all" : "none")};
   background-color: ${(props) => (props.enabled ? "#FBFF48" : "grey")};
 `;
