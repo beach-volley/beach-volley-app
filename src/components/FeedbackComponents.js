@@ -13,6 +13,8 @@ export const AlertDialogButton = ({
   title,
   content,
   callBack,
+  cancelButton,
+  agreeButton,
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -47,10 +49,8 @@ export const AlertDialogButton = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <StyledButton onClick={handleClose}>Peruuta</StyledButton>
-          <StyledButton onClick={handleCloseAgree} autoFocus>
-            Vahvista
-          </StyledButton>
+          <StyledButton onClick={handleClose}>{cancelButton}</StyledButton>
+          <StyledButton onClick={handleCloseAgree} autoFocus>{agreeButton}</StyledButton>
         </DialogActions>
       </DialogWrapper>
     </div>

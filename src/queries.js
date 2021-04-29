@@ -319,6 +319,7 @@ export const MATCH_BY_ID = gql`
       id
       location
       public
+      status
       playerLimit {
         end {
           inclusive

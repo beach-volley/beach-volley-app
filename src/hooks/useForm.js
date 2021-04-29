@@ -174,12 +174,28 @@ const useForm = () => {
     history.push("/home");
   };
 
+  const ConfirmGame = () => {
+    return updateMatch({
+      variables: {
+        input: {
+          patch: {
+            status: "CONFIRMED",
+          },
+          id: window.location.pathname.slice(13),
+        },
+      },
+    }).then(() => {
+      window.location.reload();
+    });
+  };
+
   return {
     CreateGame,
     UpdateGame,
     LeaveGame,
     JoinGame,
     CancelMatchById,
+    ConfirmGame,
   };
 };
 
