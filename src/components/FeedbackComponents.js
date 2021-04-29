@@ -50,7 +50,9 @@ export const AlertDialogButton = ({
         </DialogContent>
         <DialogActions>
           <StyledButton onClick={handleClose}>{cancelButton}</StyledButton>
-          <StyledButton onClick={handleCloseAgree} autoFocus>{agreeButton}</StyledButton>
+          <StyledButton onClick={handleCloseAgree} autoFocus>
+            {agreeButton}
+          </StyledButton>
         </DialogActions>
       </DialogWrapper>
     </div>

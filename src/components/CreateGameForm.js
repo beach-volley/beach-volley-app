@@ -53,7 +53,13 @@ const GameSchema = Yup.object({
   description: Yup.string(),
 });
 
-const CreateFieldSet = ({ matchData, creatingGame, editMode, children, isConfirmedOrCancelled }) => {
+const CreateFieldSet = ({
+  matchData,
+  creatingGame,
+  editMode,
+  children,
+  isConfirmedOrCancelled,
+}) => {
   const { CreateGame, UpdateGame } = useForm();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -179,7 +185,12 @@ const CreateFieldSet = ({ matchData, creatingGame, editMode, children, isConfirm
                   <StyledButton type="submit">Julkaise</StyledButton>
                 )}
                 {editMode && (
-                  <ConfirmOrConfirmed enabled={!isConfirmedOrCancelled} type="submit">Tallenna</ConfirmOrConfirmed>
+                  <ConfirmOrConfirmed
+                    enabled={!isConfirmedOrCancelled}
+                    type="submit"
+                  >
+                    Tallenna
+                  </ConfirmOrConfirmed>
                 )}
               </CornerButtons>
             </Form>

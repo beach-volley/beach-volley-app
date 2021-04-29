@@ -97,10 +97,14 @@ const SingleGame = () => {
     }
   }
 
-  let isConfirmedOrCancelled = matchById.data?.match?.status !== "UNCONFIRMED" ? true : false;
-  let stateOfTheGame = matchById.data?.match?.status === "CONFIRMED" ? "VAHVISTETTU"
-    : matchById.data?.match?.status === "CANCELLED" ? "PERUTTU"
-    : "EI VAHVISTETTU";
+  let isConfirmedOrCancelled =
+    matchById.data?.match?.status !== "UNCONFIRMED" ? true : false;
+  let stateOfTheGame =
+    matchById.data?.match?.status === "CONFIRMED"
+      ? "VAHVISTETTU"
+      : matchById.data?.match?.status === "CANCELLED"
+      ? "PERUTTU"
+      : "EI VAHVISTETTU";
 
   if (matchById.loading || playersByMatchId.loading) {
     return (
@@ -114,7 +118,7 @@ const SingleGame = () => {
     <PageWrapper>
       <Header />
       <GameInfoContainer title={`Host: ${hostName}`}>
-        <p style={{color: "white"}}>Pelin tila: {stateOfTheGame}</p>
+        <p style={{ color: "white" }}>Pelin tila: {stateOfTheGame}</p>
         <BackButton />
         <GameInfoForm
           matchData={matchData}
@@ -124,10 +128,16 @@ const SingleGame = () => {
         >
           {loggedIn && (
             <>
-              <JoinOrLeave enabled={!isJoined && !isConfirmedOrCancelled} onClick={JoinGame}>
+              <JoinOrLeave
+                enabled={!isJoined && !isConfirmedOrCancelled}
+                onClick={JoinGame}
+              >
                 Liity
               </JoinOrLeave>
-              <JoinOrLeave enabled={isJoined && !isConfirmedOrCancelled} onClick={LeaveGame}>
+              <JoinOrLeave
+                enabled={isJoined && !isConfirmedOrCancelled}
+                onClick={LeaveGame}
+              >
                 Poistu
               </JoinOrLeave>
             </>
@@ -147,8 +157,8 @@ const SingleGame = () => {
                 />
               )}
               {isConfirmedOrCancelled && (
-                <ConfirmOrConfirmed 
-                  enabled={!isConfirmedOrCancelled}>Peru
+                <ConfirmOrConfirmed enabled={!isConfirmedOrCancelled}>
+                  Peru
                 </ConfirmOrConfirmed>
               )}
               {!isConfirmedOrCancelled && (
@@ -156,15 +166,17 @@ const SingleGame = () => {
                   ButtonStyle={StyledButton}
                   buttonText={"Vahvista"}
                   title={"Haluatko varmasti vahvistaa pelin?"}
-                  content={"Vahvistettuasi pelin et voi enää muokata tietoja, eikä siihen voi enää liittyä."}
+                  content={
+                    "Vahvistettuasi pelin et voi enää muokata tietoja, eikä siihen voi enää liittyä."
+                  }
                   callBack={ConfirmGame}
                   cancelButton="Ei"
                   agreeButton="Kyllä"
                 />
               )}
               {isConfirmedOrCancelled && (
-                <ConfirmOrConfirmed 
-                  enabled={!isConfirmedOrCancelled}>Vahvista
+                <ConfirmOrConfirmed enabled={!isConfirmedOrCancelled}>
+                  Vahvista
                 </ConfirmOrConfirmed>
               )}
             </>
@@ -178,7 +190,12 @@ const SingleGame = () => {
                 maxLength="30"
                 placeholder="Anna nimi"
               />
-              <ConfirmOrConfirmed enabled={!isConfirmedOrCancelled} onClick={JoinGame}>Liity</ConfirmOrConfirmed>
+              <ConfirmOrConfirmed
+                enabled={!isConfirmedOrCancelled}
+                onClick={JoinGame}
+              >
+                Liity
+              </ConfirmOrConfirmed>
             </>
           )}
         </GameInfoForm>
