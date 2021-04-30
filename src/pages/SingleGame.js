@@ -10,6 +10,7 @@ import { useQuery } from "@apollo/client";
 import { MATCH_BY_ID, PLAYERS_BY_MATCH_ID, CURRENT_USER } from "../queries";
 import useForm from "../hooks/useForm";
 import BackButton from "../components/BackButton";
+import useShare from "use-share";
 
 const SingleGame = () => {
   const currentUser = useQuery(CURRENT_USER);
@@ -106,6 +107,12 @@ const SingleGame = () => {
       ? "PERUTTU"
       : "EI VAHVISTETTU";
 
+  const { share, hasShared } = useShare({
+    title: `${hostName} kutsui sinut mukaan pelaamaan.`,
+    text: "Tarkastele kutsua napsauttamalla.",
+    url: window.location,
+  });
+
   if (matchById.loading || playersByMatchId.loading) {
     return (
       <PageWrapper>
@@ -117,7 +124,7 @@ const SingleGame = () => {
   return (
     <PageWrapper>
       <Header />
-      <GameInfoContainer title={`Host: ${hostName}`}>
+      <GameInfoContainer title={`Järjestäjä: ${hostName}`}>
         <p style={{ color: "white" }}>Pelin tila: {stateOfTheGame}</p>
         <BackButton />
         <GameInfoForm
@@ -126,6 +133,10 @@ const SingleGame = () => {
           editMode={editMode}
           isConfirmedOrCancelled={isConfirmedOrCancelled}
         >
+          <StyledButton onClick={share} disabled={hasShared}>
+            {hasShared ? "Jaettu!" : "Jaa"}
+          </StyledButton>
+
           {loggedIn && (
             <>
               <JoinOrLeave
