@@ -108,8 +108,6 @@ const SingleGame = () => {
       : "EI VAHVISTETTU";
 
   const { share, hasShared } = useShare({
-    title: `${hostName} kutsui sinut mukaan pelaamaan.`,
-    text: "Tarkastele kutsua napsauttamalla.",
     url: window.location,
   });
 
