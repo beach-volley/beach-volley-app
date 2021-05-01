@@ -26,8 +26,7 @@ const LoginPage = () => {
           signInOptions: [
             {
               provider: GoogleID,
-              clientId:
-                "758236414363-fnh0cqp982cp59pg8duuhrbaprq49g99.apps.googleusercontent.com",
+              clientId: process.env.REACT_APP_CLIENT_ID,
             },
           ],
           credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
