@@ -25,8 +25,11 @@ const GlobalStyle = createGlobalStyle`
             -moz-appearance: none;
 }
 
-h1, h2, p, span, input, textarea, label, body, button, html {
-  font-family: "sans-serif", "Roboto";
+h1, h2, p, span, input, textarea, label, body, button, html, label {
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: bold; 
+  letter-spacing: -1px; 
+  line-height: 1;
 }
 
 `;
@@ -54,7 +57,7 @@ const theme = {
     mobileWidth: "480px",
     tabletWidth: "770px",
     smallDesktopWidth: "990px",
-    desktopWidth: "1200px",
+    desktopWidth: "1400px",
   },
 
   backGroundImage: () => `

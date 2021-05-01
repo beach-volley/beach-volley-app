@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { StyledContainer } from "../components/ComponentStyles";
 
 const CenterContainer = ({ title, ...props }) => (
   <CenterWrapper>
@@ -18,18 +19,18 @@ const ContainerTitle = styled.h1`
   color: white;
 `;
 
-const Container = styled.div`
+const Container = styled(StyledContainer)`
   text-align: center;
   position: relative;
   margin: auto;
-  margin-top: 4rem;
   padding: 1rem;
-  background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
-  margin-bottom: 1rem;
-  width: 95%;
+  margin-top: 4rem;
+  width: 100%;
+  border-radius: 0;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    width: 60%;
+    width: 50%;
+    margin-bottom: 4rem;
   }
 `;
 

@@ -60,13 +60,11 @@ const BurgerContainer = styled.nav`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
   background-color: transparent;
   z-index: 10;
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+  position: relative;
   border-radius: 0.5rem;
+  margin-right: 1rem;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     background: #7fbeeb;
@@ -131,6 +129,7 @@ const StyledMenu = styled.nav`
   transition: transform 0.3s ease-in-out;
   transform: ${({ open }) => (open ? "translateX(0%)" : "translateX(100%)")};
   width: 100vw;
+  border-radius: 0.25rem;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     width: 40vw;
@@ -140,7 +139,7 @@ const StyledMenu = styled.nav`
 const MenuButton = styled.button`
   font-size: 2rem;
   text-transform: uppercase;
-  font-weight: bold;
+
   letter-spacing: 0.5rem;
   color: black;
   text-decoration: none;

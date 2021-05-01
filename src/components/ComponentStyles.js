@@ -9,6 +9,11 @@ export const StyledButton = styled.button`
   cursor: pointer;
 `;
 
+export const StyledContainer = styled.div`
+  background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
+  border-radius: 0.25rem;
+`;
+
 export const PageWrapper = styled.div`
   display: grid;
   min-height: 100vh;
