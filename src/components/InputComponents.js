@@ -100,10 +100,10 @@ export const FormTextArea = ({ label, canEdit, ...props }) => {
 
 const RadioContainer = styled.div`
   width: 100%;
-  margin-top: 3rem;
-  overflow: hidden;
+
   padding: 0.5rem;
   text-align: center;
+  margin: 2.5rem 0;
 
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
@@ -121,7 +121,7 @@ const RadioContainer = styled.div`
     color: black !important;
     font-size: 0.9rem;
     text-align: center;
-    padding: 1rem;
+    padding: 0.7rem;
   }
 
   input:checked + label {
