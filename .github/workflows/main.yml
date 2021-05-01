@@ -47,6 +47,10 @@ jobs:
           node-version: '14'
       - run: npm ci
       - run: npm run build
+      - name: Run migrations
+        run: ./node_modules/.bin/graphile-migrate migrate
+        env:
+          DATABASE_URL: ${{ secrets.MIGRATIONS_DATABASE_URL }}
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
