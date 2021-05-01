@@ -24,7 +24,14 @@ export const PageWrapper = styled.div`
 //override material-ui css
 export const InputRow = styled.div`
   display: flex;
-  margin-bottom: 1rem;
+
+  .MuiInputBase-root{
+
+  font-family: 'Helvetica Neue', sans-serif;
+
+  letter-spacing: -1px; 
+
+  }
 
   label {
     font-size: ${(props) => props.theme.fontSizes.medium};

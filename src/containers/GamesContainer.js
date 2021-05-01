@@ -113,7 +113,9 @@ const Games = () => {
               <Row>
                 <GameItemInfo
                   players={node.playerLimit || node.match?.playerLimit}
-                  skillLevel={node.requiredSkillLevel || node.match?.requiredSkillLevel}
+                  skillLevel={
+                    node.requiredSkillLevel || node.match?.requiredSkillLevel
+                  }
                 />
               </Row>
               <JoinGameButton
@@ -194,7 +196,7 @@ const JoinGameButton = styled(StyledButton)`
   position: absolute;
   right: 0.5rem;
   bottom: 0.5rem;
-  padding: 0 0.5rem;;
+  padding: 0 0.5rem;
   border-radius: 10%;
   font-weight: bold;
   height: 1.5rem;

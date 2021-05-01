@@ -18,7 +18,7 @@ const TopLeftCornerButton = styled(StyledButton)`
   top: 0;
   height: 1.75rem;
   padding: 0 0.2rem;
-  margin: 0.5rem 0 0 0.5rem;
+  border-radius: 0 0 0.3rem 0;
 `;
 
 export default BackButton;

@@ -100,7 +100,7 @@ export const FormTextArea = ({ label, canEdit, ...props }) => {
 
 const RadioContainer = styled.div`
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 3rem;
   overflow: hidden;
   padding: 0.5rem;
   text-align: center;
@@ -122,7 +122,6 @@ const RadioContainer = styled.div`
     font-size: 0.9rem;
     text-align: center;
     padding: 1rem;
-    margin: 1.5;
   }
 
   input:checked + label {
