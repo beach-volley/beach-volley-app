@@ -235,7 +235,7 @@ const GameDescription = styled(FormTextArea)`
   width: 100%;
   height: 5rem;
   margin-top: 1rem;
-  margin-bottom: 5rem;
+  margin-bottom: 3rem;
   overflow-y: scroll !important;
   pointer-events: all !important;
   resize: none;

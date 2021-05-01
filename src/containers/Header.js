@@ -32,19 +32,19 @@ export default Header;
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   position: relative;
   grid-row: 1;
+  margin-left: 0.5rem;
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
-    justify-content: flex-start;
     margin-left: ${(props) => props.theme.margins.large};
   }
 `;
 
 const ColumnContainer = styled.div`
-  margin: 1rem 0 0 0.5rem;
+  margin: 2.8rem 0 0 0.5rem;
 `;
 
 const Logo = styled.img`

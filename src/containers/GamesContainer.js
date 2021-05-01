@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import GameItemInfo from "../components/GameItemInfo";
-import { StyledButton } from "../components/ComponentStyles";
+import { StyledButton, StyledContainer } from "../components/ComponentStyles";
 import { useHistory } from "react-router";
 import { useQuery } from "@apollo/client";
 import {
@@ -44,7 +44,6 @@ const Games = () => {
     return dateFilter(games[filter.toLowerCase()]) ?? [];
   };
 
-  console.log(userJoinedGames);
   const dateFilter = (games) => {
     if (filter !== "joined")
       return games?.filter(
@@ -114,6 +113,9 @@ const Games = () => {
               <Row>
                 <GameItemInfo
                   players={node.playerLimit || node.match?.playerLimit}
+                  skillLevel={
+                    node.requiredSkillLevel || node.match?.requiredSkillLevel
+                  }
                 />
               </Row>
               <JoinGameButton
@@ -154,11 +156,10 @@ const GameTabRow = styled.div`
   }
 `;
 
-const GameTab = styled.div`
+const GameTab = styled(StyledContainer)`
   flex: 1;
   text-align: center;
   padding: 0 0.5rem;
-  background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
   margin-bottom: 0.5rem;
 `;
 
@@ -176,13 +177,12 @@ const ListStyle = styled.div`
   margin: 0.5rem 0;
 `;
 
-const CardWrapper = styled.div`
+const CardWrapper = styled(StyledContainer)`
   display: flex;
   flex-direction: column;
   position: relative;
-  padding: 1.5rem;
-  background: ${(props) =>
-    props.status === "UNCONFIRMED" ? "rgb(1, 20, 88, 0.75)" : "grey"};
+  padding: 1rem 1rem 2.5rem 0;
+  background: ${(props) => props.status === "CONFIRMED" && "grey"};
 `;
 
 const Row = styled.div`
@@ -194,11 +194,12 @@ const Row = styled.div`
 
 const JoinGameButton = styled(StyledButton)`
   position: absolute;
-  right: 0;
-  bottom: 1rem;
-  margin-right: 1rem;
-  width: auto;
-  height: 2rem;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  padding: 0 0.5rem;
+  border-radius: 10%;
+  font-weight: bold;
+  height: 1.5rem;
 `;
 
 export default Games;

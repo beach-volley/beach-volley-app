@@ -162,6 +162,7 @@ export const MATCHES = gql`
     publicMatches(orderBy: TIME_ASC) {
       edges {
         node {
+          requiredSkillLevel
           id
           location
           public

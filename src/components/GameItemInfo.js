@@ -1,6 +1,6 @@
 import React from "react";
 
-const ProjectItem = ({ location, time, players, status }) => {
+const GameItemInfo = ({ location, time, players, skillLevel, status }) => {
   let formatted_time = time?.start.value
     ? new Date(time?.start.value).toLocaleString("fi-FI", {
         dateStyle: "short",
@@ -10,7 +10,7 @@ const ProjectItem = ({ location, time, players, status }) => {
 
   return (
     <>
-      {status === "CANCELLED" ? <p>Status: {status}</p> : null}
+      {status === "CANCELLED" ? <p>Peruttu</p> : null}
       {location ? <p>Paikka: {location}</p> : null}
       {formatted_time ? <p>{formatted_time}</p> : null}
       {players ? (
@@ -20,6 +20,7 @@ const ProjectItem = ({ location, time, players, status }) => {
           {asInclusive(players?.end.value, players?.end.inclusive)}
         </p>
       ) : null}
+      {skillLevel ? <p>Taso: {skillLevel}</p> : null}
     </>
   );
 };
@@ -32,4 +33,4 @@ const asInclusive = (value, inclusive) => {
   }
 };
 
-export default ProjectItem;
+export default GameItemInfo;

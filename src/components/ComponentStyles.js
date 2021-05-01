@@ -9,6 +9,11 @@ export const StyledButton = styled.button`
   cursor: pointer;
 `;
 
+export const StyledContainer = styled.div`
+  background: rgb(${(props) => props.theme.colors.gulfBlueTransparent});
+  border-radius: 0.25rem;
+`;
+
 export const PageWrapper = styled.div`
   display: grid;
   min-height: 100vh;
@@ -19,7 +24,14 @@ export const PageWrapper = styled.div`
 //override material-ui css
 export const InputRow = styled.div`
   display: flex;
-  margin-bottom: 1rem;
+
+  .MuiInputBase-root{
+
+  font-family: 'Helvetica Neue', sans-serif;
+
+  letter-spacing: -1px; 
+
+  }
 
   label {
     font-size: ${(props) => props.theme.fontSizes.medium};
