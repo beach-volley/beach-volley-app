@@ -252,8 +252,6 @@ const GameDescription = styled(FormTextArea)`
   border: 0.15rem solid black;
 `;
 
-
-
 const CornerButtons = styled.div`
   display: flex;
   position: absolute;
