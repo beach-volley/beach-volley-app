@@ -220,7 +220,7 @@ const ConfirmOrConfirmed = styled(StyledButton)`
 
 const Row = styled.div`
   height: 2rem;
-  margin: 1.5rem 0;
+  margin-bottom: 2rem;
 `;
 
 const TextAreaContainer = styled.div`
@@ -229,6 +229,16 @@ const TextAreaContainer = styled.div`
     width: 50%;
     margin-left: auto;
   }
+`;
+
+const InvitedPlayers = styled.div`
+  text-align: center;
+  border-width: 0.15rem;
+  height: 5rem;
+  background-color: white;
+  overflow-y: scroll !important;
+  pointer-events: all !important;
+  border: 0.15rem solid black;
 `;
 
 const GameDescription = styled(FormTextArea)`
@@ -242,15 +252,7 @@ const GameDescription = styled(FormTextArea)`
   border: 0.15rem solid black;
 `;
 
-const InvitedPlayers = styled.div`
-  text-align: center;
-  border-width: 0.15rem;
-  height: 5rem;
-  background-color: white;
-  overflow-y: scroll !important;
-  pointer-events: all !important;
-  border: 0.15rem solid black;
-`;
+
 
 const CornerButtons = styled.div`
   display: flex;
