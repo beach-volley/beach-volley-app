@@ -26,7 +26,7 @@ const Container = styled(StyledContainer)`
   padding: 1rem;
   margin-top: 4rem;
   width: 100%;
-  border-radius: 0;
+
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
     width: 50%;
