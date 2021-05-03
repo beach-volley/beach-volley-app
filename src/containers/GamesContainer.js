@@ -161,7 +161,6 @@ const GameTab = styled(StyledContainer)`
   text-align: center;
   padding: 0 0.5rem;
   margin-bottom: 0.5rem;
-
 `;
 
 const ListContainer = styled.div`
