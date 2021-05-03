@@ -47,9 +47,8 @@ const GameItemInfo = ({ location, time, players, skillLevel, status }) => {
 
       {skillLevel ? (
         <IconBox>
-          <p>   Taso:  </p>
-         <img src={returnIcon(skillLevel)} alt="difficulty-icon" />
-         {" "}
+          <p> Taso: </p>
+          <img src={returnIcon(skillLevel)} alt="difficulty-icon" />{" "}
         </IconBox>
       ) : null}
     </>
@@ -59,9 +58,10 @@ const GameItemInfo = ({ location, time, players, skillLevel, status }) => {
 const IconBox = styled.div`
   display: flex;
   img {
+    height: 1.75rem;
+    width: 100%;
     margin-top: 0.5rem;
-    margin-left: 0.3rem;
-
+    margin-left: 0.1rem;
   }
 `;
 
