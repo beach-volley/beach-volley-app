@@ -139,9 +139,7 @@ const CreateFieldSet = ({
                 label="Taso"
                 options={[
                   { value: "EASY", label: "Aloittelija" },
-                  { value: "EASY_MEDIUM", label: "Aloittelija-Keskitaso" },
                   { value: "MEDIUM", label: "Keskitaso" },
-                  { value: "MEDIUM_HARD", label: "Keskitaso-Pro" },
                   { value: "HARD", label: "Pro" },
                   { value: "EASY_HARD", label: "Kaikki" },
                 ]}
@@ -251,8 +249,6 @@ const GameDescription = styled(FormTextArea)`
   resize: none;
   border: 0.15rem solid black;
 `;
-
-
 
 const CornerButtons = styled.div`
   display: flex;
