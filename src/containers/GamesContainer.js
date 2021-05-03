@@ -56,7 +56,7 @@ const Games = () => {
       (game) =>
         new Date(game.node.match.time.end.value) >
           moment(new Date()).subtract(1, "days") &&
-        game.node.status !== "CANCELLED"
+        game.node.match.status !== "CANCELLED"
     );
   };
 
@@ -138,7 +138,7 @@ const ContainerWrapper = styled.div`
   p {
     color: white;
     font-size: ${(props) => props.theme.fontSizes.small};
-    font-weight: 900;
+    user-select: none;
   }
   @media only screen and (min-width: ${(props) =>
       props.theme.mediaQuery.tabletWidth}) {
@@ -170,6 +170,7 @@ const ListContainer = styled.div`
   width: 100%;
   overflow-y: auto;
   height: 50vh;
+  user-select: none;
 `;
 
 const ListStyle = styled.div`
