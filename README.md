@@ -1,3 +1,6 @@
+
+![](images/creategame.png)
+
 # Easy set-up
 
 Unless you need to make changes to the back-end, you can use development server
