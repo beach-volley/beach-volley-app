@@ -1,6 +1,6 @@
 # Guide for using the application
 
-This guide helps you to understand what this application is and what you can do with it. Main idea for this application is to create your own beach volley games or joining other user's games. You can invite players to your own games or they can join it if you give them link. If your game is set to be public other users can freely join to it without any invites.
+This guide helps you to understand what this application is and what you can do with it. Main idea for this application is to create your own beach volley games or joining other user's games. You can invite players to your own games or they can join it if you give them link. If your game is set to be public other users can freely join to it without any invitations from you.
 
 
 In the main screen of the application you can see four different tabs. Public games, joined games, creaeted games and lastly tab for games you have been invited to. Top right corner you can see hamburger menu where you can log in. When you are logged in the main menu screen has greetings message to clarify that you are logged in. After logging in, you can create game and allow notifications from the hamburger menu. Image below shows the main screen.
