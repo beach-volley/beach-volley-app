@@ -1,5 +1,6 @@
+# Guide for using the application
 
-![](images/creategame.png)
+![Create game screen](images/creategame.png)
 
 # Easy set-up
 
