@@ -1,8 +1,9 @@
 # Guide for using the application
-This guide helps you to understand what this application is and what you can do with it. Main idead for this application is to create your own beach volley games or joining other user's games. 
+
+This guide helps you to understand what this application is and what you can do with it. Main idea for this application is to create your own beach volley games or joining other user's games. You can invite players to your own games or they can join it if you give them link. If your game is set to be public other users can freely join to it without any invites.
 
 
-In the create a game screen you can choose what kind of settings you want to add for your game. There are options for choosing location, date, start and end time, minimun and maximum players and playerlevel. You can also choose if the game is private or public.
+In the create a game screen below, you can choose what kind of settings you want to add for your game. There are options for choosing location, date, start and end time, minimun and maximum players and playerlevel. You can also choose if the game is private or public.
 ![](images/creategame.png)
 
 # Easy set-up
