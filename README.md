@@ -9,7 +9,7 @@ In the main screen of the application you can see four different tabs. Below the
 In the create a game screen below, you can choose what kind of settings you want to add for your game. There are options for choosing location, date, start and end time, minimun and maximum players and playerlevel. You can also choose if the game is private or public. In the description box you can type any extra information regarded for your game.
 ![](images/creategame.png)
 
-After creating a game you can modify it. You can change all the settings, invite other players, cancel the game or confirm the game. All of these options become available for you when you are the host of that game. 
+After creating a game you can modify it. You can change all the settings, invite other players, share the game, cancel the game or confirm the game. All of these options become available for you when you are the host of that game.
 ![](images/gamescreen.png)
 
 # Easy set-up
