@@ -45,18 +45,20 @@ const Games = () => {
   };
 
   const dateFilter = (games) => {
-    if (filter !== "joined")
+    if (filter === "joined" || filter === "invited") {
       return games?.filter(
         (game) =>
-          new Date(game.node.time.end.value) >
+          new Date(game.node.match.time.end.value) >
             moment(new Date()).subtract(1, "days") &&
-          game.node.status !== "CANCELLED"
+          game.node.match.status !== "CANCELLED"
       );
+    }
+
     return games?.filter(
       (game) =>
-        new Date(game.node.match.time.end.value) >
+        new Date(game.node.time.end.value) >
           moment(new Date()).subtract(1, "days") &&
-        game.node.match.status !== "CANCELLED"
+        game.node.status !== "CANCELLED"
     );
   };
 
